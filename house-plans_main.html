@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>House Plans – Warp5 Homes</title>
+    <style>
+        :root{ --gold:#E8A020; --dark:#0d0d0d; --darker:#080808; --gray:#aaa; }
+        *{ margin:0; padding:0; box-sizing:border-box; }
+        body{ font-family:'Poppins',sans-serif; color:#222; }
+        a{ text-decoration:none; color:inherit; }
+
+        /* NAV */
+        .navbar{ display:flex; align-items:center; padding:16px 50px; background:var(--dark); gap:20px; }
+        .nav-logo{ display:flex; align-items:center; gap:10px; min-width:160px; }
+        .logo-name{ font-size:19px; font-weight:800; color:var(--gold); letter-spacing:1px; line-height:1; }
+        .logo-sub{ font-size:8px; letter-spacing:3px; color:var(--gold); display:block; }
+        .nav-links{ display:flex; align-items:center; gap:26px; flex:1; justify-content:center; }
+        .nav-links a{ color:#fff; font-size:13px; transition:color .2s; }
+        .nav-links a.active{ font-weight:600; padding-bottom:4px; border-bottom:2px solid var(--gold); }
+        .nav-links a:hover{ color:var(--gold); }
+        .btn-dm{ background:var(--gold); color:#fff; border:none; padding:10px 20px; border-radius:6px;
+            font-family:'Poppins',sans-serif; font-size:13px; font-weight:600; cursor:pointer;
+            display:flex; align-items:center; gap:8px; }
+
+        /* HERO */
+        .hero{
+            background:linear-gradient(to right,rgba(0,0,0,.88) 36%,rgba(0,0,0,.5) 60%,rgba(0,0,0,.15) 100%),
+                url('images/4_bedroom.jpg') center/cover no-repeat;
+            min-height:320px; display:flex; flex-direction:column; justify-content:flex-end; padding:0 50px 36px;
+        }
+        .breadcrumb{ color:var(--gold); font-size:11px; font-weight:600; letter-spacing:1px; margin-bottom:10px; }
+        .hero-title{ color:#fff; font-size:46px; font-weight:800; margin-bottom:12px; }
+        .hero-desc{ color:rgba(255,255,255,.8); font-size:13px; line-height:1.7; max-width:400px; margin-bottom:28px; }
+        .hero-badges{ display:flex; gap:40px; padding-bottom:8px; }
+        .hbadge{ display:flex; align-items:center; gap:10px; color:#fff; }
+        .hbadge-icon{ color:var(--gold); font-size:22px; }
+        .hbadge-text{ font-size:12px; font-weight:600; }
+
+        /* MAIN LAYOUT */
+        .main-layout{ display:grid; grid-template-columns:210px 1fr; gap:30px; padding:40px 50px; align-items:start; }
+
+        /* SIDEBAR */
+        .sidebar{ position:sticky; top:20px; }
+        .sidebar-title{ font-size:15px; font-weight:700; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; }
+        .filter-icon{ color:var(--gold); font-size:14px; }
+        .filter-group{ margin-bottom:22px; }
+        .filter-group h4{ font-size:12px; font-weight:700; color:#111; margin-bottom:10px; }
+        .checkbox-item{ display:flex; align-items:center; gap:8px; margin-bottom:8px; font-size:12px; color:#444; cursor:pointer; }
+        .checkbox-item input[type=checkbox]{ accent-color:var(--gold); width:14px; height:14px; cursor:pointer; }
+        .price-range{ width:100%; margin:10px 0 6px; accent-color:var(--gold); }
+        .price-labels{ font-size:11px; color:#666; }
+        .btn-reset{
+            width:100%; padding:10px; border:1.5px solid var(--gold); background:transparent; color:var(--gold);
+            font-family:'Poppins',sans-serif; font-size:12px; font-weight:600; cursor:pointer; border-radius:6px;
+            display:flex; align-items:center; justify-content:center; gap:8px; margin-top:10px;
+        }
+        .cant-find{
+            margin-top:20px; background:var(--dark); color:#fff; border-radius:10px; padding:20px;
+        }
+        .cant-find h4{ font-size:13px; font-weight:700; margin-bottom:8px; }
+        .cant-find p{ font-size:11px; color:var(--gray); line-height:1.6; margin-bottom:14px; }
+        .btn-chat-us{ background:var(--gold); color:#fff; border:none; padding:10px 16px; border-radius:6px;
+            font-family:'Poppins',sans-serif; font-size:12px; font-weight:600; cursor:pointer;
+            display:flex; align-items:center; gap:8px; width:100%; justify-content:center; }
+
+        /* PLANS AREA 
+        .plans-area{}*/
+        .plans-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+        .plans-count{ font-size:16px; font-weight:700; }
+        .plans-count span{ font-weight:400; color:#888; }
+        .sort-select{
+            border:1px solid #ddd; padding:8px 14px; border-radius:6px;
+            font-family:'Poppins',sans-serif; font-size:12px; color:#333; cursor:pointer; outline:none;
+        }
+        .plans-grid{ display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+        .plan-card{ border-radius:10px; overflow:hidden; border:1px solid #eee; transition:box-shadow .2s; }
+        .plan-card:hover{ box-shadow:0 8px 28px rgba(0,0,0,.1); }
+        .card-img{ position:relative; height:210px; overflow:hidden; }
+        .card-img img{ width:100%; height:100%; object-fit:cover; display:block; }
+        .bed-badge{ position:absolute; top:12px; left:12px; background:rgba(0,0,0,.72); color:#fff;
+            font-size:10px; font-weight:700; padding:4px 10px; border-radius:4px; letter-spacing:1px; }
+        .fav-btn{ position:absolute; top:12px; right:12px; width:32px; height:32px; background:#fff;
+            border-radius:50%; display:flex; align-items:center; justify-content:center;
+            cursor:pointer; border:none; font-size:14px; color:#ccc; }
+        .fav-btn:hover{ color:#e83030; }
+        .card-body{ padding:16px; }
+        .card-name{ font-size:14px; font-weight:700; color:#111; margin-bottom:10px; }
+        .card-specs{ display:flex; gap:14px; margin-bottom:6px; flex-wrap:wrap; }
+        .spec{ display:flex; align-items:center; gap:5px; font-size:12px; color:#555; }
+        .spec i{ font-size:11px; color:#888; }
+        .card-desc{ font-size:12px; color:#777; line-height:1.6; margin:10px 0; }
+        .card-price-label{ font-size:10px; color:#888; font-weight:500; margin-bottom:2px; }
+        .card-price{ font-size:18px; font-weight:800; color:var(--gold); margin-bottom:14px; }
+        .card-actions{ display:flex; gap:8px; }
+        .btn-details{ flex:1; padding:10px; border:1.5px solid #ddd; background:#fff;
+            border-radius:6px; font-family:'Poppins',sans-serif; font-size:11px; font-weight:600;
+            color:#333; cursor:pointer; transition:all .2s; }
+        .btn-details:hover{ border-color:var(--gold); color:var(--gold); }
+        .btn-wa-sm{ width:38px; height:38px; background:var(--gold); border:none; border-radius:6px;
+            display:flex; align-items:center; justify-content:center; cursor:pointer; color:#fff; font-size:16px; }
+
+        /* WHY BUILD */
+        .why-build{ padding:60px 50px; display:grid; grid-template-columns:280px 1fr; gap:40px; align-items:start; background:#f9f9f9; }
+        .wb-left h2{ font-size:22px; font-weight:800; line-height:1.3; margin-bottom:10px; }
+        .wb-left p{ font-size:12px; color:#666; line-height:1.7; margin-bottom:16px; }
+        .btn-learn{ border:1.5px solid #111; background:transparent; color:#111; padding:10px 18px;
+            border-radius:6px; font-family:'Poppins',sans-serif; font-size:12px; font-weight:600; cursor:pointer; }
+        .wb-feats{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+        .wb-feat{ text-align:center; padding:0 10px; }
+        .wb-feat-icon{ color:var(--gold); font-size:28px; margin-bottom:10px; }
+        .wb-feat h4{ font-size:12px; font-weight:700; margin-bottom:8px; }
+        .wb-feat p{ font-size:11px; color:#666; line-height:1.6; }
+
+        /* BOTTOM CTA */
+        .bottom-cta{ background:var(--dark); padding:36px 50px; display:flex; align-items:center; justify-content:space-between; gap:20px; }
+        .bottom-cta h2{ color:#fff; font-size:20px; font-weight:800; margin-bottom:6px; }
+        .bottom-cta p{ color:var(--gray); font-size:12px; }
+        .cta-btns{ display:flex; gap:12px; flex-shrink:0; }
+        .btn-wa2{ background:#25D366; color:#fff; border:none; padding:12px 20px; border-radius:8px;
+            font-family:'Poppins',sans-serif; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px; }
+        .btn-ig2{ background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); color:#fff; border:none; padding:12px 20px; border-radius:8px;
+            font-family:'Poppins',sans-serif; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px; }
+        .btn-fb2{ background:#1877F2; color:#fff; border:none; padding:12px 20px; border-radius:8px;
+            font-family:'Poppins',sans-serif; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px; }
+
+        @media(max-width:900px){
+            .main-layout{ grid-template-columns:1fr; }
+            .sidebar{ position:static; }
+            .plans-grid{ grid-template-columns:1fr; }
+            .why-build{ grid-template-columns:1fr; }
+            .wb-feats{ grid-template-columns:1fr 1fr; }
+        }
+        @media(max-width:700px){
+            .navbar{ padding:14px 20px; }
+            .nav-links{ display:none; }
+            .hero{ padding:0 20px 30px; }
+            .hero-title{ font-size:30px; }
+            .hero-badges{ flex-wrap:wrap; gap:20px; }
+            .main-layout,.why-build,.bottom-cta{ padding-left:20px; padding-right:20px; }
+            .bottom-cta{ flex-direction:column; }
+            .cta-btns{ flex-direction:column; width:100%; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-logo">
+        <svg width="36" height="30" viewBox="0 0 60 50" fill="none"><polygon points="5,5 15,5 20,30 25,15 30,15 35,30 40,5 50,5 40,45 32,45 27,28 22,45 14,45" fill="#E8A020"/></svg>
+        <div><div class="logo-name">WARP5</div><span class="logo-sub">HOMES</span></div>
+    </div>
+    <div class="nav-links">
+        <a href="landing.html">Home</a>
+        <a href="house-plans_main.html" class="active">House Plans</a>
+        <a href="build-process_main.html">Build Process</a>
+        <a href="about_main.html">About Us</a>
+        <a href="landing.html">Projects</a>
+        <a href="landing.html">FAQs</a>
+        <a href="landing.html">Contact</a>
+    </div>
+    <button class="btn-dm">
+        <a href="https://wa.link/se7y6o">
+        <i class="fa-brands fa-whatsapp"></i> DM US
+        </a>
+    </button>
+</nav>
+
+<section class="hero">
+    <p class="breadcrumb">HOME / HOUSE PLANS</p>
+    <h1 class="hero-title">House Plans</h1>
+    <p class="hero-desc">Explore our curated collection of modern, functional and affordable home designs. Find the perfect plan and let us bring it to life.</p>
+    <div class="hero-badges">
+        <div class="hbadge"><div class="hbadge-icon"><i class="fa-solid fa-house"></i></div><span class="hbadge-text">Modern Designs</span></div>
+        <div class="hbadge"><div class="hbadge-icon"><i class="fa-solid fa-shield-halved"></i></div><span class="hbadge-text">Quality Construction</span></div>
+        <div class="hbadge"><div class="hbadge-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div><span class="hbadge-text">Transparent Pricing</span></div>
+        <div class="hbadge"><div class="hbadge-icon"><i class="fa-regular fa-clock"></i></div><span class="hbadge-text">On-time Delivery</span></div>
+    </div>
+</section>
+
+<div class="main-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-title">Filter Plans <i class="fa-solid fa-sliders filter-icon"></i></div>
+
+        <div class="filter-group">
+            <h4>Bedrooms</h4>
+            <label class="checkbox-item"><input type="checkbox" id="b1"> 1 Bedroom</label>
+            <label class="checkbox-item"><input type="checkbox" id="b2"> 2 Bedrooms</label>
+            <label class="checkbox-item"><input type="checkbox" id="b3"> 3 Bedrooms</label>
+            <label class="checkbox-item"><input type="checkbox" id="b4"> 4 Bedrooms</label>
+            <label class="checkbox-item"><input type="checkbox" id="b5"> 5+ Bedrooms</label>
+        </div>
+
+        <div class="filter-group">
+            <h4>Price Range (GHS)</h4>
+            <input type="range" class="price-range" min="250000" max="1500000" value="1500000" id="priceRange">
+            <p class="price-labels">GHS 250,000 – GHS <span id="priceLabel">1,500,000+</span></p>
+        </div>
+
+        <div class="filter-group">
+            <h4>House Type</h4>
+            <label class="checkbox-item"><input type="checkbox"> Bungalow</label>
+            <label class="checkbox-item"><input type="checkbox"> Duplex</label>
+            <label class="checkbox-item"><input type="checkbox"> Story Building</label>
+            <label class="checkbox-item"><input type="checkbox"> Contemporary</label>
+            <label class="checkbox-item"><input type="checkbox"> Luxury</label>
+        </div>
+
+        <div class="filter-group">
+            <h4>Features</h4>
+            <label class="checkbox-item"><input type="checkbox"> All Rooms Ensuite</label>
+            <label class="checkbox-item"><input type="checkbox"> Garage</label>
+            <label class="checkbox-item"><input type="checkbox"> Penthouse</label>
+            <label class="checkbox-item"><input type="checkbox"> Family Lounge</label>
+            <label class="checkbox-item"><input type="checkbox"> Study Room</label>
+        </div>
+
+        <button class="btn-reset"><i class="fa-solid fa-rotate-left"></i> RESET FILTERS</button>
+
+        <div class="cant-find">
+            <h4>Can't find what you're looking for?</h4>
+            <p>Let us design a custom home that fits your taste, needs and budget.</p>
+            <button class="btn-chat-us">
+                <a href="https://wa.link/se7y6o">
+                <i class="fa-brands fa-whatsapp"></i> CHAT WITH US
+                </a>
+            </button>
+        </div>
+    </aside>
+
+    <!-- PLANS -->
+    <div class="plans-area">
+        <div class="plans-header">
+            <p class="plans-count">All House Plans <span id="planCount">(8)</span></p>
+            <select class="sort-select">
+                <option>Sort by: Popular</option>
+                <option>Sort by: Price Low–High</option>
+                <option>Sort by: Price High–Low</option>
+                <option>Sort by: Newest</option>
+            </select>
+        </div>
+        <div class="plans-grid" id="plansGrid"></div>
+    </div>
+</div>
+
+<!-- WHY BUILD -->
+<section class="why-build">
+    <div class="wb-left">
+        <h2>Why Build With Warp5 Homes?</h2>
+        <p>We turn your dream home into reality with professionalism and excellence.</p>
+        <button class="btn-learn">LEARN MORE ABOUT US</button>
+    </div>
+    <div class="wb-feats">
+        <div class="wb-feat">
+            <div class="wb-feat-icon"><i class="fa-solid fa-house"></i></div>
+            <h4>Turnkey Solution</h4>
+            <p>From land acquisition to handover, we handle everything for you.</p>
+        </div>
+        <div class="wb-feat">
+            <div class="wb-feat-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+            <h4>Transparent Pricing</h4>
+            <p>Clear, detailed and honest pricing with no hidden costs.</p>
+        </div>
+        <div class="wb-feat">
+            <div class="wb-feat-icon"><i class="fa-solid fa-gem"></i></div>
+            <h4>Quality Materials</h4>
+            <p>We use high-quality materials for lasting durability.</p>
+        </div>
+        <div class="wb-feat">
+            <div class="wb-feat-icon"><i class="fa-regular fa-clock"></i></div>
+            <h4>On-time Delivery</h4>
+            <p>We value your time and deliver projects as promised.</p>
+        </div>
+    </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="bottom-cta">
+    <div>
+        <h2>Interested in building any of these homes? Let's talk!</h2>
+        <p>Send us a message and we'll guide you every step of the way.</p>
+    </div>
+    <div class="cta-btns">
+        <button class="btn-wa2">
+            <a href="https://wa.link/se7y6o">
+            <i class="fa-brands fa-whatsapp"></i> CHAT ON WHATSAPP
+            </a>
+        </button>
+        <button class="btn-ig2"><i class="fa-brands fa-instagram"></i> DM ON INSTAGRAM</button>
+        <button class="btn-fb2"><i class="fa-brands fa-facebook-messenger"></i> MESSAGE ON FACEBOOK</button>
+    </div>
+</section>
+
+<script>
+const plans=[
+    {name:'THE NEXUS 2B',  beds:2,baths:2,size:'100m²',type:'Bungalow',   desc:'A compact and efficient 2-bedroom home perfect for small families or investment.',price:'GHS 480,000', badge:'2 BEDROOM', grad:'2_bedroom'},
+    {name:'THE SIGNATURE 3B',beds:3,baths:3,size:'150m²',type:'Duplex',  desc:'Spacious 3-bedroom duplex with all rooms ensuite and a family lounge.',price:'GHS 750,000',badge:'3 BEDROOM', grad:'3_bedroom'},
+    {name:'THE SIGNATURE 4B',beds:4,baths:4,size:'200m²',type:'Duplex',  desc:'Luxury 4-bedroom home with premium finishes, family area and a large kitchen.',price:'GHS 980,000',badge:'4 BEDROOM', grad:'4_bedroom'},
+    {name:'THE MAJESTIC 5B', beds:5,baths:6,size:'300m²',type:'Duplex',  desc:'A grand 5-bedroom home with a penthouse, elevated living and luxury throughout.',price:'GHS 1,450,000',badge:'5 BEDROOM',grad:'5_bedroom'},
+    {name:'THE NEXUS 1B',   beds:1,baths:1,size:'60m²', type:'Bungalow', desc:'Efficient 1-bedroom home ideal for singles, couples or rental investment.',price:'GHS 280,000',badge:'1 BEDROOM', grad:'1_bedroom'},
+    {name:'THE URBAN 3B',   beds:3,baths:2,size:'130m²',type:'Contemporary',desc:'A sleek 3-bedroom contemporary home with open-plan living and modern finishes.',price:'GHS 620,000',badge:'3 BEDROOM',grad:'3_bedroom'},
+    {name:'THE PRESTIGE 4B',beds:4,baths:4,size:'180m²',type:'Luxury',   desc:'Premium 4-bedroom luxury home with high-end finishes and spacious rooms.',price:'GHS 880,000',badge:'4 BEDROOM',grad:'4_bedroom'},
+    {name:'THE SUMMIT 6B',  beds:6,baths:6,size:'400m²',type:'Duplex',   desc:'A masterpiece 6-bedroom family mansion with every luxury detail included.',price:'GHS 2,200,000',badge:'6 BEDROOM',grad:'5_bedroomm'},
+];
+
+const g=document.getElementById('plansGrid');
+document.getElementById('planCount').textContent=`(${plans.length})`;
+
+plans.forEach(p=>{
+    g.innerHTML+=`<div class="plan-card">
+        <div class="card-img">
+            <img src="images/${p.grad}.jpg" alt="${p.name}" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            
+            <span class="bed-badge">${p.badge}</span>
+            <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
+        </div>
+        <div class="card-body">
+            <p class="card-name">${p.name}</p>
+            <div class="card-specs">
+                <div class="spec"><i class="fa-solid fa-bed"></i> ${p.beds}</div>
+                <div class="spec"><i class="fa-solid fa-bath"></i> ${p.baths}</div>
+                <div class="spec"><i class="fa-solid fa-ruler-combined"></i> ${p.size}</div>
+                <div class="spec"><i class="fa-solid fa-building"></i> ${p.type}</div>
+            </div>
+            <p class="card-desc">${p.desc}</p>
+            <p class="card-price-label">FROM</p>
+            <p class="card-price">${p.price}</p>
+            <div class="card-actions">
+                <button class="btn-details">VIEW DETAILS</button>
+                <button class="btn-wa-sm">
+                    <a href="https://wa.link/se7y6o">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    </a>
+                </button>
+            </div>
+        </div>
+    </div>`;
+});
+
+// Price range label
+document.getElementById('priceRange').addEventListener('input',function(){
+    const v=parseInt(this.value);
+    document.getElementById('priceLabel').textContent=v>=1500000?'1,500,000+':(v).toLocaleString();
+});
+</script>
+</body>
+</html>

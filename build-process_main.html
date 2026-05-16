@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Build Process – Warp5 Homes</title>
+    <style>
+        :root{ --gold:#E8A020; --dark:#0d0d0d; --darker:#080808; --gray:#aaa; }
+        *{ margin:0; padding:0; box-sizing:border-box; }
+        body{ font-family:'Poppins',sans-serif; color:#222; }
+        a{ text-decoration:none; color:inherit; }
+
+        /* NAV */
+        .navbar{ display:flex; align-items:center; padding:16px 50px; background:var(--dark); gap:20px; }
+        .nav-logo{ display:flex; align-items:center; gap:10px; min-width:160px; }
+        .logo-name{ font-size:19px; font-weight:800; color:var(--gold); letter-spacing:1px; line-height:1; }
+        .logo-sub{ font-size:8px; letter-spacing:3px; color:var(--gold); display:block; }
+        .nav-links{ display:flex; align-items:center; gap:26px; flex:1; justify-content:center; }
+        .nav-links a{ color:#fff; font-size:13px; transition:color .2s; }
+        .nav-links a.active{ font-weight:600; padding-bottom:4px; border-bottom:2px solid var(--gold); }
+        .nav-links a:hover{ color:var(--gold); }
+        .btn-dm{ background:var(--gold); color:#fff; border:none; padding:10px 20px; border-radius:6px;
+            font-family:'Poppins',sans-serif; font-size:13px; font-weight:600; cursor:pointer;
+            display:flex; align-items:center; gap:8px; }
+
+        /* HERO */
+        .hero{
+            background:linear-gradient(to right,rgba(0,0,0,.88) 36%,rgba(0,0,0,.5) 65%,rgba(0,0,0,.15) 100%),
+                url('images/4_bedroom.jpg') center/cover no-repeat;
+            min-height:320px; display:flex; flex-direction:column; justify-content:center; padding:60px 50px;
+        }
+        .hero-tag{ color:var(--gold); font-size:11px; font-weight:700; letter-spacing:2px; margin-bottom:14px; }
+        .hero-title{ color:#fff; font-size:44px; font-weight:800; line-height:1.12; margin-bottom:18px; max-width:480px; }
+        .hero-desc{ color:rgba(255,255,255,.8); font-size:13px; line-height:1.75; max-width:420px; }
+
+        /* PROCESS HEADER */
+        .process-header{ text-align:center; padding:60px 50px 20px; }
+        .ph-tag{ color:var(--gold); font-size:11px; font-weight:700; letter-spacing:2px; margin-bottom:10px; }
+        .ph-title{ font-size:32px; font-weight:800; color:#111; margin-bottom:10px; }
+        .ph-rule{ width:44px; height:3px; background:var(--gold); margin:0 auto 16px; }
+        .ph-desc{ font-size:13px; color:#666; line-height:1.7; }
+
+        /* STEPS */
+        .steps-section{ padding:20px 50px 60px; }
+        .step-row{
+            display:grid; grid-template-columns:420px 1fr; gap:40px; align-items:center;
+            padding:30px 0; border-bottom:1px solid #e8e8e8; position:relative;
+        }
+        .step-row:last-child{ border-bottom:none; }
+        .step-left{ display:flex; align-items:flex-start; gap:18px; }
+        .step-timeline{ display:flex; flex-direction:column; align-items:center; }
+        .step-dot{ width:12px; height:12px; border-radius:50%; background:var(--gold); flex-shrink:0; margin-top:6px; }
+        .step-num-box{
+            background:var(--dark); color:#fff; width:44px; height:44px;
+            border-radius:8px; display:flex; align-items:center; justify-content:center;
+            font-size:15px; font-weight:800; flex-shrink:0; margin-right:4px;
+        }
+        .step-icon{ color:var(--gold); font-size:30px; flex-shrink:0; width:50px; text-align:center; margin-top:2px; }
+        .step-title{ font-size:14px; font-weight:800; letter-spacing:.5px; color:#111; margin-bottom:8px; }
+        .step-desc{ font-size:12px; color:#666; line-height:1.75; }
+        .step-img{
+            height:160px; border-radius:10px; overflow:hidden;
+            display:flex; align-items:center; justify-content:center;
+        }
+        .step-img img{ width:100%; height:100%; object-fit:cover; border-radius:10px; }
+
+        /* BOTTOM CTA */
+        .bottom-cta{
+            background:var(--dark); padding:50px;
+            display:grid; grid-template-columns:1fr 1fr 1fr; gap:40px; align-items:center;
+        }
+        .cta-left{ display:flex; align-items:center; gap:18px; }
+        .cta-icon{ color:var(--gold); font-size:44px; flex-shrink:0; }
+        .cta-left p{ color:var(--gray); font-size:13px; line-height:1.4; }
+        .cta-left strong{ color:#fff; font-size:20px; font-weight:800; display:block; margin-top:4px; }
+        .cta-checks{ list-style:none; display:flex; flex-direction:column; gap:12px; }
+        .cta-checks li{ display:flex; align-items:center; gap:10px; font-size:13px; color:#fff; }
+        .cta-checks li i{ color:var(--gold); }
+        .cta-right{ display:flex; flex-direction:column; gap:12px; }
+        .cta-right p{ color:var(--gray); font-size:12px; margin-bottom:4px; }
+        .btn-wa-cta{ background:var(--gold); color:#fff; border:none; padding:13px 22px; border-radius:8px;
+            font-family:'Poppins',sans-serif; font-size:13px; font-weight:600; cursor:pointer;
+            display:flex; align-items:center; gap:8px; }
+        .btn-ig-cta{ background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,.4); padding:13px 22px; border-radius:8px;
+            font-family:'Poppins',sans-serif; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px; }
+
+        @media(max-width:900px){
+            .step-row{ grid-template-columns:1fr; }
+            .bottom-cta{ grid-template-columns:1fr; }
+        }
+        @media(max-width:700px){
+            .navbar{ padding:14px 20px; }
+            .nav-links{ display:none; }
+            .hero{ padding:40px 20px; min-height:auto; }
+            .hero-title{ font-size:28px; }
+            .process-header,.steps-section,.bottom-cta{ padding-left:20px; padding-right:20px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-logo">
+        <svg width="36" height="30" viewBox="0 0 60 50" fill="none"><polygon points="5,5 15,5 20,30 25,15 30,15 35,30 40,5 50,5 40,45 32,45 27,28 22,45 14,45" fill="#E8A020"/></svg>
+        <div><div class="logo-name">WARP5</div><span class="logo-sub">HOMES</span></div>
+    </div>
+    <div class="nav-links">
+        <a href="landing.html">Home</a>
+        <a href="house-plans_main.html">House Plans</a>
+        <a href="build-process_main.html" class="active">Build Process</a>
+        <a href="about_main.html">About Us</a>
+        <a href="landing.html">Projects</a>
+        <a href="landing.html">FAQs</a>
+        <a href="landing.html">Contact</a>
+    </div>
+    <button class="btn-dm">
+        <a href="https://wa.link/se7y6o">
+          <i class="fa-brands fa-whatsapp"></i> DM US
+        </a>
+    </button>
+</nav>
+
+<section class="hero">
+    <p class="hero-tag">OUR PROCESS</p>
+    <h1 class="hero-title">From Your Ideal<br>Location to Your<br>Dream Home.</h1>
+    <p class="hero-desc">We handle everything from land sourcing and documentation to permits and construction – making the journey seamless, transparent and stress-free for you.</p>
+</section>
+
+<div class="process-header">
+    <p class="ph-tag">OUR BUILD PROCESS</p>
+    <h2 class="ph-title">A Seamless Journey From Start to Home</h2>
+    <div class="ph-rule"></div>
+    <p class="ph-desc">We take care of everything. You tell us where you want to be,<br>we handle the rest and deliver your dream home.</p>
+</div>
+
+<section class="steps-section" id="stepsSection"></section>
+
+<section class="bottom-cta">
+    <div class="cta-left">
+        <div class="cta-icon"><i class="fa-solid fa-headset"></i></div>
+        <div>
+            <p>We Handle Everything.</p>
+            <strong>You Enjoy the Results.</strong>
+        </div>
+    </div>
+    <ul class="cta-checks">
+        <li><i class="fa-solid fa-circle-check"></i> Land Sourcing &amp; Documentation</li>
+        <li><i class="fa-solid fa-circle-check"></i> Permits &amp; Approvals</li>
+        <li><i class="fa-solid fa-circle-check"></i> Quality Construction</li>
+        <li><i class="fa-solid fa-circle-check"></i> On-time Delivery</li>
+    </ul>
+    <div class="cta-right">
+        <p>Ready to start your journey?</p>
+        <button class="btn-wa-cta">
+            <a href="https://wa.link/se7y6o">
+            <i class="fa-brands fa-whatsapp"></i> CHAT ON WHATSAPP
+            </a>
+        </button>
+        <button class="btn-ig-cta"><i class="fa-brands fa-instagram"></i> DM US ON INSTAGRAM</button>
+    </div>
+</section>
+
+<script>
+const steps=[
+    {
+        num:'01', icon:'fa-location-dot',
+        title:'YOU CHOOSE THE LOCATION',
+        desc:'You select the area or community where you want your building to be.',
+        grad:'linear-gradient(135deg,#90b890,#406040)',
+        iconBg:'locc'
+    },
+    {
+        num:'02', icon:'fa-handshake',
+        title:'LAND ACQUISITION (WE FOLLOW UP)',
+        desc:'We help you get the right land. Our team will follow up and secure the land on your behalf — ensuring it\'s in the best location for your investment.',
+        grad:'linear-gradient(135deg,#a0b0c0,#506070)',
+        iconBg:'handshaking'
+    },
+    {
+        num:'03', icon:'fa-file-lines',
+        title:'LAND VERIFICATION & DOCUMENTATION',
+        desc:'We carry out due diligence, verify ownership and ensure all proper documentation is in place. You get a clean, legitimate and registered property.',
+        grad:'linear-gradient(135deg,#c0c8a0,#707840)',
+        iconBg:'landcert'
+    },
+    {
+        num:'04', icon:'fa-stamp',
+        title:'PERMITS & APPROVALS',
+        desc:'We handle all building permits and approvals from the relevant authorities including town planning, EPA, structural designs and other regulatory bodies.',
+        grad:'linear-gradient(135deg,#c8b090,#806030)',
+        iconBg:'stamp'
+    },
+    {
+        num:'05', icon:'fa-helmet-safety',
+        title:'CONSTRUCTION BEGINS',
+        desc:'Once everything is approved, we break ground and begin construction. Our project management ensures quality, transparency and timely delivery.',
+        grad:'linear-gradient(135deg,#c8a060,#604020)',
+        iconBg:'construction_begins'
+    },
+    {
+        num:'06', icon:'fa-house-circle-check',
+        title:'HANDOVER & AFTERCARE',
+        desc:'We deliver a completed home and walk you through every detail. We also provide aftercare support for your peace of mind.',
+        grad:'linear-gradient(135deg,#a0c0d0,#406080)',
+        iconBg:'house_2'
+    },
+];
+
+const section=document.getElementById('stepsSection');
+steps.forEach((s,i)=>{
+    const isLeft=i%2===0;
+    section.innerHTML+=`
+    <div class="step-row">
+        <div class="step-left">
+            <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
+                <div style="width:10px;height:10px;border-radius:50%;background:var(--gold);flex-shrink:0;"></div>
+            </div>
+            <div class="step-num-box">${s.num}</div>
+            <div class="step-icon"><i class="fa-solid ${s.icon}"></i></div>
+            <div class="step-content">
+                <p class="step-title">${s.title}</p>
+                <p class="step-desc">${s.desc}</p>
+            </div>
+        </div>
+        <div class="step-img">
+            <img src="images/${s.iconBg}.jpg" style="width:50%;height:100%;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:48px;">
+        </div>
+    </div>`;
+});
+</script>
+</body>
+</html>
