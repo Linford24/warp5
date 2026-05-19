@@ -13,14 +13,92 @@
         a{ text-decoration:none; color:inherit; }
 
         /* NAV */
-        .navbar{ display:flex; align-items:center; padding:16px 50px; background:var(--dark); gap:20px; }
-        .nav-logo{ display:flex; align-items:center; gap:10px; min-width:160px; }
+        .navbar {
+            display: flex;
+            align-items: center;
+            padding: 18px 50px;
+            gap: 20px;
+            position: relative;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--gold);
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            min-width: 160px;
+        }
+
+        .nav-logo .logo-icon {
+            width: 42px;
+            height: 42px;
+        }
+
+        .nav-logo .logo-text-sub {
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            color: var(--gold);
+            display: block;
+            line-height: 1;
+        }
+
         .logo-name{ font-size:19px; font-weight:800; color:var(--gold); letter-spacing:1px; line-height:1; }
         .logo-sub{ font-size:8px; letter-spacing:3px; color:var(--gold); display:block; }
-        .nav-links{ display:flex; align-items:center; gap:26px; flex:1; justify-content:center; }
-        .nav-links a{ color:#fff; font-size:13px; transition:color .2s; }
-        .nav-links a.active{ font-weight:600; padding-bottom:4px; border-bottom:2px solid var(--gold); }
-        .nav-links a:hover{ color:var(--gold); }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .nav-links a {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 400;
+            position: relative;
+            padding-bottom: 4px;
+            transition: color 0.2s;
+        }
+
+        .nav-links a.active {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gold);
+        }
+
+        .nav-links a:hover { color: var(--gold); }
+
+        .three-bar {
+            display: none;
+        }
+
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 998;
+        }
+
+        .nav-overlay.open {
+            display: block;
+        }
         .btn-dm{ background:var(--gold); color:#fff; border:none; padding:10px 20px; border-radius:6px;
             font-family:'Poppins',sans-serif; font-size:13px; font-weight:600; cursor:pointer;
             display:flex; align-items:center; gap:8px; }
@@ -132,6 +210,22 @@
         .f-bottom-links a:hover{ color:#fff; }
 
         @media(max-width:900px){
+            .nav-links {
+                display: none;
+            }
+            .nav-links.open { 
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background: var(--bg-dark);
+                padding: 20px;
+                gap: 16px;
+                z-index: 999;
+            }
+            .three-bar { display: block; }
             .team-grid{ grid-template-columns:1fr 1fr; }
             .why{ grid-template-columns:1fr; }
             .why-feats{ grid-template-columns:repeat(2,1fr); }
@@ -169,12 +263,16 @@
         <a href="landing.html">FAQs</a>
         <a href="landing.html">Contact</a>
     </div>
+    <div class="three-bar">
+            <button><i class="fa-solid fa-bars"></i></button>
+    </div>
     <button class="btn-dm">
         <a href="https://wa.link/se7y6o">
         <i class="fa-brands fa-whatsapp"></i> DM US
         </a>
     </button>
 </nav>
+<div class="nav-overlay"></div>
 
 <section class="hero">
     <p class="hero-tag">ABOUT US</p>
@@ -314,6 +412,25 @@ const team=[
     {name:'KOBBY MENSAH',role:'DESIGN LEAD',bio:'Architectural designer focused on creating functional, modern and aesthetic living spaces.',bg:'linear-gradient(135deg,#b0b0c0,#505060)'},
     {name:'NATHANIEL ADU',role:'LAND & LEGAL LEAD',bio:'Real estate expert ensuring smooth land acquisition and legal compliance.',bg:'linear-gradient(135deg,#c0b0a0,#706050)'},
 ];
+
+const threeBarBtn = document.querySelector('.three-bar button');
+    const navLinks = document.querySelector('.nav-links');
+    const navOverlay = document.querySelector('.nav-overlay');
+
+    threeBarBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navLinks.classList.toggle('open');
+        navOverlay.classList.toggle('open');
+    });
+
+    document.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        navOverlay.classList.remove('open');
+    });
+ 
+    navLinks.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
 const g=document.getElementById('teamGrid');
 team.forEach(m=>{
     g.innerHTML+=`<div class="team-card">
