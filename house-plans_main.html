@@ -251,7 +251,6 @@
         <a href="house-plans_main.html" class="active">House Plans</a>
         <a href="build-process_main.html">Build Process</a>
         <a href="about_main.html">About Us</a>
-        <a href="landing.html">Projects</a>
         <a href="landing.html">FAQs</a>
         <a href="landing.html">Contact</a>
     </div>
@@ -279,66 +278,10 @@
 </section>
 
 <div class="main-layout">
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div class="sidebar-title">Filter Plans <i class="fa-solid fa-sliders filter-icon"></i></div>
-
-        <div class="filter-group">
-            <h4>Bedrooms</h4>
-            <label class="checkbox-item"><input type="checkbox" id="b1"> 1 Bedroom</label>
-            <label class="checkbox-item"><input type="checkbox" id="b2"> 2 Bedrooms</label>
-            <label class="checkbox-item"><input type="checkbox" id="b3"> 3 Bedrooms</label>
-            <label class="checkbox-item"><input type="checkbox" id="b4"> 4 Bedrooms</label>
-            <label class="checkbox-item"><input type="checkbox" id="b5"> 5+ Bedrooms</label>
-        </div>
-
-        <div class="filter-group">
-            <h4>Price Range (GHS)</h4>
-            <input type="range" class="price-range" min="250000" max="1500000" value="1500000" id="priceRange">
-            <p class="price-labels">GHS 250,000 – GHS <span id="priceLabel">1,500,000+</span></p>
-        </div>
-
-        <div class="filter-group">
-            <h4>House Type</h4>
-            <label class="checkbox-item"><input type="checkbox"> Bungalow</label>
-            <label class="checkbox-item"><input type="checkbox"> Duplex</label>
-            <label class="checkbox-item"><input type="checkbox"> Story Building</label>
-            <label class="checkbox-item"><input type="checkbox"> Contemporary</label>
-            <label class="checkbox-item"><input type="checkbox"> Luxury</label>
-        </div>
-
-        <div class="filter-group">
-            <h4>Features</h4>
-            <label class="checkbox-item"><input type="checkbox"> All Rooms Ensuite</label>
-            <label class="checkbox-item"><input type="checkbox"> Garage</label>
-            <label class="checkbox-item"><input type="checkbox"> Penthouse</label>
-            <label class="checkbox-item"><input type="checkbox"> Family Lounge</label>
-            <label class="checkbox-item"><input type="checkbox"> Study Room</label>
-        </div>
-
-        <button class="btn-reset"><i class="fa-solid fa-rotate-left"></i> RESET FILTERS</button>
-
-        <div class="cant-find">
-            <h4>Can't find what you're looking for?</h4>
-            <p>Let us design a custom home that fits your taste, needs and budget.</p>
-            <button class="btn-chat-us">
-                <a href="https://wa.link/se7y6o">
-                <i class="fa-brands fa-whatsapp"></i> CHAT WITH US
-                </a>
-            </button>
-        </div>
-    </aside>
-
     <!-- PLANS -->
     <div class="plans-area">
         <div class="plans-header">
-            <p class="plans-count">All House Plans <span id="planCount">(8)</span></p>
-            <select class="sort-select">
-                <option>Sort by: Popular</option>
-                <option>Sort by: Price Low–High</option>
-                <option>Sort by: Price High–Low</option>
-                <option>Sort by: Newest</option>
-            </select>
+            <p class="plans-count">All House Plans <span id="planCount"></span></p>
         </div>
         <div class="plans-grid" id="plansGrid"></div>
     </div>
@@ -394,14 +337,14 @@
 
 <script>
 const plans=[
-    {name:'THE NEXUS 2B',  beds:2,baths:2,size:'100m²',type:'Bungalow',   desc:'A compact and efficient 2-bedroom home perfect for small families or investment.',price:'GHS 480,000', badge:'2 BEDROOM', grad:'2_bedroom'},
-    {name:'THE SIGNATURE 3B',beds:3,baths:3,size:'150m²',type:'Duplex',  desc:'Spacious 3-bedroom duplex with all rooms ensuite and a family lounge.',price:'GHS 750,000',badge:'3 BEDROOM', grad:'3_bedroom'},
-    {name:'THE SIGNATURE 4B',beds:4,baths:4,size:'200m²',type:'Duplex',  desc:'Luxury 4-bedroom home with premium finishes, family area and a large kitchen.',price:'GHS 980,000',badge:'4 BEDROOM', grad:'4_bedroom'},
-    {name:'THE MAJESTIC 5B', beds:5,baths:6,size:'300m²',type:'Duplex',  desc:'A grand 5-bedroom home with a penthouse, elevated living and luxury throughout.',price:'GHS 1,450,000',badge:'5 BEDROOM',grad:'5_bedroom'},
-    {name:'THE NEXUS 1B',   beds:1,baths:1,size:'60m²', type:'Bungalow', desc:'Efficient 1-bedroom home ideal for singles, couples or rental investment.',price:'GHS 280,000',badge:'1 BEDROOM', grad:'1_bedroom'},
-    {name:'THE URBAN 3B',   beds:3,baths:2,size:'130m²',type:'Contemporary',desc:'A sleek 3-bedroom contemporary home with open-plan living and modern finishes.',price:'GHS 620,000',badge:'3 BEDROOM',grad:'3_bedroom'},
-    {name:'THE PRESTIGE 4B',beds:4,baths:4,size:'180m²',type:'Luxury',   desc:'Premium 4-bedroom luxury home with high-end finishes and spacious rooms.',price:'GHS 880,000',badge:'4 BEDROOM',grad:'4_bedroom'},
-    {name:'THE SUMMIT 6B',  beds:6,baths:6,size:'400m²',type:'Duplex',   desc:'A masterpiece 6-bedroom family mansion with every luxury detail included.',price:'GHS 2,200,000',badge:'6 BEDROOM',grad:'5_bedroomm'},
+    {name:'Warp5-X2',  beds:2,desc:'A compact and efficient 2-bedroom home perfect for small families or investment.',badge:'2 BEDROOM', grad:'2_bedroom'},
+    {name:'Warp5-X3',beds:3,desc:'Spacious 3-bedroom duplex with all rooms ensuite and a family lounge.',badge:'3 BEDROOM', grad:'3_bedroom'},
+    {name:'Warp5-X4',beds:4,desc:'Luxury 4-bedroom home with premium finishes, family area and a large kitchen.',badge:'4 BEDROOM', grad:'4_bedroom'},
+    {name:'Warp5-X5', beds:5,desc:'A grand 5-bedroom home with a penthouse, elevated living and luxury throughout.',badge:'5 BEDROOM',grad:'5_bedroom'},
+    {name:'Warp5-X1',   beds:1,desc:'Efficient 1-bedroom home ideal for singles, couples or rental investment.',badge:'1 BEDROOM', grad:'1_bedroom'},
+    {name:'Warp5-X3', beds: 3,desc:'A sleek 3-bedroom contemporary home with open-plan living and modern finishes.',badge:'3 BEDROOM',grad:'3_bedroom'},
+    {name:'Warp5-X4',beds:4, desc:'Premium 4-bedroom luxury home with high-end finishes and spacious rooms.',badge:'4 BEDROOM',grad:'4_bedroom'},
+    {name:'Warp5-X1',  beds:1,   desc:'A masterpiece 6-bedroom family mansion with every luxury detail included.',badge:'6 BEDROOM',grad:'5_bedroomm'},
 ];
 
 const threeBarBtn = document.querySelector('.three-bar button');
@@ -439,15 +382,10 @@ plans.forEach(p=>{
             <p class="card-name">${p.name}</p>
             <div class="card-specs">
                 <div class="spec"><i class="fa-solid fa-bed"></i> ${p.beds}</div>
-                <div class="spec"><i class="fa-solid fa-bath"></i> ${p.baths}</div>
-                <div class="spec"><i class="fa-solid fa-ruler-combined"></i> ${p.size}</div>
-                <div class="spec"><i class="fa-solid fa-building"></i> ${p.type}</div>
             </div>
             <p class="card-desc">${p.desc}</p>
-            <p class="card-price-label">FROM</p>
-            <p class="card-price">${p.price}</p>
             <div class="card-actions">
-                <button class="btn-details">VIEW DETAILS</button>
+                <button class="btn-details">MAKE INQUIRY</button>
                 <button class="btn-wa-sm">
                     <a href="https://wa.link/se7y6o">
                     <i class="fa-brands fa-whatsapp"></i>
@@ -458,11 +396,6 @@ plans.forEach(p=>{
     </div>`;
 });
 
-// Price range label
-document.getElementById('priceRange').addEventListener('input',function(){
-    const v=parseInt(this.value);
-    document.getElementById('priceLabel').textContent=v>=1500000?'1,500,000+':(v).toLocaleString();
-});
 </script>
 </body>
 </html>
