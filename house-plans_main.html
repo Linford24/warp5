@@ -118,7 +118,7 @@
         .hbadge-text{ font-size:12px; font-weight:600; }
 
         /* MAIN LAYOUT */
-        .main-layout{ display:flex; overflow: hidden; /*grid-template-columns:210px 1fr;*/ gap:30px; padding:40px 50px; align-items:start; width:100%;}
+        .main-layout{ display:flex; /*overflow: hidden; grid-template-columns:210px 1fr;*/ gap:30px; padding:40px 50px; align-items:start; width:100%;}
 
         /* SIDEBAR */
         .sidebar{ position:sticky; top:20px; }
@@ -144,8 +144,8 @@
             font-family:'Poppins',sans-serif; font-size:12px; font-weight:600; cursor:pointer;
             display:flex; align-items:center; gap:8px; width:100%; justify-content:center; }
 
-        /* PLANS AREA 
-        .plans-area{}*/
+        /* PLANS AREA*/ 
+        .plans-area{min-width:0; flex:1;}
         .plans-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
         .plans-count{ font-size:16px; font-weight:700; }
         .plans-count span{ font-weight:400; color:#888; }
