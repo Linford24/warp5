@@ -334,20 +334,11 @@
             white-space: nowrap;
         }
 
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-        }
+        .cards-grid{ display:flex; flex-direction: row; gap:22px; overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-bar-width:none; -ms-overflow-style:none; width:100%; box-sizing:border-box;}
+        .cards-grid::-webkit-scrollbar{ display:none; }
+        .plan-card{ border-radius:10px; flex-shrink:0; overflow:hidden; border:1px solid #eee; transition:box-shadow .2s; width: 280px;}
+        .plan-card:hover{ box-shadow:0 8px 28px rgba(0,0,0,.1); }
 
-        .plan-card {
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid #eee;
-            transition: box-shadow 0.2s;
-        }
-
-        .plan-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
 
         .card-img-wrap {
             position: relative;
@@ -1097,38 +1088,14 @@
 
 <script>
     // ===== HOUSE PLANS DATA =====
-    const plans = [
-        {
-            name: 'Warp5-X1',
-            beds: 1,
-            badge: '1 BEDROOM',
-            imgGrad: '1_bedroom.jpg'
-        },
-        {
-            name: 'Warp5-X2',
-            beds: 2,
-            badge: '2 BEDROOM',
-            imgGrad: '2_bedroom.jpg'
-        },
-        {
-            name: 'Warp5-X3',
-            beds: 3,
-            badge: '3 BEDROOM',
-            imgGrad: '3_bedroom.jpg'
-        },
-        {
-            name: 'Warp5-X4',
-            beds: 4,
-            badge: '4 BEDROOM',
-            imgGrad: '4_bedroom.jpg'
-        },
-        {
-            name: 'Warp5-X5',
-            beds: 4,
-            badge: '4 BEDROOM',
-            imgGrad: '4_bedroom.jpg'
-        }
+    const plans=[
+       {name:'Warp5-X1',   beds:1,desc:'Efficient 1-bedroom home ideal for singles, couples or rental investment.',badge:'1 BEDROOM', grad:'one_bed'},
+       {name:'Warp5-X2',  beds:2,desc:'A compact and efficient 2-bedroom home perfect for small families or investment.',badge:'2 BEDROOM', grad:'two_bed'},
+       {name:'Warp5-X3',beds:3,desc:'Spacious 3-bedroom duplex with all rooms ensuite and a family lounge.',badge:'3 BEDROOM', grad:'three_bed'},
+       {name:'Warp5-X4',beds:4,desc:'Luxury 4-bedroom home with premium finishes, family area and a large kitchen.',badge:'4 BEDROOM', grad:'four_bed'},
+       {name:'Warp5-X5', beds:5,desc:'A grand 5-bedroom home with a penthouse, elevated living and luxury throughout.',badge:'5 BEDROOM',grad:'five_bed'}
     ];
+
 
     const threeBarBtn = document.querySelector('.three-bar button');
     const navLinks = document.querySelector('.nav-links');
