@@ -259,8 +259,6 @@
         <a href="house-plans_main.html">House Plans</a>
         <a href="build-process_main.html">Build Process</a>
         <a href="about_main.html" class="active">About Us</a>
-        <a href="landing.html">Projects</a>
-        <a href="landing.html">FAQs</a>
         <a href="landing.html">Contact</a>
     </div>
     <div class="three-bar">
@@ -329,18 +327,8 @@
         <p>Warp5 Homes was founded on the passion to solve the housing deficit in Ghana by providing modern, well-designed and affordable homes.</p>
         <p>With a background in engineering, project management and real estate, our team brings technical expertise and attention to detail to every project.</p>
         <p>We don't just build houses, we build homes where families create memories and communities grow.</p>
-        <button class="btn-outline">OUR PROJECTS <i class="fa-solid fa-arrow-right"></i></button>
+        <button class="btn-outline">MAKE INQUIRY <i class="fa-solid fa-arrow-right"></i></button>
     </div>
-    <div class="story-img">
-        <div style="width:100%;height:100%;background:linear-gradient(135deg,#c88030,#402010);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.25);font-size:12px;">images/construction.jpg</div>
-        <div class="play-btn"><i class="fa-solid fa-play" style="margin-left:3px;"></i></div>
-    </div>
-</section>
-
-<section class="team">
-    <p class="section-label">OUR LEADERSHIP TEAM</p>
-    <div class="section-rule"></div>
-    <div class="team-grid" id="teamGrid"></div>
 </section>
 
 <section class="cta-banner">
@@ -384,9 +372,9 @@
         <div class="footer-col">
             <h4>Contact Info</h4>
             <ul class="contact-li">
-                <li><i class="fa-solid fa-phone"></i><span>+233 59 146 6340</span></li>
-                <li><i class="fa-brands fa-whatsapp"></i><span>+233 59 146 6340</span></li>
-                <li><i class="fa-solid fa-envelope"></i><span>info@warp5homes.com</span></li>
+                <li><i class="fa-solid fa-phone"></i><span>+233504165849</span></li>
+                <li><i class="fa-brands fa-whatsapp"></i><span>+233543839253</span></li>
+                <li><i class="fa-solid fa-envelope"></i><span>Info@Warp5construction.com</span></li>
                 <li><i class="fa-solid fa-location-dot"></i><span>Accra, Ghana</span></li>
             </ul>
         </div>
@@ -406,13 +394,6 @@
 </footer>
 
 <script>
-const team=[
-    {name:'ISAAC AMARTEIFIO',role:'FOUNDER & CEO',bio:'Civil Engineer & Project Manager with a passion for building sustainable and affordable homes.',bg:'linear-gradient(135deg,#c0a080,#705030)'},
-    {name:'MICHAEL OWUSU',role:'PROJECT DIRECTOR',bio:'Construction professional with extensive experience in delivering complex building projects.',bg:'linear-gradient(135deg,#8090b0,#304060)'},
-    {name:'KOBBY MENSAH',role:'DESIGN LEAD',bio:'Architectural designer focused on creating functional, modern and aesthetic living spaces.',bg:'linear-gradient(135deg,#b0b0c0,#505060)'},
-    {name:'NATHANIEL ADU',role:'LAND & LEGAL LEAD',bio:'Real estate expert ensuring smooth land acquisition and legal compliance.',bg:'linear-gradient(135deg,#c0b0a0,#706050)'},
-];
-
 const threeBarBtn = document.querySelector('.three-bar button');
     const navLinks = document.querySelector('.nav-links');
     const navOverlay = document.querySelector('.nav-overlay');
@@ -431,18 +412,6 @@ const threeBarBtn = document.querySelector('.three-bar button');
     navLinks.addEventListener('click', (e) => {
         e.stopPropagation();
     });
-const g=document.getElementById('teamGrid');
-team.forEach(m=>{
-    g.innerHTML+=`<div class="team-card">
-        <div class="team-photo" style="background:${m.bg};"></div>
-        <div>
-            <p class="t-name">${m.name}</p>
-            <p class="t-role">${m.role}</p>
-            <p class="t-bio">${m.bio}</p>
-            <i class="fa-brands fa-linkedin t-li"></i>
-        </div>
-    </div>`;
-});
 </script>
 </body>
 </html>
