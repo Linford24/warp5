@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TransLenCe Interactive Learning Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css" />
+    <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- GSAP CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        :root {
+            --panel-width: 380px;
+            --panel-height-mobile: 42vh;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background-color: #141414;
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            flex-direction: row;
+        }
+        #control-panel {
+            position: relative;
+            width: var(--panel-width);
+            min-width: var(--panel-width);
+            height: 100vh;
+            background: #1e1e1e;
+            padding: 25px;
+            border-right: 1px solid #333;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+            overflow-y: auto;
+        }
+        h3 { 
+            margin-top: 0; 
+            margin-bottom: 4px; 
+            font-size: 1.3rem;
+            color: #fff;
+        }
+        .selector-box {
+            margin-bottom: 18px;
+        }
+        label {
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 6px;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            background: #2d2d2d;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            outline: none;
+            cursor: pointer;
+        }
+        select:focus {
+            border-color: #38bdf8;
+        }
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            background: #232323;
+            border: 1px solid #555;
+            color: #00ffcc;
+            font-family: 'Courier New', Courier, monospace;
+            border-radius: 6px;
+            box-sizing: border-box;
+            resize: none;
+            font-size: 14px;
+            line-height: 1.4;
+            overflow-y: hidden;
+            transition: height 0.1s ease-out;
+        }
+        #code-button {
+            width: 100%;
+            padding: 12px;
+            background: #38bdf8;
+            border: none;
+            color: #111;
+            font-weight: bold;
+            font-size: 1em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            margin-top: 12px;
+        }
+        #code-button:hover {
+            background: #0ea5e9;
+        }
+        #code-button:active {
+            transform: scale(0.98);
+        }
+        #code-output {
+            margin-top: 10px;
+            padding: 12px;
+            background: #111;
+            border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85em;
+            color: #ffffff;
+            white-space: pre-wrap;
+            border: 1px solid #333;
+            box-sizing: border-box;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .instructions {
+            font-size: 0.85em;
+            color: #aaa;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        /* EDITOR PANEL FOR TASK 3 (IN SIDEBAR) */
+        .editor-panel {
+            background: transparent;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .editor-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #38bdf8;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .badge-variable {
+            background: #0284c722;
+            color: #38bdf8;
+            border: 1px solid #0284c755;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        #task3-usercode {
+            width: 100%;
+            height: 180px;
+            background: #232323;
+            color: #00ffcc;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.88rem;
+            line-height: 1.4;
+            resize: vertical;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-run {
+            background: #00e5ff;
+            color: #0b0c10;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+        }
+        .btn-run:hover {
+            background: #38bdf8;
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+        }
+        .btn-reset {
+            background: transparent;
+            color: #9ca3af;
+            border: 1px solid #374151;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        /* RIGHT MAIN DISPLAY AREA */
+        #main-stage {
+            flex-grow: 1;
+            /* height: 100vh; */
+            position: relative;
+            overflow: hidden;
+        }
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            /* position: absolute; */
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* TASK 3 RIGHT-SIDE TEXT DISPLAY AREA */
+        #task3-main-display {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+        .story-header-title {
+            color: #00ffcc;
+            font-size: 1.5rem;
+            letter-spacing: 0.08em;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+        #story-text {
+            width: 90%;
+            max-width: 900px;
+            font-size: 1.15rem;
+            line-height: 1.7;
+            color: #e5e7eb;
+            background: rgba(11, 11,12, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #374151;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-height: 70vh;
+            overflow-y: auto;
+            box-sizing: border-box;
+            word-break: break-word;
+        }
+
+        .cube-label, .slot-label {
+            position: absolute;
+            z-index: 5;
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 13px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            pointer-events: none;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+         .learn-button {
+        position: fixed;
+        bottom: 15px;
+        right: 2px;
+        background-color: #ffffff;
+        border: 1px solid var(--border-color);
+        padding: 10px 10px;
+        border-radius: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        z-index: 100; /* Ensure button stays on top of content */
+    }
+
+    .learn-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    .learn-button i {
+        color: #38bdf8;
+        font-size: 0.7rem;
+    }
+
+        /* --- THE DETECTIVE LAYER: APPLIES TO ALL PORTRAIT TABLETS & SMALL PHONES --- */
+        @media (max-width: 1024px), (orientation: portrait) {
+            body { 
+                flex-direction: column; 
+            }
+            #control-panel { 
+                width: 100vw; 
+                min-width: 100vw; 
+                height: var(--panel-height-mobile); 
+                border-right: none; 
+                border-bottom: 2px solid #333; 
+                padding: 18px; 
+            }
+            /* Set height on the parent container instead of canvas-container directly */
+            #main-stage {
+                width: 100vw; 
+                height: calc(100vh - var(--panel-height-mobile));
+            }
+
+
+            textarea { 
+                /* min-height: 75px;  */
+                font-size: 13px;
+            }
+            #code-button {
+                padding: 10px;
+                margin-top: 8px;
+            }
+            #code-output { 
+                margin-top: 10px;
+                min-height: 60px;
+                max-height: 12vh; 
+                padding: 8px;
+            }
+            .instructions {
+                margin-bottom: 8px;
+                font-size: 0.8rem;
+            }
+            #canvas-container { 
+                width: 100vw; 
+                height: calc(100vh - var(--panel-height-mobile)); 
+            }
+            .cube-label, .slot-label {
+                font-size: 11px;
+                padding: 3px 6px;
+            }
+        }
+
+        /* --- EXPLICIT COMFORT LAYER FOR PHONES ONLY (768px and below remains untouched) --- */
+        @media (max-width: 768px) {
+            #control-panel {
+                height: 45vh;
+                padding: 15px;
+            }
+            #main-stage {
+                height: 55vh;
+            }
+            textarea { min-height: 80px; }
+            #code-output { max-height: 60px; }
+            #canvas-container { height: 55vh; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="control-panel">
+        <h3>Practice Python Code</h3>
+        
+        <div class="selector-box">
+            <label for="task-select">Select Active Task</label>
+            <select id="task-select" onchange="switchTaskView(this.value)">
+                <option value="task1">Task 1: Python Data Types Flow</option>
+                <option value="task2">Task 2: Slicing & Indexing</option>
+                <option value="task3">Task 3: Data Methods</option>
+            </select>
+        </div>
+
+        <div id="default-task-inputs">
+            <p class="instructions" id="task-instructions"></p>
+            <textarea id="code-input" rows="1"></textarea>
+            <button id="code-button">Run Code</button>
+            <div id="code-output">Code output appears here...</div>
+        </div>
+
+
+        <!-- Task 3 Editor Container -->
+        <div id="task3-container" style="display: none;">
+            <div class="editor-panel">
+                <p class="instructions">
+                        The paragraph in the next pane is saved to the variable, <span style="color: green;">text</span>.
+                        Manipulate that variable with the various data methods. 
+                        An example code is provided below.
+                </p>
+                <textarea id="task3-usercode"></textarea>
+                <div class="btn-group">
+                    <button class="btn-run" id="btn-run-task3">Run Code</button>
+                    <button class="btn-reset" id="btn-reset-task3">Reset Text</button>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+
+    <!-- RIGHT MAIN STAGE -->
+    <div id="main-stage">
+        <!-- 3D Canvas for Tasks 1 & 2 -->
+        <div id="canvas-container"></div>
+
+        <!-- Main Text Display for Task 3 -->
+        <div id="task3-main-display" style="display: none;">
+            <div class="story-header-title">How Youtube Was Created</div>
+            <div id="story-text"></div>
+        </div>
+    </div>
+
+    <button class="learn-button">
+        <a href="javascript:void(0)" id="back-to-learn" style="text-decoration: none;"><i class="fa-solid fa-wand-magic-sparkles"> Back</i></a> 
+    </button>
+
+    <script>
+
+        window.originalPassage = `In early 2005, three former PayPal colleagues—Chad Hurley, Steve Chen, and 25-year-old Jawed Karim—were frustrated by how hard it was to find and share video clips online. To solve this, they built a simple web platform where anyone could upload, view, and embed videos effortlessly. On April 23, 2005, Karim uploaded the site's very first clip: a 19-second video titled "Me at the zoo". By making video streaming instant and accessible without plug-ins, YouTube democratized media, transforming everyday internet users into global creators and laying the groundwork for modern online entertainment.`;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const backToLearn = document.getElementById('back-to-learn');
+
+            if (backToLearn) {
+                backToLearn.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    if (document.referrer && document.referrer.includes('testt.html')) {
+                        window.history.back();
+                    } else {
+                        window.location.href = 'ttest.html';
+                    }
+                });
+            }
+        });
+
+        const originalPassage = `In early 2005, three former PayPal colleagues—Chad Hurley, Steve Chen, and 25-year-old Jawed Karim—were frustrated by how hard it was to find and share video clips online. To solve this, they built a simple web platform where anyone could upload, view, and embed videos effortlessly. On April 23, 2005, Karim uploaded the site's very first clip: a 19-second video titled "Me at the zoo". By making video streaming instant and accessible without plug-ins, YouTube democratized media, transforming everyday internet users into global creators and laying the groundwork for modern online entertainment.`;
+
+    function animateTextGSAP(newText) {
+      const targetEl = document.getElementById('story-text');
+      
+      gsap.killTweensOf("#story-text .word");
+
+      const lines = newText.split('\n');
+      let htmlOutput = '';
+
+      lines.forEach((line, lIdx) => {
+        const parts = line.split(/(\s+)/);
+        parts.forEach(part => {
+          if (part.trim().length === 0) {
+            htmlOutput += part;
+          } else {
+            htmlOutput += `<span class='word'>${part}</span>`;
+          }
+        });
+        if (lIdx < lines.length - 1) htmlOutput += '<br/>';
+      });
+
+      targetEl.innerHTML = htmlOutput;
+
+      gsap.from("#story-text .word", {
+        y: 15,
+        opacity: 0,
+        duration: 0.3,
+        stagger: {
+          amount: 0.3,
+          ease: "power1.out"
+        },
+        ease: "power2.out"
+      });
+    }
+
+    window.animateTextGSAP = animateTextGSAP;
+
+        const container = document.getElementById('canvas-container');
+        const codeInput = document.getElementById('code-input');
+        const task3Input = document.getElementById('task3-usercode');
+        
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x141414);
+
+        const camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.1, 1000);
+        // Increase FOV to widen the lens (default is usually 45 or 50)
+        //camera.fov = 75; 
+
+        // Tell Three.js to re-calculate the lens projection
+        //camera.updateProjectionMatrix();
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+        scene.add(ambientLight);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(5, 10, 7);
+        scene.add(dirLight);
+
+        let activeTask = "task1";
+
+        const codePlaceholders = {
+            task1: "x = 'Hello World'\ny = 2026\nz = [1, 2, 3]\n\nprint(z)",
+            task2: "my_list = ['Akos', 'adwoa', 'Ama', 'Akua', 'Afia', 'Yaa', 'Abena']\n\nprint(my_list[1::2])",
+            task3: `make_text_upper = text.upper()
+swap_text_case = make_text_upper.swapcase()
+reverse_text = swap_text_case[::-1]
+revert_text = reverse_text[::-1]
+all_results = {
+  'Turn text to upper case': make_text_upper,
+  'Swap text case to lower': swap_text_case,
+  'Reverse text': reverse_text,
+  'Revert text arrangement': revert_text
+}
+get_reverse_text = all_results.get('Reverse text')
+get_unique_characters = set(get_reverse_text)
+
+print(get_unique_characters)`
+        };
+
+        const taskInstructions = {
+            task1: "Create variables below. The labeled cubes highlight dynamically the data type/structure of the variable!",
+            task2: "Create any list and apply slicing and indexing to it. Any item you retrieve through slicing or indexing gets lighted up. Enjoy!",
+            task3: "Run various data methods on the text."
+        };
+
+        function autoGrowTextArea() {
+            codeInput.style.height = 'auto';
+            codeInput.style.height = (codeInput.scrollHeight + 2) + 'px';
+        }
+
+         codeInput.addEventListener('input', autoGrowTextArea);
+
+        // Task 1 Setup
+        const typeCubes = {};
+        const typeLabels = {};
+        const defaultColor = 0x444444;
+
+        const typeMapping = {
+            'str':   { desktop: [-3.3, 1, 0],  mobile: [-1.6, 1.2, 0],  color: "0x00ff00" },
+            'int':   { desktop: [-1.1, 1, 0],  mobile: [0, 1.2, 0],     color: "0x00ffff" },
+            'float': { desktop: [1.1, 1, 0],   mobile: [1.6, 1.2, 0],   color: "0x3366ff" },
+            'bool':  { desktop: [3.3, 1, 0],   mobile: [-1.6, -0.2, 0], color: "0xffa500" },
+            'list':  { desktop: [-2.2, -1, 0], mobile: [0, -0.2, 0],    color: "0xff00ff" },
+            'tuple': { desktop: [0, -1, 0],    mobile: [1.6, -0.2, 0],  color: "0xffff00" },
+            'dict':  { desktop: [2.2, -1, 0],  mobile: [-0.8, -1.6, 0], color: "0xff3333" },
+            'set':   { desktop: [4.4, -1, 0],  mobile: [0.8, -1.6, 0],  color: "0x4cc9f0" }
+        };
+
+        const typeGeometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+        
+        Object.keys(typeMapping).forEach(type => {
+            const material = new THREE.MeshStandardMaterial({ color: defaultColor, roughness: 0.4, metalness: 0.1 });
+            const cube = new THREE.Mesh(typeGeometry, material);
+            scene.add(cube);
+            typeCubes[type] = cube;
+
+            const label = document.createElement('div');
+            label.className = 'cube-label';
+            label.textContent = type;
+            container.appendChild(label);
+            typeLabels[type] = label;
+        });
+
+        // Task 2 Setup
+        let sliceBoxes = [];
+        let sliceLabels = [];
+        let currentListLength = 0;
+        const sliceSpacing = 1.2;
+        const mobileSliceSpacing = 0.9; // Tighter vertical layout for mobile blocks
+        const sliceBoxColorActive = 0x00ffcc;
+        const sliceGeometry = new THREE.BoxGeometry(0.8, 0.6, 0.8);
+
+        function rebuildSliceLayout(listLength, labelsArray) {
+            sliceBoxes.forEach(mesh => scene.remove(mesh.parent));
+            sliceLabels.forEach(el => el.remove());
+            sliceBoxes = [];
+            sliceLabels = [];
+            currentListLength = listLength;
+
+            if (listLength === 0 || activeTask !== "task2") return;
+
+            const isMobileLayout = window.innerWidth <= 1024 || (window.innerHeight > window.innerWidth);
+            
+            if (isMobileLayout) {
+                const startY = -((listLength - 1) * mobileSliceSpacing) / 2;
+                for (let i = 0; i < listLength; i++) {
+                   const slotGroup = new THREE.Group();
+                   slotGroup.position.x = 0;
+                   slotGroup.position.y = startY + (i * mobileSliceSpacing);
+                   scene.add(slotGroup);
+
+                   const boxMat = new THREE.MeshStandardMaterial({ color: defaultColor, roughness: 0.4, metalness: 0.2 });
+                   const boxMesh = new THREE.Mesh(sliceGeometry, boxMat);
+                   slotGroup.add(boxMesh);
+                   sliceBoxes.push(boxMesh);
+
+                   const label = document.createElement('div');
+                   label.className = 'slot-label';
+                   const cleanDisplayVal = labelsArray && labelsArray[i] !== undefined ? labelsArray[i] : '';
+                   label.innerHTML = `[${i}]<br><span style="font-size:11px; color:#aaa; font-weight:500;">${cleanDisplayVal}</span>`;
+                
+                   container.appendChild(label);
+                   sliceLabels.push(label);
+                } 
+            } else {
+                // HORIZONTAL ARRANGEMENT (Kept intact for desktop layouts)
+                const startX = -((listLength - 1) * sliceSpacing) / 2;
+                for (let i = 0; i < listLength; i++) {
+                    const slotGroup = new THREE.Group();
+                    slotGroup.position.x = startX + (i * sliceSpacing);
+                    slotGroup.position.y = -0.3;
+                    scene.add(slotGroup);
+
+                    const boxMat = new THREE.MeshStandardMaterial({ color: defaultColor, roughness: 0.4, metalness: 0.2 });
+                    const boxMesh = new THREE.Mesh(sliceGeometry, boxMat);
+                    slotGroup.add(boxMesh);
+                    sliceBoxes.push(boxMesh);
+
+                    const label = document.createElement('div');
+                    label.className = 'slot-label';
+                    const cleanDisplayVal = labelsArray && labelsArray[i] !== undefined ? labelsArray[i] : '';
+                    label.innerHTML = `[${i}]<br><span style="font-size:11px; color:#aaa; font-weight:500;">${cleanDisplayVal}</span>`;
+                    
+                    container.appendChild(label);
+                    sliceLabels.push(label);
+              }
+            }
+        }
+
+        // --- CAMERA VIEWPORT & TRANSITION ROUTINES ---
+        function layoutScene() {
+            const isMobile = window.innerWidth <= 1024 || (window.innerHeight > window.innerWidth);
+            
+            Object.keys(typeMapping).forEach(type => {
+                const targetPos = isMobile ? typeMapping[type].mobile : typeMapping[type].desktop;
+                typeCubes[type].position.set(...targetPos);
+            });
+
+            if (activeTask === "task1") {
+                if (isMobile) {
+                    camera.position.set(0, -0.2, 6.8);
+                } else {
+                    camera.position.set(0.5, 0, 5.8);
+                }
+                camera.lookAt(0.5, 0, 0);
+            } else if (activeTask === "task2") {
+                if (isMobile) {
+                    // Dynamically back the camera away down the Z-axis based on vertical list volume size
+                    const adaptiveZ = Math.max(6.0, currentListLength * 0.9);
+                    camera.position.set(0, 0, adaptiveZ);
+                    camera.lookAt(0, 0, 0);
+                } else {
+                    const adaptiveZ = Math.max(6.5, currentListLength * 0.95);
+                    const adaptiveY = Math.max(1.6, currentListLength * 0.15);
+                    camera.position.set(0, adaptiveY, adaptiveZ);
+                    camera.lookAt(0, -0.3, 0);
+                }
+            }
+        }
+
+        function updateLabelPositions() {
+            const tempV = new THREE.Vector3();
+            const isMobile = window.innerWidth <= 1024 || (window.innerHeight > window.innerWidth);
+            
+            Object.keys(typeCubes).forEach(type => {
+                const label = typeLabels[type];
+                if (activeTask === "task1") {
+                    tempV.copy(typeCubes[type].position);
+                    tempV.y += 0.75; 
+                    tempV.project(camera);
+                    const x = (tempV.x * .5 + .5) * container.clientWidth;
+                    const y = (tempV.y * -.5 + .5) * container.clientHeight;
+                    label.style.display = 'block';
+                    label.style.left = `${x}px`;
+                    label.style.top = `${y}px`;
+                } else {
+                    label.style.display = 'none';
+                }
+            });
+
+            for (let i = 0; i < currentListLength; i++) {
+                const label = sliceLabels[i];
+                if (activeTask === "task2" && sliceBoxes[i]) {
+                    tempV.setFromMatrixPosition(sliceBoxes[i].matrixWorld);
+                    
+                    // Offset label to the right on mobile layouts to keep vertical stack readable
+                    if (isMobile) {
+                        tempV.x += 0.9;
+                    } else {
+                        tempV.y -= 0.75;
+                    }
+                    
+                    tempV.project(camera);
+                    const x = (tempV.x * .5 + .5) * container.clientWidth;
+                    const y = (tempV.y * -.5 + .5) * container.clientHeight;
+                    label.style.display = 'block';
+                    label.style.left = `${x}px`;
+                    label.style.top = `${y}px`;
+                } else if (label) {
+                    label.style.display = 'none';
+                }
+            }
+        }
+
+        window.updateCubeVisuals = function(activeTypesList) {
+            if (activeTask !== "task1") return;
+            const activeTypes = Array.from(activeTypesList || []);
+
+            Object.keys(typeMapping).forEach(type => {
+                const label = typeLabels[type];
+                if (activeTypes.includes(type)) {
+                    typeCubes[type].material.color.setHex(parseInt(typeMapping[type].color));
+                    typeCubes[type].scale.set(1.25, 1.25, 1.25);
+                    label.style.borderColor = typeMapping[type].color.replace('0x', '#');
+                    label.style.color = typeMapping[type].color.replace('0x', '#');
+                    label.style.backgroundColor = "rgba(0, 30, 20, 0.9)";
+                } else {
+                    typeCubes[type].material.color.setHex(defaultColor);
+                    typeCubes[type].scale.set(1, 1, 1);
+                    label.style.borderColor = '#555';
+                    label.style.color = '#fff';
+                    label.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+                }
+            });
+        };
+
+        window.updateSliceVisuals = function(totalLength, labelsArray, highlightedIndices) {
+            if (activeTask !== "task2") return;
+            rebuildSliceLayout(totalLength, labelsArray);
+            layoutScene();
+
+            const indices = Array.from(highlightedIndices || []).map(Number);
+            
+            for (let i = 0; i < currentListLength; i++) {
+                if (!sliceBoxes[i]) continue;
+                if (indices.includes(i)) {
+                    sliceBoxes[i].material.color.setHex(sliceBoxColorActive);
+                    sliceBoxes[i].scale.set(1.15, 1.15, 1.15);
+                    sliceLabels[i].style.borderColor = "#00ffcc";
+                    sliceLabels[i].style.color = "#00ffcc";
+                    sliceLabels[i].style.backgroundColor = "rgba(0, 40, 30, 0.9)";
+                } else {
+                    sliceBoxes[i].material.color.setHex(defaultColor);
+                    sliceBoxes[i].scale.set(0.85, 0.85, 0.85);
+                    sliceLabels[i].style.borderColor = "#444";
+                    sliceLabels[i].style.color = "#fff";
+                    sliceLabels[i].style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+                }
+            }
+        };
+
+        
+        window.switchTaskView = function(taskKey) {
+            activeTask = taskKey;
+            
+            const defaultInputs = document.getElementById("default-task-inputs");
+            const task3Container = document.getElementById("task3-container");
+            const canvasContainer = document.getElementById("canvas-container");
+            const task3MainDisplay = document.getElementById("task3-main-display");
+            
+
+
+            if (taskKey === "task3") {
+                defaultInputs.style.display = "none";
+                task3Container.style.display = "block";
+                
+                canvasContainer.style.display = "none";
+                task3MainDisplay.style.display = "flex";
+                
+                animateTextGSAP(window.originalPassage);
+            } else {
+                defaultInputs.style.display = "block";
+                task3Container.style.display = "none";
+
+                canvasContainer.style.display = "block";
+                task3MainDisplay.style.display = "none";
+
+                document.getElementById("code-output").innerText = "Code output appears here...";
+                // if (taskKey === "task3") {
+                    // document.getElementById("task-instructions").innerText = taskInstructions["task3"];
+                // } else {
+
+                // }
+                document.getElementById("task-instructions").innerText = taskInstructions[taskKey];
+                
+                codeInput.value = codePlaceholders[taskKey];
+                task3Input.value = codePlaceholders["task3"];
+                autoGrowTextArea();
+            }
+
+            Object.keys(typeCubes).forEach(type => {
+                typeCubes[type].visible = (taskKey === "task1");
+            });
+
+            if (taskKey === "task2") {
+                rebuildSliceLayout(7, ["'Akos'", "'adwoa'", "'Ama'", "'Akua'", "'Afia'", "'Yaa'", "'Abena'"]);
+            } else {
+                rebuildSliceLayout(0, []);
+            }
+
+            layoutScene();
+        };
+
+
+        // --- ANIMATION CORE CYCLE ---
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            if (activeTask === "task1") {
+                Object.keys(typeCubes).forEach(type => {
+                    typeCubes[type].rotation.x += 0.006;
+                    typeCubes[type].rotation.y += 0.01;
+                });
+            } else if (activeTask === "task2") {
+                for (let i = 0; i < currentListLength; i++) {
+                    if (sliceBoxes[i]) {
+                        // Gentle continuous rotation variation for vertical mesh rows
+                        sliceBoxes[i].rotation.y = Math.sin(Date.now() * 0.001 + i) * 0.05;
+                    }
+                }
+            }
+            
+            if (activeTask !== "task3") {
+                renderer.render(scene, camera);
+                updateLabelPositions();
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            // Dynamic re-layout checks on view size alteration loops
+            if (activeTask === "task2") {
+                const currentLabels = sliceLabels.map(lbl => lbl.innerHTML.split('</span>')[0].split('">')[1] || '');
+                rebuildSliceLayout(currentListLength, currentLabels);
+            }
+            layoutScene();
+        });
+
+        switchTaskView("task1");
+        animate();
+    </script>
+
+    <script type="py">
+        import sys
+        import ast
+        from io import StringIO
+        from pyscript import when
+        import js
+
+        def safe_dispatch_task1(detected_types):
+            if hasattr(js.window, "updateCubeVisuals"):
+                js.window.updateCubeVisuals(detected_types)
+
+        def safe_dispatch_task2(total_length, labels, indices):
+            if hasattr(js.window, "updateSliceVisuals"):
+                js.window.updateSliceVisuals(total_length, labels, indices)
+
+        def safe_dispatch_task3(text_data):
+            if hasattr(js.window, "animateTextGSAP"):
+                js.window.animateTextGSAP(str(text_data))
+
+        def format_output_val(val):
+            if isinstance(val, (list, set, tuple)):
+                return ", ".join([f"'{item}'" if isinstance(item, str) else str(item) for item in val])
+            elif isinstance(val, dict):
+                return "\n".join([f"{k}: {v}" for k, v in val.items()])
+            else:
+                return str(val)
+
+        def input(prompt=""):
+            result = js.window.prompt(prompt)
+            return result if result is not None else ""
+
+        @when("click", "#code-button")
+        def run_custom_code(event):
+            active_task = js.document.getElementById("task-select").value
+            user_code = js.document.getElementById("code-input").value
+            output_element = js.document.getElementById("code-output")
+
+            output_buffer = StringIO()
+            sys.stdout = output_buffer
+
+            execution_scope = {"input": input, "__builtins__": __builtins__}
+
+            try:
+                exec(user_code, execution_scope)
+                printed_text = output_buffer.getvalue().strip()
+                output_element.innerText = printed_text if printed_text else "Code executed cleanly with no output."
+
+                if active_task == "task1":
+                    detected_types = []
+                    for var_name, var_value in execution_scope.items():
+                        if var_name in ["input", "__builtins__"]:
+                            continue
+                        type_name = type(var_value).__name__
+                        if type_name not in detected_types:
+                            detected_types.append(type_name)
+                    
+                    safe_dispatch_task1(detected_types)
+
+                elif active_task == "task2":
+                    tree = ast.parse(user_code)
+                    target_list_name = None
+                    slice_node = None
+
+                    for node in ast.walk(tree):
+                        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "print":
+                            if len(node.args) == 1 and isinstance(node.args[0], ast.Subscript):
+                                arg = node.args[0]
+                                if isinstance(arg.value, ast.Name):
+                                    target_list_name = arg.value.id
+                                    slice_node = arg.slice
+
+                    base_list = None
+                    for key, val in execution_scope.items():
+                        if isinstance(val, list) and (target_list_name is None or key == target_list_name):
+                            base_list = val
+                            break
+
+                    if base_list is not None:
+                        total_length = len(base_list)
+                        formatted_labels = [f"'{item}'" if isinstance(item, str) else str(item) for item in base_list]
+                        detected_indices = []
+
+                        if slice_node is not None:
+                            try:
+                                eval_expr = f"{target_list_name}[{ast.unparse(slice_node)}]"
+                                sliced_res = eval(eval_expr, execution_scope)
+
+                                if isinstance(sliced_res, list):
+                                    for item in sliced_res:
+                                        if item in base_list:
+                                            detected_indices.append(base_list.index(item))
+                                else:
+                                    if sliced_res in base_list:
+                                        detected_indices.append(base_list.index(sliced_res))
+                            except Exception:
+                                pass
+
+                        safe_dispatch_task2(total_length, formatted_labels, detected_indices)
+
+            except Exception as e:
+                output_element.innerText = f"Error: {str(e)}"
+            finally:
+                sys.stdout = sys.__stdout__
+
+        @when("click", "#btn-run-task3")
+        def run_task3_code(event):
+            user_code = js.document.getElementById("task3-usercode").value
+
+            original_text = js.window.originalPassage
+            output_buffer = StringIO()
+            sys.stdout = output_buffer
+
+            execution_scope = {
+                "text": original_text,
+                "input": input,
+                "__builtins__": __builtins__
+            }
+
+            try:
+                exec(user_code, execution_scope)
+                printed_text = output_buffer.getvalue().strip()
+
+                updated_text = None
+
+                # Find last assigned variable by checking user scope
+                for var_name, var_value in list(execution_scope.items()):
+                    if var_name not in ["text", "input", "__builtins__"]:
+                        updated_text = format_output_val(var_value)
+
+                # Fallback to printed statement if no variable update triggered or if print statement used explicitly
+                if printed_text:
+                    updated_text = printed_text
+
+                if updated_text is not None:
+                    safe_dispatch_task3(updated_text)
+
+            except Exception as e:
+                safe_dispatch_task3(f"Error: {str(e)}")
+            finally:
+                sys.stdout = sys.__stdout__
+
+        @when("click", "#btn-reset-task3")
+        def reset_task3_text(event):
+            original_text = js.window.originalPassage
+            safe_dispatch_task3(original_text)
+    </script>
+
+</body>
+</html>
