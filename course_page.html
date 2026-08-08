@@ -1,0 +1,2411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TransLenCe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css" />
+    <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
+    
+   <style>
+    :root {
+        --primary-color: #6366f1;
+        --special-color: #0d62ec;
+        --primary-light: #f5f3ff;
+        --text-dark: #090d0e;
+        --text-muted: #6b7280;
+        --border-color: #e5e7eb;
+        --bg-light: #f9fafb;
+
+        /* Define a fixed sidebar width for desktop*/
+        --panel-width: 360px;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', sans-serif;
+    }
+
+    body {
+        display: flex;
+        height: 100vh;
+        color: var(--text-dark);
+        background: linear-gradient(135deg, #e3f2fd 0%, #f8f9ff 100%);
+        overflow: hidden;
+    }
+
+   .hidden {
+       display: none !important;
+   }
+
+    .alt-aside {
+        position: fixed;
+        bottom: 20px;
+        margin-right: auto;
+        background: transparent;
+        border: 1px solid var(--border-color);
+        padding: 10px 20px;
+        border-radius: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        z-index: 100; 
+    }
+
+    .alt-aside i {
+        color: #38bdf8;
+        font-size: 1.1rem;
+    }
+
+
+    /* --- Sidebar Layout --- */
+    .sidebar {
+        width: 320px;
+        border-right: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        background: linear-gradient(135deg, #e3f2fd 0%, #f8f9ff 100%);
+        flex-shrink: 0;
+    }
+
+    .sidebar-header {
+        padding: 24px;
+    }
+
+    .sidebar-header h1 {
+        font-size: 1.35rem;
+        font-weight: 700;
+        line-height: 1.3;
+        margin-bottom: 16px;
+    }
+
+    .search-container {
+        position: relative;
+        margin-bottom: 16px;
+    }
+
+    .search-container i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    .search-container input {
+        width: 100%;
+        padding: 10px 12px 10px 36px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background-color: var(--bg-light);
+        font-size: 0.9rem;
+        outline: none;
+    }
+
+    .filter-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-filter {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        border: 1px solid var(--border-color);
+        background: #ffffff;
+    }
+
+    .btn-filter.active {
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    /* --- Course Navigation List --- */
+    .sidebar-nav {
+        overflow-y: auto;
+        flex-grow: 1;
+        padding-bottom: 20px;
+    }
+
+    .nav-section {
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 24px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.95rem;
+        user-select: none;
+    }
+
+    .section-header:hover {
+        background-color: var(--bg-light);
+    }
+
+    .section-header i {
+        font-size: 0.8rem;
+        transition: transform 0.2s ease;
+    }
+
+    .section-header.collapsed i {
+        transform: rotate(-90deg);
+    }
+
+    .section-content {
+        padding: 4px 12px 12px 12px;
+    }
+
+    .section-header.collapsed + .section-content {
+        display: none;
+    }
+
+    .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: #4b5563;
+        margin-bottom: 4px;
+        text-decoration: none;
+    }
+
+    .nav-item:hover:not(.locked) {
+        background-color: var(--bg-light);
+        color: var(--text-dark);
+    }
+
+    .nav-item.active {
+        background-color: var(--primary-light);
+        color: var(--text-dark);
+        font-weight: 500;
+    }
+
+    .nav-item .icon-status {
+        margin-right: 12px;
+        font-size: 0.75rem;
+        width: 14px;
+        text-align: center;
+    }
+
+    .nav-item.active .icon-status {
+        color: #cbd5e1;
+    }
+
+    .nav-item.locked {
+        color: var(--text-muted);
+        cursor: not-allowed;
+    }
+
+    .nav-item.locked i {
+        font-size: 0.85rem;
+    }
+
+    /* --- Main Content Area --- */
+    .main-container {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 40px 60px;
+        position: relative;
+    }
+
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 24px;
+    }
+
+    .breadcrumb a {
+        color: var(--text-muted);
+        text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    .title-container {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .title-container h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    .btn-bookmark {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 1.25rem;
+        padding: 4px;
+    }
+
+    .btn-bookmark:hover {
+        color: var(--text-dark);
+    }
+
+    .content-body {
+        font-size: 16px; 
+        max-width: 100%;
+        line-height: 1.6;
+        color: #374151;
+        text-align: justify;
+        text-justify: inter-word;
+        -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+        hyphens: auto;
+        overflow-wrap: break-word;
+    }
+
+    .content-body p {
+        margin-bottom: 24px;
+    }
+
+    .intro-text {
+        color: #111827;
+        font-size: 1.15rem;
+    }
+
+    pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        overflow-x: hidden;
+    }
+
+    .terms {
+        color: green;
+        font-weight: 100;
+    }
+
+       .table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* 1. Reset and Layout */
+.custom-table {
+  width: 100%;
+  border-collapse: collapse; /* Merges double borders into a single clean line */
+  margin: 20px 0;
+  font-family: sans-serif;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+/* 2. Header Styling */
+.custom-table thead tr {
+  background-color: #009879;
+  color: #ffffff;
+  text-align: left;
+  font-weight: bold;
+}
+
+/* 3. Padding and Spacing */
+.custom-table th,
+.custom-table td {
+  padding: 12px 15px;
+}
+
+/* 4. Zebra Striping (Alternating row backgrounds for readability) */
+.custom-table tbody tr:nth-of-type(even) {
+  background-color: #eef6f6;
+}
+
+/* 5. Bottom Border for Rows */
+.custom-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+/* 6. Hover Highlight Effect */
+.custom-table tbody tr:hover {
+  background-color: #c7f8e4;
+  cursor: pointer;
+}
+
+.example-code {
+    color: #0d62ec;
+    font-weight: 100;
+}
+
+#conditional-flow pre {
+    background-color: #111;
+    color: white;
+    border-radius: 3%;
+
+}
+
+.comment {
+    color: #c5bfbfb7;
+    font-style: italic;
+}
+
+.results {
+    color: green;
+    font-weight: 100;
+}
+
+    
+
+    /* --- Floating 'Practice and Learn' Buttons --- */
+    .practice-button {
+        position: fixed;
+        bottom: 5px;
+        right: 24px;
+        background-color: #ffffff;
+        border: 1px solid var(--border-color);
+        padding: 10px 20px;
+        border-radius: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        z-index: 100; /* Ensure button stays on top of content */
+    }
+
+    .practice-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    .practice-button i {
+        color: #38bdf8;
+        font-size: 1.1rem;
+    }
+
+    .code-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #e3f2fd 0%, #f8f9ff 100%);
+        backdrop-filter: blur(4px);
+        z-index: 998;
+        overflow-y: auto;
+    }
+
+    .code-overlay.open {
+        display: block;
+    }
+
+    .learn-button {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background-color: #ffffff;
+        border: 1px solid var(--border-color);
+        padding: 10px 20px;
+        border-radius: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        z-index: 100; /* Ensure button stays on top of content */
+    }
+
+    .learn-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    .learn-button i {
+        color: #38bdf8;
+        font-size: 1.1rem;
+    }
+
+    #code-body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #141414;
+    color: #fff;
+    height: 100vh;
+  /*     Split layout: Sidebar on left, Canvas on right*/ 
+    display: flex;
+    flex-direction: row;
+    }
+
+    #control-panel {
+    /* Change from absolute to static layout positioning */
+    position: relative;
+    width: var(--panel-width);
+    min-width: var(--panel-width);
+    height: 100vh;
+    background: #1e1e1e;
+    padding: 25px;
+    border-right: 1px solid #333;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    }
+
+    h3 { 
+    margin-top: 0; 
+    margin-bottom: 8px; 
+    font-size: 1.3rem;
+    }
+    textarea {
+    width: 100%;
+    height: 150px;
+    padding: 12px;
+    background: #232323;
+    border: 1px solid #555;
+    color: #00ffcc;
+    font-family: 'Courier New', Courier, monospace;
+    border-radius: 6px;
+    box-sizing: border-box;
+    resize: none;
+    font-size: 14px;
+    }
+
+    #code-button {
+    width: 100%;
+    padding: 12px;
+    background: #28a745;
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: 1em;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 12px;
+    }
+    #code-button:hover {
+    background: #218838;
+    }
+
+    #code-output {
+    margin-top: 15px;
+    padding: 12px;
+    background: #111;
+    border-radius: 6px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85em;
+    color: #ffffff;
+    white-space: pre-wrap;
+    flex-grow: 1; /* Allow terminal to fill remaining sidebar space dynamically */
+    max-height: 40vh;
+    overflow-y: auto;
+    border: 1px solid #333;
+    box-sizing: border-box;
+    } 
+    #canvas-container {
+    /* Automatically claim 100% of the screen space left over by the sidebar */
+    flex-grow: 1;
+    height: 100vh;
+    position: relative;
+    z-index: 1;
+    }
+    .instructions {
+    font-size: 0.85em;
+    color: #aaa;
+    margin-bottom: 12px;
+    line-height: 1.4;
+    }
+
+    .cube-label {
+            position: absolute;
+            z-index: 5;
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.75);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            pointer-events: none;
+            transition: border-color 0.3s, color 0.3s;
+    }
+
+    
+
+    
+    /* Responsive Mobile Layout Split */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            #control-panel {
+                width: 100vw;
+                min-width: 100vw;
+                height: 45vh;
+                border-right: none;
+                border-bottom: 2px solid #333;
+                padding: 15px;
+            }
+            textarea {
+                height: 90px;
+            }
+            #code-output {
+                max-height: 80px;
+            }
+            #canvas-container {
+                width: 100vw;
+                height: 55vh;
+            }
+            .instructions {
+                display: none;
+            }
+        }
+
+    
+
+    /* --- FIXED RESPONSIVE MEDIA QUERY --- */
+    @media (max-width: 768px) {
+        body {
+            flex-direction: column;
+            overflow-y: auto; /* Let the global document body scroll on mobile */
+            height: auto;     /* Break out of the forced viewport window constraint */
+        }
+        .sidebar {
+            width: 100%;
+            height: auto;
+            border-right: none;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .sidebar-nav {
+            overflow-y: visible; /* Prevent double scrollbars inside the sidebar wrapper */
+        }
+        .main-container {
+            padding: 24px;
+            overflow-y: visible; /* Prevent a second nested scroll window inside the article area */
+        }
+
+    }
+   </style>
+</head>
+<body>
+    <div class="alt-aside">
+        <div class="three-bars">
+            <p><i class="fa-solid fa-layer-group"></i></p>
+        </div>
+    </div>
+
+    <aside class="sidebar hidden">
+      <div class="main-aside">
+        <div class="sidebar-header">
+            <h1 style="color: green;">Foundational Python For AI</h1>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
+                    <span>1. Introduction</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="section-content">
+                    <a href="#brief-intro" class="nav-item active">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>Brief Introduction To Computer Programming</span>
+                    </a>
+                    <a href="#why-python" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status" style="opacity: 0.3;"></i>
+                        <span>Why Everyone Should Learn Python</span>
+                    </a>
+                    <a href="#experience-structure" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status" style="opacity: 0.3;"></i>
+                        <span>The Structure Of This Experience</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
+                    <span>2. Building Blocks Of Python</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="section-content">
+                    <a href="#data-types" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status" style="opacity: 0.3;"></i>
+                        <span>Data Types</span>
+                    </a>
+                    <a href="#data-structures" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status" style="opacity: 0.3;"></i>
+                        <span>Data Structures</span>
+                    </a>
+                    <a href="#variables" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status" style="opacity: 0.3;"></i>
+                        <span>Variables</span>
+                    </a>
+                    <a href="#comparison-operators" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status" style="opacity: 0.3;"></i>
+                        <span>Comparison Operators</span>
+                    </a>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
+                    <span>3. Slicing and Indexing Data</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="section-content">
+                    <a href="#slicing-data" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>Slicing and Indexing Data</span>
+                    </a>
+                    <a href="#indexing" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>Indexing</span>
+                    </a>
+                    <a href="#slicesteps" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>Slicing</span>
+                    </a>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
+                    <span>4. Data Methods</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="section-content">
+                    <a href="#string-methods" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>String Methods</span>
+                    </a>
+                    <a href="#list-methods" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>List Methods</span>
+                    </a>
+                    <a href="#set-methods" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>Set Methods</span>
+                    </a>
+                    <a href="#dict-methods" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>Dictionary Methods</span>
+                    </a>
+                    
+                </div>
+            </div>
+            <!-- Conditional Flow -->
+            <div class="nav-section">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
+                    <span>5. Conditional Flows</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="section-content">
+                    <a href="#conditional" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>if, elif, else</span>
+                    </a>
+                    <a href="#match-case" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>match...case</span>
+                    </a>
+                    <a href="#for-loop" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>for loop</span>
+                    </a>
+                    <a href="#while-loop" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>while loop</span>
+                    </a>
+                    <a href="#try-statement" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>try...except...finally</span>
+                    </a>
+                    <a href="#with-statement" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>with</span>
+                    </a>
+                    <a href="#break-con-pass" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>break, continue, pass and del</span>
+                    </a>  
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
+                    <span>6. List, Dictionary and Generator Comprehensions</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="section-content">
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>List Comprehensions</span>
+                    </a>
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>Dictionary Comprehensions</span>
+                    </a>
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>Generator Comprehensions</span>
+                    </a>
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>Lambda Expressions</span>
+                    </a>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
+                    <span>7. Libraries, Packages and Modules</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="section-content">
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>Importing Modules</span>
+                    </a>
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>Importing Packages</span>
+                    </a>
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>Importing Libraries</span>
+                    </a>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
+                    <span>8. File Handling</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="section-content">
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>Reading and Writing Files From your Computer</span>
+                    </a>
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>Reading and Writing Files From the Cloud</span>
+                    </a>
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>Zipping and Unzipping Files</span>
+                    </a>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
+                    <span>9. Functions: Building Reusable Code</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="section-content">
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>Arguments and Parameters</span>
+                    </a>
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>Functional Annotations</span>
+                    </a>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
+                    <span>10. Objected Oriented Programming (OOP)</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="section-content">
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>Class</span>
+                    </a>
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>Class Methods</span>
+                    </a>
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>Python Decorators</span>
+                    </a>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
+                    <span>11. Society Inspired Challenge (SIC)</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="section-content">
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>Choose a challenge</span>
+                    </a>
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>Build a solution</span>
+                    </a>
+                    <a href="#" class="nav-item locked">
+                        <i class="fa-solid fa-lock icon-status"></i>
+                        <span>Present your solution</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="main-container">
+        <div class="breadcrumb">
+            <a href="home">Home</a> <i class="fa-solid fa-chevron-right" style="font-size: 0.65rem;"></i>
+            <a href="dashboard">Courses</a> <i class="fa-solid fa-chevron-right" style="font-size: 0.65rem;"></i>
+            <span>Foundational Python For AI</span>
+        </div>
+        <div class="page" id="introduction">
+        <div class="title-container">
+            <h2>Introduction</h2>
+        </div>
+
+        <div class="title-container" id="brief-intro">
+            <h3>Introduction To Computer Programming</h3>
+        </div>
+
+        <div class="content-body">
+            <p><strong style="color: green; font-weight: 100;">Programming</strong> a computer entails giving it a set of instructions to execute. It is basically how communication ensues between humans and computers. Computer Programming is done through specific types of languages called <strong style="color: green; font-weight: 100;">programming languages.</strong></p>
+            
+            <p>
+                Thus, a programming language is the choice language a computer programmer uses in communicating with a computer. Just as there are many forms of human languages spanning Twi, Fante, Ewe, English, Spanish, Arabic and others, likewise, there are numerous programming languages including <strong style="color: green; font-weight: 100;">Java, Python, C#, C++ etc.</strong><br><br> How effectively computers and machines execute instructions depends mainly on the clarity and nature of the programming language serving those instructions. <strong style="color: green; font-weight: 100;">Python</strong> for example, is highly efficient for data processing and numerical computations; this is why <strong style="color: green; font-weight: 100;"> Python has become the optimal language for Artificial Intelligence (AI) Development.</strong>
+            </p>
+        </div>
+
+        <div class="title-container" id="why-python">
+            <h3>Why Everyone Should Learn Python</h3>
+        </div>
+
+        <div class="content-body">
+            <p><strong style="color: green; font-weight: 100;"> Python</strong> is a programming language developed by a Dutch programmer named<em style="color: green;"> Guido van Rossum.</em> He developed Python as a side project during one of his Christmas vacations, released it as an Open Source project which many developers joined and contributed to improve upon the language. <br><br>It's counterintuitive how a random project on a vacation has become the optimal for the advancement of modern technology. <br>
+                <strong style="color: var(--special-color); font-weight: 100;">"What you see as a little idea could become the next breakthrough technology revolution."</strong></p>
+            
+            <p>
+              Guido chose the name <strong style="color: green; font-weight: 100;">Python</strong> not because of the snake, but because he was a big fan of <strong style="color: green; font-weight: 100;"> the British comedy series Monty Python's Flying Circus</strong> and wanted a name that was short, unique, and slightly mysterious. <br><br>His philosophy was simple: Code should be easier to read.
+            </p>
+
+            <p>
+             In this AI Revolution, Python has become the highly preferred language for AI. 
+             Currently, the well-known AI chatbots, ChatGPT, Gemini, Claude and many others rely heavily on Python code.<br>
+             Python is easy to learn, write and read.
+            </p>
+        </div>
+
+        <div class="title-container" id="experience-structure">
+            <h3>The Structure Of This Experience</h3>
+        </div>
+
+        <div class="content-body">
+            <p>The whole course would take <strong style="color: green; font-weight: 100;">4 weeks.</strong>The topics to be covered each week would be unlocked for all participants to access.</p> <p>Each week's topic would have <strong style="color: green; font-weight: 100;">an associated project</strong> where you practice your coding skills. In addition, there would be <strong style="color: green; font-weight: 100;">a live session each Saturday</strong> to discuss the project of the week, resolve errors and propose enhancements to the solutions.</p> <p>The live session is crucial for each participant. It helps with building teamwork and collaboration skills; highly relevant for success in the technology ecosystem. </p>
+            <p>Finally there would be <strong style="color: green; font-weight: 100;">the Society Inspired Challenge (SIC)</strong>, where you would be presented with real-life societal challenges to solve with your newly acquired Python programming skills.</p>
+        </div>
+        </div>
+
+        <div class="page" id="building-blocks">
+            <div class="title-container">
+               <h2>Building Blocks Of Python</h2>
+            </div>
+
+        <div class="title-container" id="data-types">
+            <h3>Data Types</h3>
+        </div>
+
+        <div class="content-body">
+            <p>Writing computer programs basically involve the input and output <strong style="color: green; font-weight: 100;">data</strong>. <br><br><strong style="color: green; font-weight: 100;"><em>Data is the main fabric of computer programming.</em></strong><br></p>
+            <p>Programming languages use various types of data to instruct computers. Just as there are numbers <strong style="color: green; font-weight: 100;">(1, 456, 888888), alphabets (a to z) and symbols (%, &, *)</strong> in English, likewise Python programming language has its own set of data types.</p>
+            
+            <p>The primary and most commonly used data types are:</p>
+
+            
+            <i style="color: green;" class="fa-solid fa-check"></i>  Numbers (Integers and Floats)<br>
+            <i style="color: green;" class="fa-solid fa-check"></i>  Strings<br>
+            <i style="color: green; margin-bottom: 20px;" class="fa-solid fa-check"></i>  Boolean Operators<br>
+
+            <p>
+                <em style="color: green; text-decoration: underline;">Numbers</em>
+                <p>All positive and negative non-decimal numbers are categorised under INTEGERS.</p> 
+                <p><strong style="color: green; font-weight: 100;">egs, 2, 4567, -89, 1000</strong></p>
+                <p>All positive and negative decimal numbers are categorised under FLOAT.</p> 
+                <p><strong style="color: green; font-weight: 100;">egs., -4.56, 678.01, 4.5</strong></p>
+                
+                <p>Thus, <em style="color: green;">2</em> is an <strong style="color: green; font-weight: 100;">integer</strong> whilst <em style="color: green;">2.0</em> is a <strong style="color: green;">float</strong></p><br>
+                <p><em style="color: green; text-decoration: underline; margin-top: 20px;">Strings</em></p>
+                <p>Any character enclosed in <strong style="color: green; font-weight: 100;">single ('') or double quotes("").</strong></p>
+                <p>The character may be a symbol, alphabet or number.<br><br><strong style="color: green; font-weight: 100;"> egs, "Friends", "2345", "#rt5", "relax!"</strong></p>
+
+                <br>
+                <p><em style="color: green; text-decoration: underline; margin-top: 20px;">Boolean Operators</em></p>
+                <p>For expressing truthfulness, thus whether an expression or statement is <strong style="color: green; font-weight: 100;">True or False</strong><br>
+                   The most commonly used boolean operators are <pre style="color: green">and, or, not, true, false.</pre><br>
+                </p>
+            
+        </div>
+
+        <div class="title-container" id="data-structures">
+            <h3>Data Structures</h3>
+        </div>
+
+        <div class="content-body">
+            <p>Multiple data types are combined to form data structures.<br></p>
+            <p>For example, the social media account of a user may contain, <strong style="color: green; font-weight: 100;">fullname, age, telephone number, email address, password.</strong></p>
+            <p>These details are stored in different data types.</p>
+            <p>Fullname would be stored as a <strong style="color: green; font-weight: 100;">string, for eg, "Kofi Lucky".</strong></p>
+            <p>Age would be stored as an <strong style="color: green; font-weight: 100;">integer, for eg, 15.</strong></p>
+            <p>Contact number would be stored as a <strong style="color: green; font-weight: 100;">integer, for eg, 0231242342.</strong></p>
+            <p>Email address would be stored as a <strong style="color: green; font-weight: 100;">string, for eg, "kluc@gmail.com".</strong></p>
+            <p>Password would be stored as a <strong style="color: green; font-weight: 100;">string, for eg, "kl$yu7&0£$Fg".</strong></p>
+            <p>All these details can be put into any of the data structures below for easy identification and grouping.</p>
+             
+            <i style="color: green;" class="fa-solid fa-check"></i>  Lists<br>
+            <i style="color: green;" class="fa-solid fa-check"></i>  Tuples<br>
+            <i style="color: green;" class="fa-solid fa-check"></i>  Sets<br>
+            <i style="color: green;" class="fa-solid fa-check"></i>  Dictionaries<br>
+
+            <p style="margin-top: 20px; margin-bottom: 10px;"><em style="color: green; text-decoration: underline;">Lists</em></p>
+            <p>A <strong style="color: green; font-weight: 100;">square bracket, [],</strong> containing zero or more items.</p>
+            <p>The items of a list could be any data type.<br>
+               Lists are mutable, thus, their items can be modified.
+            </p>
+            <p><strong style="color: green; font-weight: 100;"><pre>Example of a list: [97, "Friends", 87.9, true]</strong></pre><br>
+               This list contains integer, string, float and boolean data types.</p>
+            
+            <!--Tuples-->
+            <p style="margin-top: 20px; margin-bottom: 10px;"><em style="color: green; text-decoration: underline;">Tuples</em></p>
+            <p>A tuple contains a number of items separated by commas, and mostly enclosed in <strong style="color: green">parentheses, ().</strong></p>
+            <p>Tuples are immutable, thus, their items cannot be modified.</p>
+            <p><strong style="color: green; font-weight: 100;">Example of a tuple:<br> ('Ghana',  'Japan',  [567, 89.2, 78])</strong></p>
+        
+            <!--Sets-->
+            <p style="margin-top: 20px; margin-bottom: 10px;"><em style="color: green; text-decoration: underline;">Sets</em></p>
+            <p>A <strong style="color: green; font-weight: 100;">curly bracket, {},</strong> containing zero or more items, with <strong style="color: green;">no duplicates.</strong></p>
+            <p>The items of a list can only be a string, integer, float, or Boolean.</p>
+            <p>When sets are being created, all duplicates are removed so that only unique values remain in it.</p>
+            <p>Sets are mutable just like lists.</p>
+            <p>A set cannot contain another set or list or tuple, or dictionary.</p>
+            <p><strong style="color: green; font-weight: 100;">Example of set: <br>{"Monday", "Tuesday", "Wednesday"}</strong></p>
+        
+            <!--Dictionary-->
+            <p style="margin-top: 20px; margin-bottom: 10px;"><em style="color: green; text-decoration: underline;">Dictionary</em></p>
+            <p>A curly bracket, {}, containing zero or more items where each item has a key-value pair.</p>
+            <pre><p>Thus, <strong style="color: green; font-weight: 100;"> { key: value }</strong></p></pre>
+            <p>The key indexes values for easy retrieval.</p>
+            <p>It acts as the words in a normal English dictionary, where there are words, with their corresponding definitions below them. </p>
+            <p>Each word then is <strong style="color: green; font-weight: 100;">the key,</strong> and definition, <strong style="color: green;"> the value.</strong></p>
+            Example of a dictionary:
+            <pre style="color: green;"><code>   
+      {
+        "fullname": "Kofi Lucky",
+        "age": 15,
+        "contactnumber": 0231242342,
+        "emailaddress": "kluc@gmail.com",
+        "password": "kl$yu7&0£$Fg"
+      }
+            </code></pre>
+        </div>
+
+        <div class="title-container" id="variables">
+            <h3>Variables</h3>
+        </div>
+
+        <div class="content-body">
+            <!--Variables-->
+            <p>A variable is any name to which any data types or data structures can be assigned to.</p>
+            <p>Thus, a variable is a store-space/shelf for holding data so that data can be uniquely referenced later.</p>
+            Examples of Variables:
+            <pre style="color: green;"><code>
+             age = 15,
+             contactNumber = 0231242342,
+             email_address = "kluc@gmail.com",
+             Password = "kl$yu7&0£$Fg"
+
+            </code></pre>
+            <p>There's a syntax for creating variables. A variable can only start with:</p>
+            <i style="color: green;" class="fa-solid fa-check"></i>  Alphabets
+            <pre style="color: green;"><code>
+                age
+                contactNumber
+                email_address
+                Password
+            </code></pre>
+            <i style="color: green;" class="fa-solid fa-check"></i>  Underscore (_)<br>
+            <pre style="color: green; font-weight: 100;"><code>
+                _age
+                _contactNumber
+            </code></pre>
+            <strong style="color: var(--special-color); font-weight: 100;">If the specific name of a variable is not necessary for referencing later, then an underscore is placed before the name.</strong><br><br>
+        </div>
+
+        <div class="title-container" id="comparison-operators">
+            <h3>Comparison Operators</h3>
+        </div>
+
+        <div class="content-body">
+            <!--Comparison Operators-->
+            To compare various data types, comparison operators are used.
+            <pre style="color: green; font-weight: 100;"><code>
+                == as equal to
+                != as not equal to
+                < as less than
+                > as greater than
+                <= as less than or equal to
+                >= as greater than or equal to
+            </code></pre>
+            
+        </div>
+        </div>
+
+        <br>
+        <div class="page" id="slicing-and-indexing">
+          <div class="title-container" id="slicing-data">
+            <h2>Slicing and Indexing Data</h2>
+          </div>
+          <div class="content-body">
+             <p><strong style="color: green; font-weight: 100;">Slicing</strong> basically implies cutting a piece of something.<br>
+                <strong style="color: green; font-weight: 100;">Indexing</strong> is the position or name of the piece that is cut out during slicing.<br>
+            </p>
+            <p>Thus, slicing and indexing go hand in hand. <strong class="terms">Slicing is performed on specified index points.</strong></p>    
+             
+             <p>Just like index numbers are given to students to make each <strong class="terms">unique,</strong> so indexing enables assigning unique tags to <strong class="terms">items in a list, dictionary, tuple and many others.</strong></p>
+             
+             <p>In Python, each item in a <strong class="terms">list or tuple</strong> is assigned <strong class="terms"> an index.</strong> <strong class="terms"></strong> The index describes the exact position of the item in the list.</strong></strong></p>
+             
+             <pre><code>There are two main styles of indexing in Python namely:
+                <i style="color: green;" class="fa-solid fa-check"></i>  Positive Indexing
+                <i style="color: green;" class="fa-solid fa-check"></i>  Negative Indexing
+             </code></pre>
+          </div>
+
+          <div class="title-container" id="indexing">
+            <h3>Positive Indexing</h3>
+          </div>
+
+          <div class="content-body">
+             <p>This assigns <strong class="terms">0</strong> as the index of the <strong class="terms">first</strong> item, <strong class="terms">1</strong> for the <strong class="terms">second</strong> and so on.</p>
+             <pre><code>Consider this list:
+              ["Life", "Love", "Truth"]
+              <strong class="terms">"Life"</strong> has index <strong class="terms">0</strong> 
+              <strong class="terms">"Love"</strong> has index <strong class="terms">1</strong>
+              <strong class="terms">"Truth"</strong> has index <strong class="terms">2</strong>
+             </code></pre>
+          </div>
+
+           <div class="title-container">
+            <h3>Negative Indexing</h3>
+          </div>
+          <div class="content-body">
+            <p>This assigns <strong class="terms">-1</strong> as the index of the <strong class="terms">last</strong> item, <strong class="terms">-2</strong> for the <strong class="terms">next item before the last (last but one)</strong> and so on.</p>
+               <pre><code>Consider this list:
+              ["Life", "Love", "Truth"]
+              <strong class="terms">"Truth"</strong> has index <strong class="terms">-1</strong> 
+              <strong class="terms">"Love"</strong> has index <strong class="terms">-2</strong>
+              <strong class="terms">"Life"</strong> has index <strong class="terms">-3</strong>
+          </code></pre>
+            
+          </div>
+
+
+           <div class="title-container" id="slicesteps">
+            <h3>Slicing</h3>
+           </div>
+           <div class="content-body">
+            <p>Whilst indexing allows for retrieving a <strong class="terms">single item,</strong> slicing enables <strong class="terms">multiple retrieval.</strong></p>
+            <pre><code>Consider this list below with variable name, <strong class="terms">numbers</strong>:
+<strong class="terms">numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</strong><br>
+</code></pre>Through slicing we can pick specific range of numbers from the list using the format below:
+<pre class="content-body"><code>
+<strong class="terms">Start Index: Stop Index: Step Size</strong>
+ 
+<strong class="terms">Start Index:</strong> the index of the first item you want to pick
+
+<strong class="terms">Stop Index:</strong> the index of the item you want to end the picking at.
+<strong style="color: red; font-weight: 100;">The item at this position is not added to the results.</strong>
+
+<strong class="terms">Step Size:</strong> how many steps you want to jump after each pick.<br>
+Using the numbers list defined above: 
+       <strong class="terms">numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</strong><br>
+A slice of numbers,<strong class="terms"> numbers[2:7:2]</strong> means we start picking from the number at <strong class="terms">index 2 (which is position 3),</strong> <strong class="terms">jump 2 steps</strong> after each pick then,<strong class="terms"> stop at index 7 (thus all items before index 7 would be picked).</strong>
+
+Running this on the list above returns:
+    <strong class="terms">[2, 4, 6]</strong><br>
+Ignoring the stop index, would return the results with <strong class="terms">even numbers beyond index 8 included since we did not specify any stopping index.</strong>
+
+Thus, <strong class="terms">numbers[2::2] would return</strong>
+    <strong class="terms">[2, 4, 6, 8]</strong>
+
+Likewise, the starting index can be ignored, and all numbers before the index 2 would be included.
+Thus, the slicing would begin at the very first item and jump 2 steps and pick the item there, then jump 2 steps again. The cycle continues till the last index.
+
+So, <strong class="terms">numbers[::2] returns</strong>
+    <strong class="terms">[0, 2, 4, 6, 8]</strong>
+</code></pre>
+           <br>
+           <p>Both indexing and slicing can be applied to <strong class="terms">only lists and tuples as well as dictionaries containing any of those two.</strong></p>
+           <p>Sets <strong class="terms">cannot be indexed or sliced</strong> because its items are unordered, so there are <strong class="terms">no fixed positions for each item.</strong></p>
+           <p>The main essence of sets is to <strong class="terms">remove duplicates.</strong></p>
+           <p>This removal of duplicates reshuffles the position of items every time.</p>
+           <pre><code>For eg; The set below contains cities with duplicates
+    <strong class="terms">cities = {"Accra", "Tema", "Accra", "Kumasi", "Ejisu", "Kumasi", "Sunyani"}</strong>
+           </code></pre>
+           <p>Running this returns a set with all the duplicates removed, and the positions of the items reshuffled.<br>
+           <pre><code><strong class="terms">   {'Accra', 'Ejisu', 'Tema', 'Sunyani', 'Kumasi'}</strong></code></pre>
+           </p>
+           </div>
+           <p style="color: var(--special-color);">Let's Practice!</p>
+         </div>
+        <div class="page" id="data-methods">
+          <div class="title-container">
+            <h2 id="string-methods">Data Methods</h2>
+          </div>
+          <div class="content-body">
+              <p>A method is a way of doing something.</p>
+               <p><strong class="results">Data method</strong> refers to how data can be created, retrieved, updated or deleted.
+                <strong class="results">Python Data Methods</strong> are used for <strong class="results">manipulating data types and structures.</strong>
+                They provide advanced ways of manipulating lists, strings, dictionaries, sets and tuples beyond
+                indexing and slicing. 
+              </p>  
+                <p>Each data type has a set of methods that work on it. The method to use depends mostly on the task at hand.
+                For eg; <strong class="results">append()</strong> is used for adding an item to a list whilst <strong class="results">pop()</strong> is used for picking the last item of a list.
+                </p>
+
+                <p>
+                In this section, we would cover the most widely used data methods. For comprehensive notes on all the data methods
+                applicable in Python, kindly refer to <a href="https://docs.python.org/3/library/stdtypes.html">Python Data Methods Documentation.</a>
+                </p>
+
+                <p style="text-decoration: underline; color: green; font-size: 300;"><em>Python Data Methods</em></p>
+                <p>
+                <i style="color: green;" class="fa-solid fa-check"></i> String Methods<br>
+                <i style="color: green;" class="fa-solid fa-check"></i> List Methods<br>
+                <i style="color: green;" class="fa-solid fa-check"></i> Set Methods<br>
+                <i style="color: green;" class="fa-solid fa-check"></i> Dictionary Methods<br>
+                </p>
+              <p class="terms">To get the best out of this section, please open the pratice page in a new tab and practise the stated examples alongside, as you read.</p>
+          </div>
+            <br>
+
+          <div class="title-container" id="string-methods">
+            <h3>String Methods</h3>
+          </div>
+
+          <div class="content-body">
+             Consider the variable,<strong class="results"><em> my_str = "python programming"</em></strong> 
+            <div class="table-container">
+              <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Purpose</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="example-code">my_str.capitalize()</td>
+                        <td>Returns a copy of the string with its first character capitalized and the rest lowercased.</td>
+                        <td class="results">Python programming</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_str.count(sub, start_index, stop_index)</td>
+                        <td>Returns the number of times a substring is repeated within the range [start_index, stop_index].</td>
+                        <td class="results">my_str.count('p', 0, 5) -> 1</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_str.endswith(suffix, start_index, stop_index)</td>
+                        <td>Returns True if the string ends with the specified suffix, otherwise return False. Suffix can also be a tuple of suffixes to look for. Same applies with <strong class="results">startswith()</strong></td>
+                        <td class="results">my_str.endswith('ing', 0, 10) -> False</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_str.removesuffix('ing')</td>
+                        <td>If the string ends with the suffix string and that suffix is not empty, it returns the string with the suffix removed. Otherwise, it returns a copy of the original string. Same applies with <strong class="results">removeprefix()</strong></td>
+                        <td class="results">my_str.removesuffix('ing') -> python program</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_str.replace('python', 'computer')</td>
+                        <td>Returns a copy of the string with all occurrences of the old substring replaced by the new.</td>
+                        <td class="results">my_str.replace('python', 'computer') -> computer programming</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_str.split(separator)</td>
+                        <td>Returns a list of the words in the string, using seperator (can be anything, we use space- ' '- in our example) as the point of the split.</td>
+                        <td class="results">my_str.split(' ') - > ['python', 'programming']</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_str.strip()</td>
+                        <td>Returns a copy of the string with the leading and trailing characters (mostly whitespace) removed.</td>
+                        <td class="results">' python programming '.strip() -> python programming</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_str.swapcase()</td>
+                        <td>Returns a copy of the string with uppercase characters converted to lowercase and vice versa. </td>
+                        <td class="results">pYTHON PROGRAMMING</td>
+                    </tr>
+
+                    <tr>
+                        <td class="example-code">my_str.title()</td>
+                        <td>Returns a titlecased version of the string where words start with an uppercase character and the remaining characters are lowercase.</td>
+                        <td class="results">Python Programming</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">table = str.maketrans("p", "c")</td>
+                        <td>Creates the translation table, with characters mapped to their translations.</td>
+                        <td class="results"># wherever there is p, replace with c</td>
+                    </tr>
+
+                    <tr>
+                        <td class="example-code">my_str.translate(table)</td>
+                        <td>Returns a copy of the string in which each character has been mapped through the given translation table.</td>
+                        <td class="results">cython crograming</td>
+                    </tr>
+
+                    <tr>
+                        <td class="example-code">my_str.join()</td>
+                        <td>Returns a string which is the concatenation of multiple items in a list. </td>
+                        <td class="results">', '.join(['You', 'can', 'do', 'it', '!']) -> 'You can do it!'</td>
+                    </tr>
+                </tbody>
+              </table>
+              <em>Check the Python documentation for all available <a href="https://docs.python.org/3/library/stdtypes.html#string-methods">string methods.</a></em>
+            </div>
+          </div>
+          <br>
+
+          <div class="title-container" id="list-methods">
+            <h3>List Methods</h3>
+          </div>
+
+          <div class="content-body">
+            Consider the variable, <strong class="results"><em>my_list = ['1', '2', '3', '5', '5', '6', '6', '7'].</em></strong>
+            <div class="table-container">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Purpose</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="example-code">max(my_list)</td>
+                        <td>For retrieving the maximum item in a list</td>
+                        <td class="results">7</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">min(my_list)</td>
+                        <td>For retrieving the minimum item in a list</td>
+                        <td class="results">1</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">len(my_list)</td>
+                        <td>Gets the length of a list</td>
+                        <td class="results">8</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_list.count(5)</td>
+                        <td>Gets the total count of an item in a list</td>
+                        <td class="results">2</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_list.append([8, 9, 10])</td>
+                        <td>Adds a new item to a list without unpacking it</td>
+                        <td class="results">[1, 2, 3, 5, 5, 6, 6, 7, [8, 9, 10]]</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_list.extend([11, 12, 13, 14])</td>
+                        <td>Unpacks and adds a new item to a list</td>
+                        <td class="results">[1, 2, 3, 5, 5, 6, 6, 7, 11, 12, 13, 14]</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_list.insert(index=0, item=0)</td>
+                        <td>Inserts a new item at the speficied index of a list</td>
+                        <td class="results">[0, 1, 2, 3, 5, 5, 6, 6, 7]</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_list.pop()</td>
+                        <td>Makes a copy of a list</td>
+                        <td class="results">7</td>
+                    </tr>
+
+                    <tr>
+                        <td class="example-code">my_list.remove(item=5)</td>
+                        <td>Removes the first occurence of the specified item from the list</td>
+                        <td class="results">[1, 2, 3, 5, 6, 6, 7]</td>
+                    </tr>
+
+                    <tr>
+                        <td class="example-code">my_list.reverse()</td>
+                        <td>Reverses the items in a list</td>
+                        <td class="results">[7, 6, 6, 5, 5, 3, 2, 1]</td>
+                    </tr>
+
+                    <tr>
+                        <td class="example-code">my_list.sort(reverse=True)</td>
+                        <td>Sorts the items in a list based on the specified order</td>
+                        <td class="results">[7, 6, 6, 5, 5, 3, 2, 1]</td>
+                    </tr>
+
+
+                    <tr>
+                        <td class="example-code">my_list.clear()</td>
+                        <td>Clears all the items of a list</td>
+                        <td class="results">None</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <em>Check the Python documentation for all available <a href="https://docs.python.org/3/library/stdtypes.html#lists">list methods.</a></em>
+            </div>
+          </div>
+          <br>
+
+          <div class="title-container" id="set-methods">
+            <h3>Set Methods</h3>
+          </div>
+
+          <div class="content-body">
+            <p>There are currently two built-in set types, <strong class="results">set</strong> and <strong class="results">frozenset.</strong></p>
+            <p>The <strong class="results">set</strong> type is <strong class="results">mutable — the contents can be changed using specific methods</strong> whilst 
+                the <strong class="results">frozenset</strong> type is <strong class="results">immutable - its contents cannot be altered after it is created.</strong> Frozenset can therefore be used as a dictionary key.
+            </p>
+            <div class="table-container">
+                Consider the set, <strong class="results"><em>my_set = {'p', 'r', 'm', 'n', 'o', 'i', 'g', 'a'}</em></strong>
+              <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Purpose</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="example-code">set('programming')</td>
+                        <td>For creating a set</td>
+                        <td class="results">{'p', 'r', 'm', 'n', 'o', 'i', 'g', 'a'}</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">frozenset('programming')</td>
+                        <td>For creating a frozenset</td>
+                        <td class="results">frozenset({'p', 'r', 'm', 'n', 'o', 'i', 'g', 'a'})</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">len(my_set)</td>
+                        <td>Checks the number of items in a set</td>
+                        <td class="results">8</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_set.copy()</td>
+                        <td>Returns a copy of the set.</td>
+                        <td class="results">{'p', 'r', 'm', 'n', 'o', 'i', 'g', 'a'}</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_set.add('python')</td>
+                        <td>Adds a single item to the set.</td>
+                        <td class="results">{'p', 'python', 'r', 'm', 'n', 'o', 'i', 'g', 'a'}</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_set.update('python')</td>
+                        <td>Adds multiple items to a set.</td>
+                        <td class="results">{'y', 't', 'p', 'r', 'm', 'n', 'o', 'h', 'i', 'g', 'a'}</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_set.remove('p')</td>
+                        <td>Removes specified item from the set.</td>
+                        <td class="results">{'y', 't', 'r', 'm', 'n', 'o', 'h', 'i', 'g', 'a'}</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_set.discard('g')</td>
+                        <td>Removes specified item from the set if it is present.</td>
+                        <td class="results">{'y', 't', 'p', 'r', 'm', 'n', 'o', 'h', 'i', 'a'}</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_set.pop()</td>
+                        <td>Removes the first item from the set.</td>
+                        <td class="results">{'t', 'p', 'r', 'm', 'n', 'o', 'h', 'i', 'a'}</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_set.clear()</td>
+                        <td>Removes all items from the set.</td>
+                        <td class="results">set()</td>
+                    </tr>
+                </tbody>
+              </table>
+              <em>Check the Python documentation for all available <a href="https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset">set methods.</a></em>
+            </div>
+               
+          </div>
+          <br>
+
+          <div class="title-container" id="dict-methods">
+            <h3>Dictionary Methods</h3>
+          </div>
+
+          <div class="content-body">
+             <div class="table-container">
+                Consider the dictionary, 
+                <strong class="results"><em>
+                    my_dict = {
+                    'company': 'TransLenCe', 
+                    'courses': ['Python', 'AI', 'Innovation'], 
+                    'innovators': {
+                       'Ghana': 'Adwoa', 
+                       'Europe': 'Parker', 
+                       'America': 'Excellia',
+                       'Australia': 'Melanie', 
+                       'Asia': 'Ji Ping' 
+                    }
+                }
+                </em></strong> 
+              <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Purpose</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="example-code">dict({'language': 'Python', 'offered_by': 'TransLenCe'})</td>
+                        <td>For creating a dictionary</td>
+                        <td class="results">{'language': 'Python', 'offered_by': 'TransLenCe'}</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">list(my_dict)</td>
+                        <td>Returns a list of all the keys used in the dictionary</td>
+                        <td class="results">['company', 'courses', 'innovators']</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_dict.keys()</td>
+                        <td>Returns all the keys of the dictionary</td>
+                        <td class="results">dict_keys(['company', 'courses', 'innovators'])</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_dict[key]</td>
+                        <td>Returns the value of the specified key.</td>
+                        <td class="results">my_dict['company'] -> TransLenCe</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_dict['innovators']['Ghana'] = 'Kwadwo'</td>
+                        <td>Sets a new value at the specified key(s).</td>
+                        <td class="results">{....., 'Ghana': 'Kwadwo'}</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">iter(my_dict)</td>
+                        <td>Iterates over the keys of the dictionary.</td>
+                        <td class="results"># To be used later on</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">reversed(my_dict)</td>
+                        <td>Returns all the keys of the dictionary in reversed order</td>
+                        <td class="results">'innovators', 'courses', 'company'</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_dict.get('courses')</td>
+                        <td>Returns the value of the specified key.</td>
+                        <td class="results">['Python', 'AI', 'Innovation']</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_dict.items()</td>
+                        <td>Returns a new view of the dictionary’s items ((key, value) pairs).</td>
+                        <td class="results">dict_items([('company', 'TransLenCe'), ('courses', ['Python', 'AI', 'Innovation']), ('innovators', {'Ghana': 'Adwoa', 'Europe': 'Parker', 'America': 'Excellia', 'Australia': 'Melanie', 'Asia': 'Ji Ping'})])</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_dict.pop('company')</td>
+                        <td>Retrieves a key from a dictionary and returns its value.</td>
+                        <td class="results">TransLenCe</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_dict.popitem()</td>
+                        <td>Retrieves the last (key, value) pair in the dictionary.</td>
+                        <td class="results">('innovators', {'Ghana': 'Adwoa', 'Europe': 'Parker', 'America': 'Excellia', 'Australia': 'Melanie', 'Asia': 'Ji Ping'})</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_dict.update({'level': 'beginner'})</td>
+                        <td>Adds the specified (key, value) pair(s) to the dictionary.</td>
+                        <td class="results">{'company': 'TransLenCe', 'courses': ['Python', 'AI', 'Innovation'], 'innovators': 
+                            {'Ghana': 'Adwoa', 'Europe': 'Parker', 'America': 'Excellia', 'Australia': 'Melanie', 'Asia': 'Ji Ping'}, 
+                            'level': 'beginner'}</td>
+                    </tr>
+                    <tr>
+                        <td class="example-code">my_dict.values()</td>
+                        <td>Returns a new view of the dictionary’s values.</td>
+                        <td class="results">dict_values(['TransLenCe', ['Python', 'AI', 'Innovation'], {'Ghana': 'Adwoa', 'Europe': 'Parker', 'America': 'Excellia', 'Australia': 'Melanie', 'Asia': 'Ji Ping'}])</td>
+                    </tr>
+                </tbody>
+              </table>
+              <em>Check the Python documentation for all available <a href="https://docs.python.org/3/library/stdtypes.html#mapping-types-dict">dictionary methods.</a></em> 
+            </div>
+          </div>
+        </div>
+
+         <div class="page" id="conditional-flow">
+        <div class="title-container" id="conditional">
+            <h2>Conditional Flow</h2>
+        </div>
+        <div class="content-body">
+            <p>Have you ever tried to log in to a website and received an error message, <span style="color: red;">"Invalid Password or Email"</span>?<br>
+               The error message appeared on the condition that, <span style="color: red;">either the password or email was invalid.</span> If <span class="terms">password or email was correct,</span>
+               you would have been readily logged in. That logic was implemented as <span class="terms">a conditional flow.</span>
+            </p>
+            <p>
+               Expressing conditional statements is very important in computer programming for various tasks.</p>
+                <p>The task at hand mostly informs the choice of conditional expression to go for.
+            </p>
+            
+            <p><em>There are 4 main parts of conditional expressions in Python namely:</em><br>
+                
+                <i style="color: green;" class="fa-solid fa-check"></i> Statement<br>
+                <i style="color: green;" class="fa-solid fa-check"></i> Condition<br>
+                <i style="color: green;" class="fa-solid fa-check"></i> Code block<br>
+                <i style="color: green;" class="fa-solid fa-check"></i> Clause<br>
+            </p>
+            <p><span class="terms">The statement</span> is the term that sets up the condition.
+                <pre><code>
+   if age < 5:
+            </code></pre>
+            </p>
+            
+            <p><span class="terms">The code block</span> defines the code expected to run after the condition set up by
+                <span class="terms">the statement is met or evaluates to true.</span>
+                <pre><code>
+   if age < 5:
+       <span class="comment"># The code block follows after the colon and is always indented</span>
+       print("It's time for cartoons")
+       
+   <span style="color: yellow">>></span>
+     <span class="terms">"It's time for cartoons"</span>
+                </code></pre>
+            </p>
+            <p><span class="terms">The clause</span> runs only <span class="terms">the condition set up by the statement evaluates to 
+                false or is not met.</span>
+                <pre><code>
+   age = 30
+   if age < 5:
+       print("It's time for cartoons")
+
+   <span class="comment"># Clause runs if the first statement condition fails
+   # Notice the clause is on the same indentation level as 
+   # the initial statement</span>
+   else:
+       print("Maybe it's time to watch something else")
+
+   <span style="color: yellow">>></span>
+     <span class="terms">"Maybe it's time to watch something else"</span>
+                </code></pre>
+            </p>
+            <p>Also there are other terms to take note of:</p>
+            <p><span class="terms">Iteration:</span> The process of returning or going over a collection of items one by one.</p>
+            <p><span class="terms">Iterable:</span> A container that can stores multiple items and returns or goes over them one by one.</p>
+            <p><span class="terms">Loop:</span> A cycle that starts all over again when it reaches the end</p>
+
+            
+            <p>
+                Each statement has its own set of clauses it goes with. 
+            </p>
+            <!-- If Else Elif -->
+            <div class="title-container" id="if-else">
+                <h3>if Statements</h3>
+            </div>
+            <div class="content-body">
+                <table class="custom-table">
+                    <thead>
+                        <th>Statement (s)</th>
+                        <th>Clause</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>if, elif</td>
+                            <td>else</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>The format of if statements is as below</p>
+                
+                <pre><code>
+    if [<em>condition</em>]: 
+        [<em>code block</em>]
+    
+    else: 
+        [<em>code block</em>]
+                </code></pre>
+                <p><span class="terms">If statements</span> always start with the term <span class="terms">"if"</span> followed by <span class="terms">the 
+                    condition</span> to be checked and the code to be executed <span class="terms">if that condition
+                    evaluates to true.</span>
+
+                    <p>If the <span class="terms">if statement condition</span> fails then <span class="terms">the else clause</span> gets executed.</p>
+                    <p>But in cases where there are multiple conditions, <span class="terms">elif statement</span> is introduced just after
+                        the if statement. <span style="color: red;">Only one if statement</span> can be used at the <span class="terms"> same indentation level, but multiple elif statements can be used
+                        at the same indentation level.
+
+                        <pre><code>
+    if [<em>first condition</em>]: 
+        [<em>code block</em>]
+    elif [<em>second condition</em>]:
+        [<em>code block</em>]
+    elif [<em/>third condition</em>]:
+        [<em/>code block</em>]
+    elif [<em/>fourth condition</em>]:
+        [<em/>code block</em>]
+    else: 
+        [<em/>code block</em>]
+                </code></pre>
+
+                    </p>
+                </p>
+                <p>Both <span class="terms">if and elif require conditions.</span> For <span class="terms">else,</span> it executes its code block when any
+                    other condition is not matched.
+                </p>
+                <pre><code>
+    my_age = 15
+
+    if my_age < 13:
+       print("You are yet to be a teenager")
+    
+    elif my_age > 13 and my_age < 20:
+       print("You are a teenager")
+    
+    elif my_age > 19 and my_age < 50 :
+       print("You are an adult")
+       
+    else:
+       print("You have stayed long on Earth")
+
+    <span style="color: yellow">>></span>
+      <span class="terms">"You are a teenager"</span>
+       
+                </code></pre>
+                <p>The <span>if condition</span> is run first, thus, <span class="terms">if my_age < 13 (if my_age is less than 13),</span>
+                    then the expression, <span class="terms">print("You are yet to be a teenager")</span> is run.
+                </p>
+
+                <p>However, <span class="terms">if my_age is greater than 13,</span> then, the code jumps to the second condition,
+                    <span class="terms">elif my_age > 13 and my_age < 20 (if my_age is greater than 13 and less than 20, thus between
+                    13 and 20),</span> then the expression, <span class="terms">print("You are a teenager")</span> is run.
+                </p>  
+                
+                <p>Likewise, if the second condition too is not met, then the third condition,
+                    <span class="terms">elif my_age > 19 and my_age < 50 (if my_age is greater than 19 and my_age is less than 50, thus
+                    between 19 and 50),</span> then the expression, <span class="terms">print("You are an adult").</span>
+                </p> 
+                    
+                <p>Finally, if none of the above conditions are met, meaning <span class="terms">my_age is greater than 50,</span>
+                    then <span class="terms">the else clause</span> with the expression, <span class="terms">print("You have stayed long on Earth")</span> is run.
+                </p>
+                <p style="color: rgb(33, 175, 231)">Hints:<br> 
+                    <span class="terms"> elif means else if<br>
+                    The code runs from top to down in order, it only jumps to the second condition is the first condition
+                    is not met.</span>
+                </p>
+
+            </div>
+
+            <!-- Match Case  -->
+            <div class="title-container" id="match-case">
+                <h3>match...case Statements</h3>
+            </div>
+            <div class="content-body">
+                <table class="custom-table">
+                    <thead>
+                        <th>Statement</th>
+                        <th>Clause</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>match [<em>condition</em>]</td>
+                            <td>case [<em>condition</em>]</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><span class="terms">Match...case statements</span> are used for <span class="terms">matching patterns.</span> The general pattern to be matched is assigned
+                    as the condition to <span class="terms">the match term,</span> then the patterns being checked against the match term
+                    are assigned to <span class="terms">the case clauses.</span>
+                </p>
+                <pre><code>
+    <span class="comment"># Thus, consider having this password, "tryToBreakIt".
+    # In this flow, we are trying to match the provided password
+    # in the case clauses to the actual password stored in the variable,
+    # my_password.</span>
+   
+    my_password = "tryToBreakIt"
+
+    match my_password:
+        case "ryToBreakIt":
+            print("You missed one character")
+        case "yToBreakIt":
+            print("You missed two characters")
+        case "hjygsth":
+            print("You are no where near")
+        case "tryToBreakIt":
+            print("You did it!")
+        case _:
+            print("It seems you gave up")
+
+    <span style="color: yellow">>></span>
+      <span class="terms">"You did it!"</span>
+                </code></pre>
+                <p><span style="color: rgb(33, 175, 231)">
+                   Hints: 
+                </span><br>
+                    The <span class="terms">last case clause</span> always takes <span class="terms">an underscore (_)</span> as its pattern. Just like else clause,
+                    it runs if none of the <span class="terms">case clauses match the specified pattern.</span>
+                </p>
+                <p>
+                    Also, match-case statement uses <span class="terms">guards.</span>
+                    If <span class="terms">guard</span> is used, it must be met before a matching case code block can be executed.
+                    <pre><code>              
+    guard = False
+
+    my_password = "tryToBreakIt"
+
+    match my_password:
+        case "ryToBreakIt":
+            print("You missed one character")
+        
+        case "yToBreakIt":
+            print("You missed two characters")
+        
+        case "hjygsth":
+            print("You are no where near")
+
+        case "tryToBreakIt" if guard:
+            print("You did it!")
+
+        case _:
+            print("It seems you gave up")
+
+        <span style="color: yellow">>></span>
+           <span class="terms">"It seems you gave up"</span>
+                </code></pre>
+                <p>If the <span class="terms">pattern matches</span> and the <span class="terms">guard evaluates to True,</span> then the case block would be selected.</p>
+                    <p>If the <span class="terms">pattern matches</span> and the <span class="terms">guard evaluates to False</span> then the flow jumps to the next 
+                    <span class="terms">case statement.</span></p>
+                    <p>Though <span class="terms">"tryToBreakIt"</span> matches exactly the pattern of <span class="terms">my_password</span> but since <span style="color: red;">guard is False,</span>
+                    the whole matching fails.
+                    For there to be a full match, both <span class="terms">the <span style="text-decoration: underline;">case clause</span> and <span style="text-decoration: underline;">guard</span> has to be True as well.
+                    
+                </p>
+
+
+                </p>
+            </div>
+
+            <!-- For Loop -->
+            <div class="title-container" id="for-loop">
+                <h3>for Loop</h3>
+            </div>
+            <div class="content-body">
+                <table class="custom-table">
+                    <thead>
+                        <th>Statement</th>
+                        <th>Clause</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>for [<em>item</em>] in [<em>iterable</em>]</td>
+                            <td># code block</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                    The <span class="terms">for loop</span> is used for <span class="terms">iteration (repition of a cycle).</span>
+                    It moves <span class="terms">repeatedly over an iterable</span> and applies
+                    the code in the code block to <span class="terms">each of the items in the iterable.</span>
+                </p>
+                <pre><code>
+    numbers = [1, 2, 3, 4, 5]
+    for number in numbers:
+        print(number)
+
+    <span style="color: yellow">>></span>
+      <span class="terms">1
+      2
+      3
+      4
+      5</span>
+                </code></pre>
+                <p>In the code above, <span class="terms">'number'</span> is just a placeholder name for the variable, <span class="terms">numbers.</span> It could be any name
+                    and it would still work.
+                    <p>The <span class="terms">for loop</span> allows the first number to be picked, then the specified code 
+                    block is executed.</p>
+                    <p>Then, the second number is picked, then the code block is executed again 
+                    with this newly picked number.</p> 
+                    The same cycle is repeated till the last <span class="terms">number, 5</span> is picked and printed, then the loop stops.
+                </p>
+            </div>
+
+            <!-- While Loop -->
+            <div class="title-container" id="while-loop">
+                <h3>while Loop</h3>
+            </div>
+            <div class="content-body">
+                <p>The <span class="terms">while loop</span> is used for executing code repeatedly as long as a specified 
+                    <span class="terms">condition is true.</span>
+                </p>
+                <table class="custom-table">
+                    <thead>
+                        <th>Statement</th>
+                        <th>Clause</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>while [<em>condition]</em></td>
+                            <td># code block</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <pre><code>
+    number = 0
+    while number < 10:
+       print(number)
+       
+       number += 1
+
+    <span style="color: yellow">>></span>
+      <span class="terms">0
+      1
+      2
+      3 
+      4
+      5
+      6
+      7
+      8
+      9</span>
+                </code></pre>
+                <p>
+                    <span class="terms">While loop</span> differs from <span class="terms">for loop</span> at the point of termination of the loop.
+                    <p>While loop terminates when <span class="terms">the specified condition becomes false or cannot be met</span> 
+                    whereas <span class="terms">for loop</span> terminates when <span class="terms">the last item in the iterable is reached, and its 
+                    corresponding code block runs.</span></p>
+                </p>
+            </div>
+
+            <!-- try...except...finally -->
+            <div class="title-container" id="try-statement">
+                <h3>try....except...finally</h3>
+            </div>
+
+            <div class="content-body">
+                <table class="custom-table">
+                    <thead>
+                        <th>Statement</th>
+                        <th>Clause(s)</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>try</td>
+                            <td>except, finally</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>As the saying goes, <span class="terms">"To every rule there is an exception",</span> 
+                    <span class="terms">try statements</span> are used in situations where there are <span class="terms">exceptions.</span> 
+                    <p>Whenever a code is being executed, <span style="color: red;">an error</span> is emitted if something goes wrong. Such errors are termed <span class="terms">exceptions.</span>
+                    </p>
+                    <p><span class="terms">Try...except statements</span> shine best where there is potential for errors. 
+                    In programming jargon, we say, it handles the error or exception gracefully.
+                    </p>
+
+                    <p>Handling an error gracefully implies providing <span class="terms">a custom definition of the message</span>
+                    to show when an error occurs.
+                    </p>
+                </p>
+                Consider this example, where a number is divided by zero.
+                Such division would always emit an error meassage. We define the
+                exact error message to be displayed.
+                <pre><code>
+    try:
+       result = 23 / 0
+       print(f"This is the result, {result}")
+    except Exception:
+        print("You cannot divide a number by 0. Try dividing by any other number apart from 0")
+
+    <span style="color: yellow">>></span>
+    <span class="terms">"You cannot divide a number by 0. Try dividing by any other number apart from 0"</span>
+
+</code></pre>
+                <p>
+                    Also <span class="terms">finally</span> can be added as a <span class="terms">clause</span> to the try...except statement.
+                    <p>The <span class="terms">finally clause</span> executes the code block under it whether there is <span class="terms">finally</span> can be added as a <span style="color: red;">an error or not</span> in the try
+                        statement.
+                        
+                        <p>Ideally, the code in the <span class="terms">try block</span> runs when there is <span class="terms">no error.</span>
+                        whereas the code in <span class="terms">the except block</span> is executed whenever there is <span style="color: red;">an error.</span>
+                        </p>
+
+                        <p>But the code block under the finally clause is executed whether an error occurs or not.</p>
+                        <pre><code>      
+    try:
+       result = 23 / 0
+       print("This is the result")
+    except Exception:
+        print("You cannot divide a number by 0. Try dividing by any other number apart from 0")
+    finally:
+        print("Keep Practising")
+    
+    <span style="color: yellow">>></span>
+       <span class="terms">"You cannot divide a number by 0. Try dividing by any other number apart from 0"<br>
+        "Keep Practising"
+      </span>
+</code></pre>
+
+                    </p>
+                </p>
+                <p>The <span class="terms">try clause</span> is mainly used to make way for exceptions.</p>
+                 <p>It attempts to run a specified code block and only raises or announces an error
+                 or terminates when an exception is met.
+                </p>  
+            </div>
+
+            <!-- with -->
+            <div class="title-container" id="with-statement">
+                <h3>with Statements</h3>
+            </div>
+            <div class="content-body">
+                <table class="custom-table">
+                    <thead>
+                        <th>Statement</th>
+                        <th>Clause</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>with [<em>expression</em>] as [<em>targetname</em>]:</td>
+                            <td># code block</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><span class="terms">with statements</span> are used for maintaining contexts. It enables code to be executed
+                    within a context. 
+                    <p>Typically, it is used for working with files.
+                    It allows a file to be opened for editing.
+                     Thus, the contents of the file then becomes the context.</p> 
+                     <p>We will practise more on this during <span class="terms">the File Handling Module.</span></p> 
+                </p>
+            </div>
+
+            <!-- break, continue, pass, delete -->
+            <div class="title-container" id="break-con-pass">
+                <h3>break, continue, pass, delete</h3>
+            </div>
+            <div class="content-body">
+                <table class="custom-table">
+                    <thead>
+                        <th>Statement</th>
+                        <th>Purpose</th>
+                        
+                    </thead>
+                    <tbody>
+                        
+                Finally there are statements that work across each of the above mentioned
+                    conditional flows. These statements are used for skipping clauses,
+                    continue the cycle, inserted as placeholders and many more.
+                        
+                        <tr>
+                            <td>break</td>
+                            <td>It exits the loop immediately and runs the rest of teh code outside
+                    the loop</td>
+                        </tr>
+                        <tr>
+                            <td>continue</td>
+                            <td>It skips the current iteration and jumps to the next loop.</td>
+                        </tr>
+                        <tr>
+                            <td>raise</td>
+                            <td>It acts as a print statement in try-except statements,
+                                emitting the errors that come up.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>pass</td>
+                            <td>It literally does nothing. Often used as a placeholder. When
+                    you want to define a clause or conditional flow but the code block logic is not ready 
+                    yet, you put only pass at the code block section so that no error is emitted when the code is executed.
+                    </td>
+                        </tr>
+                        <tr>
+                            <td>del</td>
+                            <td>For deleting mostly variables in a loop scope.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <pre><code>
+   numbers = [0, 1, 2, 3, 4, 5]
+   for number in numbers:
+       <span class="comment"># checks if the number is divisble 2 but does nothing.</span>
+       if number / 2 == 0:
+          pass
+       <span class="comment"># checks if the numnber is equal to 0 and skips it.</span>
+       if number == 0:
+          continue
+       result = number / 10
+       <span class="comment"># Checks if the result is greater than or equal to 0.5 and exits the loop immediately.</span>
+       if result >= 0.5:
+          break
+       print(result)
+
+   <span style="color: yellow">>></span>
+       <span class="terms">
+       0.1
+       0.2
+       0.3
+       0.4
+       </span>
+            </code></pre>
+          </div>
+        <!-- Constant barrier divs -->
+         </div>    
+          <div class="page" id="comprehensions">
+        <h2 id="listcomp">List, Dictionary and Generator Comprehensions</h2>
+        <div class="content-body">
+        <p>Comprehensions enable writing conditional flows in fewer lines,
+            mostly one-line. They permit also returning the result of a conditional
+            flow as a specific data structure as either list or dictionary or set.
+
+            Comprehensions are simple ways of writing for loops.
+        </p>
+        </div>
+
+        <div class="title-container">
+            <h3>List Comprehensions</h3>
+        </div>
+        <div class="content-body">
+            <p>List comprehensions provide a concise way to create a list from 
+                a conditional flow. 
+
+                The basic structure always includes a for loop as the initial condition then any other condition 
+                can proceed. The iterable must always be a list.
+            </p>
+        </div>
+
+        <div class="content-body">
+                <table class="custom-table">
+                    <thead>
+                        <th>Statement</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>[<span style="color: orange;">[code to execute]</span> <span style="color: blue;">for</span> <span style="color: violet;">[item]</span> <span style="color: blue;">in</span> <span style="color: violet;">[iterable]</span> <span style="color: blue;">if</span> <span style="color: violet;">[condition]</span>]</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>To adequately show the advantage of list comprehensions,
+                    we would pair it up with an example of a literal conditional flow
+                    without and one using the list comprehension approach.
+                </p>
+<pre><code>
+    <span style="color: #02b4e3">numbers</span> = [1, 2, 3, 4, 5]
+    <span style="color: blue">for</span> <span style="color: violet;">number</span> <span style="color: blue;">in</span> <span style="color: violet;">numbers</span>:
+        <span style="color: green">print(</span>number<span style="color: green">)</span>
+
+    <span style="color: yellow">>></span>
+      <span class="terms">1
+      2
+      3
+      4
+      5</span>
+</code></pre>
+    <p>The code above can be rewritten in list comprehension format as:</p>
+<pre><code>
+    <span style="color: #02b4e3">numbers</span> = [1, 2, 3, 4, 5]
+    <span style="color: #02b4e3">number</span> = [<span style="color: violet;">number</span> <span style="color: blue;">for</span> <span style="color: violet;">number</span> <span style="color: blue;">in</span> <span style="color: violet;">numbers</span>]
+
+    <span style="color: yellow">>></span>
+      <span class="terms">[1, 2, 3, 4, 5]</span>
+</code></pre>
+    <p>So the difference is that a list comprehension would always
+        return a list
+    </p>
+
+    <p>Multiple conditions can also be combined</p>
+<pre><code>
+    <span style="color: #02b4e3">numbers</span> = [1, 2, 3, 4, 5]
+    <span style="color: #02b4e3">number</span> = [<span style="color: orange">number</span> <span style="color: blue">for</span> <span style="color: violet">number</span> <span style="color: blue">in</span> <span style="color: violet">numbers</span> <span style="color: blue">if</span> <span style="color: violet">number + 2 > 4</span>]
+    
+    <span style="color: green">print(</span>number<span style="color: green">)</span> 
+    <span style="color: yellow">>></span>
+      <span class="terms">[3, 4, 5]</span>
+</code></pre>
+        <div class="title-container" id="dictcomp">
+            <h3>Dictionary Comprehensions</h3>
+        </div>
+
+        <div class="content-body">
+            <p>Dictionary comprehensions provide a concise way to create a dictionary from 
+                a conditional flow. 
+
+                The basic structure always includes a for loop as the initial condition then any other condition 
+                can proceed. The iterable must always be a dictionary, with key-value pairs.
+            </p>
+            <table class="custom-table">
+                    <thead>
+                        <th>Statement</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{<span style="color: orange">key_to_be_returned: value_to_be_returned</span> <span style="color: blue;">for</span> <span style="color: violet">key, value</span> <span style="color: blue;">in</span> <span style="color: violet">[dictionary] [condition]</span>}</td>
+                        </tr>
+                    </tbody>
+            </table>
+            <pre><code>
+    <span style="color: #02b4e3">my_dict</span> = {"name": "TransLenCe", "course": "Python", "level": "for everyone"}
+    <span style="color: #02b4e3">dict_comprehension</span> = {<span style="color: orange">key: value</span> <span style="color: blue;">for</span> <span style="color: violet">key, value</span> <span style="color: blue;">in</span> <span style="color: violet">my_dict.items()</span> <span style="color: blue;">if</span> <span style="color: violet">key == "name"</span>}
+
+    <span style="color: green">print(</span>dict_comprehension<span style="color: green">)</span>
+    <span style="color: yellow">>></span>
+      <span class="terms">{'name': 'TransLenCe'}</span>
+</code></pre>
+        </div>
+
+        <div class="title-container" id="setcomp">
+            <h3>Set Comprehensions</h3>
+        </div>
+
+        <div class="content-body">
+            <p>Set comprehensions provide a concise way to create a set from 
+                an iterable. 
+
+                The basic structure always includes a for loop as the initial condition then any other condition 
+                can proceed. The iterable must always be a set.
+            </p>
+            <table class="custom-table">
+                    <thead>
+                        <th>Statement</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{<span style="color: orange">item_to_return</span> <span style="color: blue;">for</span> <span style="color: violet">item</span> <span style="color: blue;">in</span> <span style="color: violet">[set]</span> <span style="color: blue;">if</span> <span style="color: violet">item</span> <span style="color: blue;">in</span> <span style="color: violet">[condition]</span>}</td>
+                        </tr>
+                    </tbody>
+            </table>
+            <pre><code>
+    <span style="color: #02b4e3">my_set</span> = {"TransLenCe", "traNslence", "Python", "pYThon"}
+    <span style="color: #02b4e3">set_comprehension</span> = {<span style="color: orange;">item.lower()</span> <span style="color: blue">for</span> <span style="color: violet;">item</span> <span style="color: blue">in</span> <span style="color: violet;">my_set</span>}
+
+    <span style="color: green">print(</span>set_comprehension<span style="color: green">)</span>
+    <span style="color: yellow">>></span>
+      <span class="terms">{'translence', 'python'}</span>
+</code></pre>
+        </div>
+        <div class="content-body">
+            <p style="margin-top: 10px;">
+                For all comprehensions, adding an <span style="color: green;">if...else clause <span style="color: var(--special-color); text-decoration: underline;">changes
+                the order of arrangement.</span></span>
+
+                In the previous statements, the <span style="color: green;">if statement</span> always
+                follows the <span style="color: green;">for loop,</span> but adding an <span style="color: green;">else clause</span> changes this
+                arrangement. The <span style="color: green;">if...else clause</span> is <span style="color: var(--special-color); text-decoration: underline;">shifted to the front of the
+                for loop,</span> then the code to be executed when the if condition is met
+                is <span style="color: var(--special-color); text-decoration: underline;">placed before the if statement</span> whereas the condition to be executed 
+                when the else condition is met is <span style="color: var(--special-color); text-decoration: underline;">placed after the else clause as illustrated below.</span>
+            </p>
+            <table class="custom-table">
+                    <thead>
+                        <th>Statement</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>[<span style="color: orange;">[code to execute]</span> <span style="color: blue;"> if</span> <span style="color: violet;">[condition]</span> <span style="color: blue">else</span> <span style="color: orange;">[code to execute]</span> <span style="color: blue;">for</span> <span style="color: violet;">[item]</span> <span style="color: blue;">in</span> <span style="color:violet;">[iterable]</span>]</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>Let's look at a typical example</p>
+                <pre><code>
+    <span style="color: #02b4e3">numbers</span> = [1, 2, 3, 4, 5]
+    <span style="color: #02b4e3">results</span> = [<span style="color: orange">number * 2</span> <span style="color: blue">if</span> <span style="color: violet">number + 2 > 4</span> <span style="color: blue">else</span> <span style="color: orange">number * 4</span> <span style="color: blue">for</span> <span style="color: violet">number</span> <span style="color: blue">in</span> <span style="color: violet">numbers</span>]
+    
+    <span style="color: green">print(</span>results<span style="color: green">)</span> 
+    <span style="color: yellow">>></span>
+      <span class="terms">[4, 8, 12, 8, 10]</span>
+</code></pre>
+        <p style="margin-top: 10px;">In the code above, the for loop goes through each of the items in the <span style="color: green;">numbers list,
+            1, 2, 3, 4, 5.</span> Then it checks if <span style="color: green">each number + 1 is greater than 4 or not.</span> If the 
+            <span style="color: green">number is greater than 4,</span> the code for the if condition is executed, thus
+            <span style="color: green">the number * 2</span>. But if the <span style="color: green">number + 1 is less than 4,</span> then the code for the else condition
+            is executed, thus <span style="color: green">number * 4.</span>
+
+            So as seen in the results, <span style="color: green">1 + 1, 2 + 1 , 3 + 1 are not greater than 4,</span>
+            thus they <span style="color: green">meet the else condition.</span> So <span style="color: green">1, 2 and 3 would be multiplied by 4 yielding 4, 8 and 12 respectively.</span>
+            Then <span style="color: green">4 + 1, and 5 + 1 are greater than 4</span> so both 4 and 5 meet the if condition
+            hence would be <span style="color: green">multiplied by 2 each, yielding 8 and 10 respectively.</span>
+            
+            Thus we get the results being <span style="color: green">[4, 8, 12, 8 and 10].</span>
+        </p>
+
+        <p>Even more interestingly an additional <span style="color: green">if statement</span> can be added to only run this rule on <span style="color: green">even numbers.</span></p>
+        <pre><code>
+    <span style="color: #02b4e3">numbers</span> = [1, 2, 3, 4, 5]
+    <span style="color: #02b4e3">results</span> = [<span style="color: orange">number * 2</span> <span style="color: blue">if</span> <span style="color: violet">number + 2 > 4</span> <span style="color: blue">else</span> <span style="color: orange">number * 4</span> <span style="color: blue">for</span> <span style="color: violet">number</span> <span style="color: blue">in</span> <span style="color: violet">numbers</span> <span style="color: blue;">if</span> <span style="color: orange">number</span> <span style="color: blue;">in</span> <span style="color: violet;">[2, 4, 8]</span>]
+    
+    <span style="color: green">print(</span>results<span style="color: green">)</span> 
+    <span style="color: yellow">>></span>
+      <span class="terms">[8, 8]</span>
+</code></pre>
+         
+         <p style="margin-top: 10px;">In this case, only the numbers that can be found in the <span class="terms">list, [2, 4]</span> would be passed on to the next stage for multiplication
+            by either 2 or 4 based on the number being greater or less than 4.
+
+            So the final results then becomes <span class="terms">[8, 8],</span> thus 2 * 4 <span class="terms">(since 2 + 1 is not greater than 4)</span> and 4 * 2 <span class="terms">(since 4 + 1 is greater
+            than 4).</span>
+         </p>
+        </div>
+    </div>
+
+    <button class="practice-button">
+        <a href="practice" style="text-decoration: none;"><i class="fa-solid fa-wand-magic-sparkles"></i> Practice</a> 
+    </button>
+    </main>
+
+    <script>
+       // Scroll To Previous Section On Load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedSection = sessionStorage.getItem('lastActiveSection');
+            const defaultSection = 'introduction';
+            
+
+             if (savedSection && document.getElementById(savedSection)) {
+                document.getElementById(savedSection).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            } else {
+                document.getElementById(defaultSection).scrollIntoView({
+                    behavior: 'smooth'
+                })
+            }
+        });
+        
+        const sectionMap = {
+            'brief-intro': 'introduction',
+            'why-python': 'introduction',
+            'experience-structure': 'introduction',
+            'data-types': 'building-blocks',
+            'data-structures': 'building-blocks',
+            'variables': 'building-blocks',
+            'comparison-operators': 'building-blocks',
+            'slicing-data': 'slicing-and-indexing',
+            'indexing': 'slicing-and-indexing',
+            'slicesteps': 'slicing-and-indexing',
+            'string-methods': 'data-methods',
+            'list-methods': 'data-methods',
+            'set-methods': 'data-methods',
+            'dict-methods': 'data-methods',
+            'conditional': 'conditional-flow',
+            'if-else': 'conditional-flow',
+            'match-case': 'conditional-flow',
+            'for-loop': 'conditional-flow',
+            'while-loop': 'conditional-flow',
+            'try-statement': 'conditional-flow',
+            'with-statement': 'conditional-flow',
+            'break-con-pass': 'conditional-flow',
+            'listcomp': 'comprehensions',
+            'dictcomp': 'comprehensions',
+            'setcomp': 'comprehensions'
+        }
+
+        // Collapsible Accordion functionality for sidebar navigation
+        function toggleSection(element) {
+            element.classList.toggle('collapsed');
+        }
+
+        const pages = document.querySelectorAll('.page');
+        const navItems = document.querySelectorAll('.nav-item:not(.locked)');
+        const practiceButton = document.querySelector('.practice-button');
+        const codeOverlay = document.querySelector('.code-overlay');
+        const learnButton = document.querySelector('.learn-button');
+        const altAside = document.querySelector('.alt-aside');
+        const mainAside = document.querySelector('.sidebar');
+        const mainPage = document.querySelector('.main-container');
+        
+        altAside.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mainAside.classList.remove('hidden');
+            mainAside.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+            altAside.classList.add('hidden');
+        });
+
+        mainPage.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mainAside.classList.add('hidden');
+            altAside.classList.remove('hidden');
+        });
+        
+        pages.forEach((page, i) => {
+            if (i !== 0) page.style.display = 'none';
+        });
+
+        navItems.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').replace('#', '');
+                const pageId = sectionMap[targetId];
+                if (!pageId) return;
+
+                const targetPage = document.getElementById(pageId);
+                if (!targetPage) return;
+
+                // Hide all, show target
+                pages.forEach(p => p.style.display = 'none');
+                targetPage.style.display = 'block';
+
+                // Scroll to specific section within the page
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) targetSection.scrollIntoView({
+                    behavior: 'smooth' 
+                });
+
+                // Save Id of lastly visited page
+                sessionStorage.setItem('lastActiveSection', targetSection.id);
+
+                // Update active state
+                navItems.forEach(n => n.classList.remove('active'));
+                link.classList.add('active');
+            });
+        });
+        
+       
+
+
+        // Filter pills interactive active states
+        const filters = document.querySelectorAll('.btn-filter');
+        filters.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filters.forEach(f => f.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
