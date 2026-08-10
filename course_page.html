@@ -18,9 +18,11 @@
         --text-muted: #6b7280;
         --border-color: #e5e7eb;
         --bg-light: #f9fafb;
+        
+        
+        /*Define a fixed, reliable sidebar width for desktop */
+       --panel-width: 360px;
 
-        /* Define a fixed sidebar width for desktop*/
-        --panel-width: 360px;
     }
 
     * {
@@ -38,9 +40,9 @@
         overflow: hidden;
     }
 
-   .hidden {
-       display: none !important;
-   }
+    .hidden {
+        display: none !important;
+    }
 
     .alt-aside {
         position: fixed;
@@ -140,6 +142,8 @@
         flex-grow: 1;
         padding-bottom: 20px;
     }
+
+    
 
     .nav-section {
         border-bottom: 1px solid var(--border-color);
@@ -289,11 +293,26 @@
         margin-bottom: 24px;
     }
 
+
     .intro-text {
         color: #111827;
         font-size: 1.15rem;
     }
 
+/*
+    textarea {
+            width: 75%;
+            height: 450px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            margin: 30px 0px 0px 30px;
+            padding: 25px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+    }
+*/
+    
     pre {
         white-space: pre-wrap;
         word-break: break-word;
@@ -301,12 +320,205 @@
         overflow-x: hidden;
     }
 
-    .terms {
-        color: green;
-        font-weight: 100;
+    
+
+    
+    
+
+    /* --- Floating 'Practice and Learn' Buttons --- */
+    .practice-button {
+        
+        /* position: fixed; */
+        bottom: 20px;
+        right: 24px;
+        background-color: #ffffff;
+        border: 1px solid var(--border-color);
+        padding: 10px 20px;
+        border-radius: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        z-index: 100; /* Ensure button stays on top of content */
     }
 
-       .table-container {
+    .practice-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    .practice-button i {
+        color: #38bdf8;
+        font-size: 1.1rem;
+    }
+
+    .learn-button {
+        position: fixed;
+        bottom: 20px;
+        right: 24px;
+        background-color: #ffffff;
+        border: 1px solid var(--border-color);
+        padding: 10px 20px;
+        border-radius: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        z-index: 100; /* Ensure button stays on top of content */
+    }
+
+    .learn-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    .learn-button i {
+        color: #38bdf8;
+        font-size: 1.1rem;
+    }
+
+    .code-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #e3f2fd 0%, #f8f9ff 100%);
+        backdrop-filter: blur(4px);
+        z-index: 998;
+        overflow-y: auto;
+    }
+
+    .code-overlay.open {
+        display: block;
+    }
+
+     
+
+    
+     
+
+
+#code-body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #141414;
+    color: #fff;
+    height: 100vh;
+  /*     Split layout: Sidebar on left, Canvas on right*/ 
+    display: flex;
+    flex-direction: row;
+}
+
+#control-panel {
+    /* Change from absolute to static layout positioning */
+    position: relative;
+    width: var(--panel-width);
+    min-width: var(--panel-width);
+    height: 100vh;
+    background: #1e1e1e;
+    padding: 25px;
+    border-right: 1px solid #333;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+h3 { 
+    margin-top: 0; 
+    margin-bottom: 8px; 
+    font-size: 1.3rem;
+}
+textarea {
+    width: 100%;
+    height: 150px;
+    padding: 12px;
+    background: #232323;
+    border: 1px solid #555;
+    color: #00ffcc;
+    font-family: 'Courier New', Courier, monospace;
+    border-radius: 6px;
+    box-sizing: border-box;
+    resize: none;
+    font-size: 14px;
+}
+#code-button {
+    width: 100%;
+    padding: 12px;
+    background: #28a745;
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: 1em;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 12px;
+}
+#code-button:hover {
+    background: #218838;
+}
+#code-output {
+    margin-top: 15px;
+    padding: 12px;
+    background: #111;
+    border-radius: 6px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85em;
+    color: #ffffff;
+    white-space: pre-wrap;
+    flex-grow: 1; /* Allow terminal to fill remaining sidebar space dynamically */
+    max-height: 40vh;
+    overflow-y: auto;
+    border: 1px solid #333;
+    box-sizing: border-box;
+}
+#canvas-container {
+    /* Automatically claim 100% of the screen space left over by the sidebar */
+    flex-grow: 1;
+    height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+.instructions {
+    font-size: 0.85em;
+    color: #aaa;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.cube-label {
+            position: absolute;
+            z-index: 5;
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.75);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            pointer-events: none; 
+            transition: border-color 0.3s, color 0.3s;
+        }
+
+.terms {
+    color: green;
+    font-weight: 100;
+}
+
+
+
+.table-container {
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -318,6 +530,7 @@
   border-collapse: collapse; /* Merges double borders into a single clean line */
   margin: 20px 0;
   font-family: sans-serif;
+  
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -363,204 +576,27 @@
 
 }
 
-.comment {
-    color: #c5bfbfb7;
-    font-style: italic;
-}
+ #comprehensions pre {
+    background-color: #111;
+    color: white;
+    border-radius: 3%;
+ }
+
+
 
 .results {
     color: green;
     font-weight: 100;
 }
 
-    
+.comment {
+    color: #c5bfbfb7;
+    font-style: italic;
+}
 
-    /* --- Floating 'Practice and Learn' Buttons --- */
-    .practice-button {
-        position: fixed;
-        bottom: 5px;
-        right: 24px;
-        background-color: #ffffff;
-        border: 1px solid var(--border-color);
-        padding: 10px 20px;
-        border-radius: 30px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: 500;
-        font-size: 0.95rem;
-        cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
-        z-index: 100; /* Ensure button stays on top of content */
-    }
 
-    .practice-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-    }
-
-    .practice-button i {
-        color: #38bdf8;
-        font-size: 1.1rem;
-    }
-
-    .code-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: linear-gradient(135deg, #e3f2fd 0%, #f8f9ff 100%);
-        backdrop-filter: blur(4px);
-        z-index: 998;
-        overflow-y: auto;
-    }
-
-    .code-overlay.open {
-        display: block;
-    }
-
-    .learn-button {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        background-color: #ffffff;
-        border: 1px solid var(--border-color);
-        padding: 10px 20px;
-        border-radius: 30px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: 500;
-        font-size: 0.95rem;
-        cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
-        z-index: 100; /* Ensure button stays on top of content */
-    }
-
-    .learn-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-    }
-
-    .learn-button i {
-        color: #38bdf8;
-        font-size: 1.1rem;
-    }
-
-    #code-body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #141414;
-    color: #fff;
-    height: 100vh;
-  /*     Split layout: Sidebar on left, Canvas on right*/ 
-    display: flex;
-    flex-direction: row;
-    }
-
-    #control-panel {
-    /* Change from absolute to static layout positioning */
-    position: relative;
-    width: var(--panel-width);
-    min-width: var(--panel-width);
-    height: 100vh;
-    background: #1e1e1e;
-    padding: 25px;
-    border-right: 1px solid #333;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    z-index: 10;
-    }
-
-    h3 { 
-    margin-top: 0; 
-    margin-bottom: 8px; 
-    font-size: 1.3rem;
-    }
-    textarea {
-    width: 100%;
-    height: 150px;
-    padding: 12px;
-    background: #232323;
-    border: 1px solid #555;
-    color: #00ffcc;
-    font-family: 'Courier New', Courier, monospace;
-    border-radius: 6px;
-    box-sizing: border-box;
-    resize: none;
-    font-size: 14px;
-    }
-
-    #code-button {
-    width: 100%;
-    padding: 12px;
-    background: #28a745;
-    border: none;
-    color: white;
-    font-weight: bold;
-    font-size: 1em;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
-    margin-top: 12px;
-    }
-    #code-button:hover {
-    background: #218838;
-    }
-
-    #code-output {
-    margin-top: 15px;
-    padding: 12px;
-    background: #111;
-    border-radius: 6px;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.85em;
-    color: #ffffff;
-    white-space: pre-wrap;
-    flex-grow: 1; /* Allow terminal to fill remaining sidebar space dynamically */
-    max-height: 40vh;
-    overflow-y: auto;
-    border: 1px solid #333;
-    box-sizing: border-box;
-    } 
-    #canvas-container {
-    /* Automatically claim 100% of the screen space left over by the sidebar */
-    flex-grow: 1;
-    height: 100vh;
-    position: relative;
-    z-index: 1;
-    }
-    .instructions {
-    font-size: 0.85em;
-    color: #aaa;
-    margin-bottom: 12px;
-    line-height: 1.4;
-    }
-
-    .cube-label {
-            position: absolute;
-            z-index: 5;
-            transform: translate(-50%, -50%);
-            color: #ffffff;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            font-size: 14px;
-            background: rgba(0, 0, 0, 0.75);
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: 1px solid #555;
-            pointer-events: none;
-            transition: border-color 0.3s, color 0.3s;
-    }
-
-    
-
-    
-    /* Responsive Mobile Layout Split */
+/* Responsive Mobile Layout (Keeps your mobile split working) */
+/* Responsive Mobile Layout Split */
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -587,7 +623,6 @@
                 display: none;
             }
         }
-
     
 
     /* --- FIXED RESPONSIVE MEDIA QUERY --- */
@@ -610,7 +645,6 @@
             padding: 24px;
             overflow-y: visible; /* Prevent a second nested scroll window inside the article area */
         }
-
     }
    </style>
 </head>
