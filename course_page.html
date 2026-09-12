@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TransLenCe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css" />
-    <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"> -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
+    <!-- <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css" /> -->
+    <!-- <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script> -->
     
    <style>
     :root {
@@ -18,11 +18,9 @@
         --text-muted: #6b7280;
         --border-color: #e5e7eb;
         --bg-light: #f9fafb;
-        
-        
-        /*Define a fixed, reliable sidebar width for desktop */
-       --panel-width: 360px;
 
+        /* Define a fixed sidebar width for desktop*/
+        --panel-width: 360px;
     }
 
     * {
@@ -40,9 +38,9 @@
         overflow: hidden;
     }
 
-    .hidden {
-        display: none !important;
-    }
+   .hidden {
+       display: none !important;
+   }
 
     .alt-aside {
         position: fixed;
@@ -142,8 +140,6 @@
         flex-grow: 1;
         padding-bottom: 20px;
     }
-
-    
 
     .nav-section {
         border-bottom: 1px solid var(--border-color);
@@ -293,26 +289,11 @@
         margin-bottom: 24px;
     }
 
-
     .intro-text {
         color: #111827;
         font-size: 1.15rem;
     }
 
-/*
-    textarea {
-            width: 75%;
-            height: 450px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 14px;
-            margin: 30px 0px 0px 30px;
-            padding: 25px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            resize: vertical;
-    }
-*/
-    
     pre {
         white-space: pre-wrap;
         word-break: break-word;
@@ -320,205 +301,12 @@
         overflow-x: hidden;
     }
 
-    
-
-    
-    
-
-    /* --- Floating 'Practice and Learn' Buttons --- */
-    .practice-button {
-        
-        /* position: fixed; */
-        bottom: 20px;
-        right: 24px;
-        background-color: #ffffff;
-        border: 1px solid var(--border-color);
-        padding: 10px 20px;
-        border-radius: 30px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: 500;
-        font-size: 0.95rem;
-        cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
-        z-index: 100; /* Ensure button stays on top of content */
+    .terms {
+        color: green;
+        font-weight: 100;
     }
 
-    .practice-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-    }
-
-    .practice-button i {
-        color: #38bdf8;
-        font-size: 1.1rem;
-    }
-
-    .learn-button {
-        position: fixed;
-        bottom: 20px;
-        right: 24px;
-        background-color: #ffffff;
-        border: 1px solid var(--border-color);
-        padding: 10px 20px;
-        border-radius: 30px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: 500;
-        font-size: 0.95rem;
-        cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
-        z-index: 100; /* Ensure button stays on top of content */
-    }
-
-    .learn-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-    }
-
-    .learn-button i {
-        color: #38bdf8;
-        font-size: 1.1rem;
-    }
-
-    .code-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: linear-gradient(135deg, #e3f2fd 0%, #f8f9ff 100%);
-        backdrop-filter: blur(4px);
-        z-index: 998;
-        overflow-y: auto;
-    }
-
-    .code-overlay.open {
-        display: block;
-    }
-
-     
-
-    
-     
-
-
-#code-body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #141414;
-    color: #fff;
-    height: 100vh;
-  /*     Split layout: Sidebar on left, Canvas on right*/ 
-    display: flex;
-    flex-direction: row;
-}
-
-#control-panel {
-    /* Change from absolute to static layout positioning */
-    position: relative;
-    width: var(--panel-width);
-    min-width: var(--panel-width);
-    height: 100vh;
-    background: #1e1e1e;
-    padding: 25px;
-    border-right: 1px solid #333;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    z-index: 10;
-}
-h3 { 
-    margin-top: 0; 
-    margin-bottom: 8px; 
-    font-size: 1.3rem;
-}
-textarea {
-    width: 100%;
-    height: 150px;
-    padding: 12px;
-    background: #232323;
-    border: 1px solid #555;
-    color: #00ffcc;
-    font-family: 'Courier New', Courier, monospace;
-    border-radius: 6px;
-    box-sizing: border-box;
-    resize: none;
-    font-size: 14px;
-}
-#code-button {
-    width: 100%;
-    padding: 12px;
-    background: #28a745;
-    border: none;
-    color: white;
-    font-weight: bold;
-    font-size: 1em;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
-    margin-top: 12px;
-}
-#code-button:hover {
-    background: #218838;
-}
-#code-output {
-    margin-top: 15px;
-    padding: 12px;
-    background: #111;
-    border-radius: 6px;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.85em;
-    color: #ffffff;
-    white-space: pre-wrap;
-    flex-grow: 1; /* Allow terminal to fill remaining sidebar space dynamically */
-    max-height: 40vh;
-    overflow-y: auto;
-    border: 1px solid #333;
-    box-sizing: border-box;
-}
-#canvas-container {
-    /* Automatically claim 100% of the screen space left over by the sidebar */
-    flex-grow: 1;
-    height: 100vh;
-    position: relative;
-    z-index: 1;
-}
-.instructions {
-    font-size: 0.85em;
-    color: #aaa;
-    margin-bottom: 12px;
-    line-height: 1.4;
-}
-
-.cube-label {
-            position: absolute;
-            z-index: 5;
-            transform: translate(-50%, -50%);
-            color: #ffffff;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            font-size: 14px;
-            background: rgba(0, 0, 0, 0.75);
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: 1px solid #555;
-            pointer-events: none; 
-            transition: border-color 0.3s, color 0.3s;
-        }
-
-.terms {
-    color: green;
-    font-weight: 100;
-}
-
-
-
-.table-container {
+       .table-container {
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -530,7 +318,6 @@ textarea {
   border-collapse: collapse; /* Merges double borders into a single clean line */
   margin: 20px 0;
   font-family: sans-serif;
-  
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -570,23 +357,22 @@ textarea {
 }
 
 #conditional-flow pre {
-    background-color: #111;
+    background: linear-gradient(135deg, #0f172a 70%, #e3f2fd 100%);
     color: white;
     border-radius: 3%;
 
 }
 
- #comprehensions pre {
-    background-color: #111;
+#comprehensions pre {
+    background: linear-gradient(135deg, #0f172a 70%, #e3f2fd 100%);
     color: white;
     border-radius: 3%;
- }
+}
 
-
-
-.results {
-    color: green;
-    font-weight: 100;
+#functions pre {
+    background: linear-gradient(135deg, #0f172a 70%, #e3f2fd 100%);
+    color: white;
+    border-radius: 3%;
 }
 
 .comment {
@@ -594,9 +380,199 @@ textarea {
     font-style: italic;
 }
 
+.results {
+    color: green;
+    font-weight: 100;
+}
 
-/* Responsive Mobile Layout (Keeps your mobile split working) */
-/* Responsive Mobile Layout Split */
+    
+
+    /* --- Floating 'Practice and Learn' Buttons --- */
+    .practice-button {
+        position: fixed;
+        bottom: 5px;
+        right: 24px;
+        background-color: #ffffff;
+        border: 1px solid var(--border-color);
+        padding: 10px 20px;
+        border-radius: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        z-index: 100; /* Ensure button stays on top of content */
+    }
+
+    .practice-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    .practice-button i {
+        color: #38bdf8;
+        font-size: 1.1rem;
+    }
+
+    .code-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #e3f2fd 0%, #f8f9ff 100%);
+        backdrop-filter: blur(4px);
+        z-index: 998;
+        overflow-y: auto;
+    }
+
+    .code-overlay.open {
+        display: block;
+    }
+
+    .learn-button {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background-color: #ffffff;
+        border: 1px solid var(--border-color);
+        padding: 10px 20px;
+        border-radius: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        z-index: 100; /* Ensure button stays on top of content */
+    }
+
+    .learn-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    .learn-button i {
+        color: #38bdf8;
+        font-size: 1.1rem;
+    }
+
+    #code-body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #141414;
+    color: #fff;
+    height: 100vh;
+  /*     Split layout: Sidebar on left, Canvas on right*/ 
+    display: flex;
+    flex-direction: row;
+    }
+
+    #control-panel {
+    /* Change from absolute to static layout positioning */
+    position: relative;
+    width: var(--panel-width);
+    min-width: var(--panel-width);
+    height: 100vh;
+    background: #1e1e1e;
+    padding: 25px;
+    border-right: 1px solid #333;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    }
+
+    h3 { 
+    margin-top: 0; 
+    margin-bottom: 8px; 
+    font-size: 1.3rem;
+    }
+    textarea {
+    width: 100%;
+    height: 150px;
+    padding: 12px;
+    background: #232323;
+    border: 1px solid #555;
+    color: #00ffcc;
+    font-family: 'Courier New', Courier, monospace;
+    border-radius: 6px;
+    box-sizing: border-box;
+    resize: none;
+    font-size: 14px;
+    }
+
+    #code-button {
+    width: 100%;
+    padding: 12px;
+    background: #28a745;
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: 1em;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 12px;
+    }
+    #code-button:hover {
+    background: #218838;
+    }
+
+    #code-output {
+    margin-top: 15px;
+    padding: 12px;
+    background: #111;
+    border-radius: 6px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85em;
+    color: #ffffff;
+    white-space: pre-wrap;
+    flex-grow: 1; /* Allow terminal to fill remaining sidebar space dynamically */
+    max-height: 40vh;
+    overflow-y: auto;
+    border: 1px solid #333;
+    box-sizing: border-box;
+    } 
+    #canvas-container {
+    /* Automatically claim 100% of the screen space left over by the sidebar */
+    flex-grow: 1;
+    height: 100vh;
+    position: relative;
+    z-index: 1;
+    }
+    .instructions {
+    font-size: 0.85em;
+    color: #aaa;
+    margin-bottom: 12px;
+    line-height: 1.4;
+    }
+
+    .cube-label {
+            position: absolute;
+            z-index: 5;
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.75);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            pointer-events: none;
+            transition: border-color 0.3s, color 0.3s;
+    }
+
+    
+
+    
+    /* Responsive Mobile Layout Split */
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -623,6 +599,7 @@ textarea {
                 display: none;
             }
         }
+
     
 
     /* --- FIXED RESPONSIVE MEDIA QUERY --- */
@@ -645,6 +622,7 @@ textarea {
             padding: 24px;
             overflow-y: visible; /* Prevent a second nested scroll window inside the article area */
         }
+
     }
    </style>
 </head>
@@ -668,7 +646,7 @@ textarea {
                     <i class="fa-solid fa-chevron-down"></i>
                 </div>
                 <div class="section-content">
-                    <a href="#brief-intro" class="nav-item active">
+                    <a href="#brief-intro" class="nav-item">
                         <i class="fa-solid fa-circle icon-status"></i>
                         <span>Brief Introduction To Computer Programming</span>
                     </a>
@@ -789,6 +767,7 @@ textarea {
                     </a>  
                 </div>
             </div>
+            <!-- Comprehensions -->
             <div class="nav-section">
                 <div class="section-header collapsed" onclick="toggleSection(this)">
                     <span>6. List, Dictionary and Generator Comprehensions</span>
@@ -807,32 +786,34 @@ textarea {
                         <i class="fa-solid fa-circle icon-status"></i>
                         <span>Set Comprehensions</span>
                     </a>
+                    <a href="#genexprs" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>Generator Expressions</span>
+                    </a>
                 </div>
             </div>
+            <!-- Functions -->
             <div class="nav-section">
-                <div class="section-header collapsed" onclick="toggleSection(this)">
+                <div class="section-header" onclick="toggleSection(this)">
                     <span>7. Functions: Building Reusable Code</span>
                     <i class="fa-solid fa-chevron-down"></i>
                 </div>
                 <div class="section-content">
-                    <a href="#" class="nav-item locked">
-                        <i class="fa-solid fa-lock icon-status"></i>
-                        <span>Arguments and Parameters</span>
+                    <a href="#funct-example" class="nav-item active">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>Functions Overview</span>
                     </a>
-                    <a href="#" class="nav-item locked">
-                        <i class="fa-solid fa-lock icon-status"></i>
-                        <span>Functional Annotations</span>
+                    <a href="#argsandparams" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>Parameters and Arguments</span>
                     </a>
-                    <a href="#" class="nav-item locked">
-                        <i class="fa-solid fa-lock icon-status"></i>
-                        <span>Generator Comprehensions</span>
-                    </a>
-                    <a href="#" class="nav-item locked">
-                        <i class="fa-solid fa-lock icon-status"></i>
+                    <a href="#lambdaexprs" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
                         <span>Lambda Expressions</span>
                     </a>
                 </div>
             </div>
+            <!-- Imports -->
             <div class="nav-section">
                 <div class="section-header collapsed" onclick="toggleSection(this)">
                     <span>8. Libraries, Packages and Modules</span>
@@ -853,6 +834,7 @@ textarea {
                     </a>
                 </div>
             </div>
+            <!-- File handling -->
             <div class="nav-section">
                 <div class="section-header collapsed" onclick="toggleSection(this)">
                     <span>9. File Handling</span>
@@ -873,7 +855,7 @@ textarea {
                     </a>
                 </div>
             </div>
-            
+            <!-- Object Oriented Programming -->
             <div class="nav-section">
                 <div class="section-header collapsed" onclick="toggleSection(this)">
                     <span>10. Objected Oriented Programming (OOP)</span>
@@ -894,6 +876,7 @@ textarea {
                     </a>
                 </div>
             </div>
+            <!-- Society Inspired Challenge -->
             <div class="nav-section">
                 <div class="section-header collapsed" onclick="toggleSection(this)">
                     <span>11. Society Inspired Challenge (SIC)</span>
@@ -1672,7 +1655,6 @@ So, <strong class="terms">numbers[::2] returns</strong>
             <p>
                 Each statement has its own set of clauses it goes with. 
             </p>
-        </div>
             <!-- If Else Elif -->
             <div class="title-container" id="if-else">
                 <h3>if Statements</h3>
@@ -2123,10 +2105,9 @@ So, <strong class="terms">numbers[::2] returns</strong>
        </span>
             </code></pre>
           </div>
+        </div>
     </div>
-    
-       
-    
+        <!-- Comprehensions -->
     <div class="page" id="comprehensions">
         <h2 id="listcomp">List, Dictionary and Generator Comprehensions</h2>
         <div class="content-body">
@@ -2167,7 +2148,7 @@ So, <strong class="terms">numbers[::2] returns</strong>
                 </p>
 <pre><code>
     <span style="color: #02b4e3">numbers</span> = [1, 2, 3, 4, 5]
-    <span style="color: blue">for</span> <span style="color: violet;">number</span> <span style="color: blue;">in</span> <span style="color: violet;">numbers</span>:
+    <span style="color: rgb(166, 255, 0);">for</span> <span style="color: violet;">number</span> <span style="color: rgb(166, 255, 0);">in</span> <span style="color: violet;">numbers</span>:
         <span style="color: green">print(</span>number<span style="color: green">)</span>
 
     <span style="color: yellow">>></span>
@@ -2180,31 +2161,28 @@ So, <strong class="terms">numbers[::2] returns</strong>
     <p>The code above can be rewritten in list comprehension format as:</p>
 <pre><code>
     <span style="color: #02b4e3">numbers</span> = [1, 2, 3, 4, 5]
-    <span style="color: #02b4e3">number</span> = [<span style="color: violet;">number</span> <span style="color: blue;">for</span> <span style="color: violet;">number</span> <span style="color: blue;">in</span> <span style="color: violet;">numbers</span>]
+    <span style="color: #02b4e3">number</span> = [<span style="color: violet;">number</span> <span style="color: rgb(166, 255, 0);">for</span> <span style="color: violet;">number</span> <span style="color: rgb(166, 255, 0);">in</span> <span style="color: violet;">numbers</span>]
 
     <span style="color: yellow">>></span>
       <span class="terms">[1, 2, 3, 4, 5]</span>
 </code></pre>
     <p>So the difference is that a list comprehension would always
-        return a list
-    </p>
-
-    <p>Multiple conditions can also be combined</p>
+    return a list. Multiple conditions can also be combined</p>
 <pre><code>
     <span style="color: #02b4e3">numbers</span> = [1, 2, 3, 4, 5]
-    <span style="color: #02b4e3">number</span> = [<span style="color: orange">number</span> <span style="color: blue">for</span> <span style="color: violet">number</span> <span style="color: blue">in</span> <span style="color: violet">numbers</span> <span style="color: blue">if</span> <span style="color: violet">number + 2 > 4</span>]
+    <span style="color: #02b4e3">number</span> = [<span style="color: orange">number</span> <span style="color: rgb(166, 255, 0);">for</span> <span style="color: violet">number</span> <span style="color: rgb(166, 255, 0);">in</span> <span style="color: violet">numbers</span> <span style="color: rgb(166, 255, 0);">if</span> <span style="color: violet">number + 2 > 4</span>]
     
     <span style="color: green">print(</span>number<span style="color: green">)</span> 
     <span style="color: yellow">>></span>
       <span class="terms">[3, 4, 5]</span>
 </code></pre>
-        </div>
-        <div class="title-container" id="dictcomp">
+    </div><br>
+    <!-- Dictionary Comprehensions -->
+    <div class="title-container" id="dictcomp">
             <h3>Dictionary Comprehensions</h3>
-        </div>
-
-        <div class="content-body">
-            <p>Dictionary comprehensions provide a concise way to create a dictionary from 
+    </div>
+    <div class="content-body">
+        <p>Dictionary comprehensions provide a concise way to create a dictionary from 
                 a conditional flow. 
 
                 The basic structure always includes a for loop as the initial condition then any other condition 
@@ -2222,20 +2200,20 @@ So, <strong class="terms">numbers[::2] returns</strong>
             </table>
             <pre><code>
     <span style="color: #02b4e3">my_dict</span> = {"name": "TransLenCe", "course": "Python", "level": "for everyone"}
-    <span style="color: #02b4e3">dict_comprehension</span> = {<span style="color: orange">key: value</span> <span style="color: blue;">for</span> <span style="color: violet">key, value</span> <span style="color: blue;">in</span> <span style="color: violet">my_dict.items()</span> <span style="color: blue;">if</span> <span style="color: violet">key == "name"</span>}
+    <span style="color: #02b4e3">dict_comprehension</span> = {<span style="color: orange">key: value</span> <span style="color: rgb(166, 255, 0);">for</span> <span style="color: violet">key, value</span> <span style="color: rgb(166, 255, 0);">in</span> <span style="color: violet">my_dict.items()</span> <span style="color: rgb(166, 255, 0);">if</span> <span style="color: violet">key == "name"</span>}
 
     <span style="color: green">print(</span>dict_comprehension<span style="color: green">)</span>
     <span style="color: yellow">>></span>
       <span class="terms">{'name': 'TransLenCe'}</span>
 </code></pre>
-        </div>
-
-        <div class="title-container" id="setcomp">
+    </div><br>
+<!-- Set Comprehensions -->
+    <div class="title-container" id="setcomp">
             <h3>Set Comprehensions</h3>
-        </div>
+    </div>
 
-        <div class="content-body">
-            <p>Set comprehensions provide a concise way to create a set from 
+    <div class="content-body">
+        <p>Set comprehensions provide a concise way to create a set from 
                 an iterable. 
 
                 The basic structure always includes a for loop as the initial condition then any other condition 
@@ -2253,14 +2231,14 @@ So, <strong class="terms">numbers[::2] returns</strong>
             </table>
             <pre><code>
     <span style="color: #02b4e3">my_set</span> = {"TransLenCe", "traNslence", "Python", "pYThon"}
-    <span style="color: #02b4e3">set_comprehension</span> = {<span style="color: orange;">item.lower()</span> <span style="color: blue">for</span> <span style="color: violet;">item</span> <span style="color: blue">in</span> <span style="color: violet;">my_set</span>}
+    <span style="color: #02b4e3">set_comprehension</span> = {<span style="color: orange;">item.lower()</span> <span style="color: rgb(166, 255, 0);">for</span> <span style="color: violet;">item</span> <span style="color: rgb(166, 255, 0);">in</span> <span style="color: violet;">my_set</span>}
 
     <span style="color: green">print(</span>set_comprehension<span style="color: green">)</span>
     <span style="color: yellow">>></span>
       <span class="terms">{'translence', 'python'}</span>
 </code></pre>
-        </div>
-        <div class="content-body">
+    </div>
+    <div class="content-body">
             <p style="margin-top: 10px;">
                 For all comprehensions, adding an <span style="color: green;">if...else clause <span style="color: var(--special-color); text-decoration: underline;">changes
                 the order of arrangement.</span></span>
@@ -2278,29 +2256,33 @@ So, <strong class="terms">numbers[::2] returns</strong>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>[<span style="color: orange;">[code to execute]</span> <span style="color: blue;"> if</span> <span style="color: violet;">[condition]</span> <span style="color: blue">else</span> <span style="color: orange;">[code to execute]</span> <span style="color: blue;">for</span> <span style="color: violet;">[item]</span> <span style="color: blue;">in</span> <span style="color:violet;">[iterable]</span>]</td>
+                            <td>[<span style="color: orange;">[code to execute]</span> <span style="color: rgb(166, 255, 0);"> if</span> <span style="color: violet;">[condition]</span> <span style="color: rgb(166, 255, 0);">else</span> <span style="color: orange;">[code to execute]</span> <span style="color: blue;">for</span> <span style="color: violet;">[item]</span> <span style="color: blue;">in</span> <span style="color:violet;">[iterable]</span>]</td>
                         </tr>
                     </tbody>
                 </table>
                 <p>Let's look at a typical example</p>
                 <pre><code>
     <span style="color: #02b4e3">numbers</span> = [1, 2, 3, 4, 5]
-    <span style="color: #02b4e3">results</span> = [<span style="color: orange">number * 2</span> <span style="color: blue">if</span> <span style="color: violet">number + 2 > 4</span> <span style="color: blue">else</span> <span style="color: orange">number * 4</span> <span style="color: blue">for</span> <span style="color: violet">number</span> <span style="color: blue">in</span> <span style="color: violet">numbers</span>]
+    <span style="color: #02b4e3">results</span> = [<span style="color: orange">number * 2</span> <span style="color: rgb(166, 255, 0);">if</span> <span style="color: violet">number + 2 > 4</span> <span style="color: rgb(166, 255, 0);">else</span> <span style="color: orange">number * 4</span> <span style="color: rgb(166, 255, 0);">for</span> <span style="color: violet">number</span> <span style="color: rgb(166, 255, 0);">in</span> <span style="color: violet">numbers</span>]
     
     <span style="color: green">print(</span>results<span style="color: green">)</span> 
     <span style="color: yellow">>></span>
       <span class="terms">[4, 8, 12, 8, 10]</span>
 </code></pre>
         <p style="margin-top: 10px;">In the code above, the for loop goes through each of the items in the <span style="color: green;">numbers list,
-            1, 2, 3, 4, 5.</span> Then it checks if <span style="color: green">each number + 1 is greater than 4 or not.</span> If the 
+            1, 2, 3, 4, 5.</span> 
+        <p>Then it checks if <span style="color: green">each number + 1 is greater than 4 or not.</span> If the 
             <span style="color: green">number is greater than 4,</span> the code for the if condition is executed, thus
-            <span style="color: green">the number * 2</span>. But if the <span style="color: green">number + 1 is less than 4,</span> then the code for the else condition
+            <span style="color: green">the number * 2</span>.</p>
+        <p>But if the <span style="color: green">number + 1 is less than 4,</span> then the code for the else condition
             is executed, thus <span style="color: green">number * 4.</span>
+        </p>
 
-            So as seen in the results, <span style="color: green">1 + 1, 2 + 1 , 3 + 1 are not greater than 4,</span>
+          <p>  So as seen in the results, <span style="color: green">1 + 1, 2 + 1 , 3 + 1 are not greater than 4,</span>
             thus they <span style="color: green">meet the else condition.</span> So <span style="color: green">1, 2 and 3 would be multiplied by 4 yielding 4, 8 and 12 respectively.</span>
             Then <span style="color: green">4 + 1, and 5 + 1 are greater than 4</span> so both 4 and 5 meet the if condition
             hence would be <span style="color: green">multiplied by 2 each, yielding 8 and 10 respectively.</span>
+          </p>
             
             Thus we get the results being <span style="color: green">[4, 8, 12, 8 and 10].</span>
         </p>
@@ -2308,7 +2290,7 @@ So, <strong class="terms">numbers[::2] returns</strong>
         <p>Even more interestingly an additional <span style="color: green">if statement</span> can be added to only run this rule on <span style="color: green">even numbers.</span></p>
         <pre><code>
     <span style="color: #02b4e3">numbers</span> = [1, 2, 3, 4, 5]
-    <span style="color: #02b4e3">results</span> = [<span style="color: orange">number * 2</span> <span style="color: blue">if</span> <span style="color: violet">number + 2 > 4</span> <span style="color: blue">else</span> <span style="color: orange">number * 4</span> <span style="color: blue">for</span> <span style="color: violet">number</span> <span style="color: blue">in</span> <span style="color: violet">numbers</span> <span style="color: blue;">if</span> <span style="color: orange">number</span> <span style="color: blue;">in</span> <span style="color: violet;">[2, 4, 8]</span>]
+    <span style="color: #02b4e3">results</span> = [<span style="color: orange">number * 2</span> <span style="color: rgb(166, 255, 0);">if</span> <span style="color: violet">number + 2 > 4</span> <span style="color: rgb(166, 255, 0);">else</span> <span style="color: orange">number * 4</span> <span style="color: rgb(166, 255, 0);">for</span> <span style="color: violet">number</span> <span style="color: rgb(166, 255, 0);">in</span> <span style="color: violet">numbers</span> <span style="color: rgb(166, 255, 0);">if</span> <span style="color: orange">number</span> <span style="color: rgb(166, 255, 0);">in</span> <span style="color: violet;">[2, 4, 8]</span>]
     
     <span style="color: green">print(</span>results<span style="color: green">)</span> 
     <span style="color: yellow">>></span>
@@ -2322,8 +2304,342 @@ So, <strong class="terms">numbers[::2] returns</strong>
             than 4).</span>
          </p>
         </div>
-    <!-- Constant barrier divs -->
+        <div id="genexprs">
+            <h3>Generator Expressions</h3>
         </div>
+        <div class="content-body">
+            <p>
+                <span class="terms">Generator expressions</span> are used for returning <span class="terms">iterative items 
+                one at a time.</span> For instance, consider a number of shoppers 
+                in a queue waiting to pay for their products at the cashier's post.
+                The cashier cannot attend to all the people at a time so they
+                have to make payments one after the other.
+            </p>
+            <p> If we are to use a <span class="terms">list comprehension</span> to collect the payments, the cashier
+                would have to <span class="terms">count the total number of people in the queue and acccept 
+                each person's payment before the shop closes.</span>
+
+                Contrariwise, <span class="terms">generator expressions</span> offer a more simpler approach. The cashier can attend to each person in the queue 
+                <span class="terms">one after the other without having to count the total number of people in the queue.</span>
+                And the cashier can also choose to attend to only a few people in the queue and <span class="terms">leave the rest for another time.</span>
+                This is exactly what <span class="terms">generator expressions</span> do. They allow each item in an iterable (list, dictionary, 
+                set) to be attended to uniquely instead of as a batch.  
+            </p>
+            <div class="title-container">
+                <h3>Syntax of Generator Expressions</h3>
+            </div>
+            <div class="content-body">
+                <p>Generator expressions are just like list comprehensions only differing in the symbol used.
+                    While list comprehensions use <span class="terms">square brackets, [],</span> generator expressions use <span class="terms">parenthesis, ().</span>
+                </p>
+            </div>
+            <p>
+                <pre><code>
+        <span style="color: rgb(23, 192, 164)">variable_name</span> = (<span style="color: green;">[code expression]</span> <span style="color: rgb(166, 255, 0);">for</span> <span style="color: orange;">item</span> <span style="color: rgb(166, 255, 0);">in</span> <span style="color: orange;">iterable</span>)
+        <span style="font-style:italic; color:#8e8989;"># Then to print the first item you run</span>
+        <span style="color: rgb(166, 255, 0);">print(<span style="color: blueviolet;">next(</span><span style="color: rgb(23, 192, 164)">variable_name</span><span style="color: blueviolet;">)</span>)</span>
+
+        <span style="font-style:italic; color:#8e8989;"># To print the second</span>
+        <span style="color: rgb(166, 255, 0);">print(<span style="color: blueviolet;">next(</span><span style="color: rgb(23, 192, 164)">variable_name</span><span style="color: blueviolet;">)</span>)</span>
+
+        <span style="font-style:italic; color:#8e8989;"># So you can do so till the last item where, returning each item</span>
+        one at a time instead of altogether.
+                </code></pre>
+            </p>
+            <div class="title-container">
+                <h3>Example Generator Expressions</h3>
+            </div>
+            <div calss="content-body">
+                <p>
+                    <pre><code>
+            <span style="color: rgb(23, 192, 164)">numbers</span> = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+            <span style="color: rgb(23, 192, 164)">a_number_at_a_time</span> = (<span style="color: green;">number * 10</span> <span style="color: rgb(166, 255, 0);">for</span> <span style="color: orange;">number</span> <span style="color: rgb(166, 255, 0);">in</span> <span style="color: orange">numbers</span>)
+            
+            <span style="color: rgb(166, 255, 0);">print(<span style="color: blueviolet;">next(</span><span style="color: rgb(23, 192, 164)">a_number_at_a_time</span><span style="color: blueviolet;">)</span>)</span>
+            <span style="color: yellow">>></span>
+            1
+
+            <span style="color: rgb(166, 255, 0);">print(<span style="color: blueviolet;">next(</span><span style="color: rgb(23, 192, 164)">a_number_at_a_time</span><span style="color: blueviolet;">)</span>)</span>
+            <span style="color: yellow">>></span>
+            2
+            
+            <span style="color: rgb(166, 255, 0);">print(<span style="color: blueviolet;">next(</span><span style="color: rgb(23, 192, 164)">a_number_at_a_time</span><span style="color: blueviolet;">)</span>)</span>
+            <span style="color: yellow">>></span>
+            3
+
+            <span style="font-style:italic; color:#8e8989;"># repeatedly calling
+            # the print function would return the next item in the numbers list till 
+            # the final one then the iteration stops.
+            </span>
+                    </code></pre>
+                </p>
+            </div>
+      </div>
+    </div>
+    
+
+    <!-- Functions -->
+
+      
+    <div class="page" id="functions">
+        <div class="title-container" id="funct-example">
+             <h2>Functions: Building Reusable Code</h2>
+        </div>
+        <div class="content-body">
+          <p>In our previous lessons, we have been writing codes that do one thing at a time and return
+            a final result independent of any other code.<br>
+           In reality, you would want your code to do <span class="terms">multiple things at a time</span> and return your 
+            desired results, which may be dependent on previous code.
+          </p>
+
+          <p class="terms">Thats exactly what functions do! They make it easy to run multiple lines of code
+                several times over without having to rewrite them from scratch each time.
+          </p>
+        </div>
+        
+          
+        <h3>A World Without Functions</h3>
+          
+        
+        <div class="content-body">
+        <p>For instance, we may want to guess the age of a client by his/her date of birth.<br>
+            Thus, if the client's <span style="color: green">year of birth</span> is 2008 and the <span style="color: green">current year</span> is 2026, we subtract the <span style="color: green">year of birth</span> from <span style="color: green">current year</span> to get the client's age:<br>
+            2026 - 2008 = <span style="color: green">18.</span> The client's age is <span style="color: green">18 years.</span>
+        </p>
+        <p>
+            To represent this instance in code, firstly, we need to create a <span class="terms">variable</span> that stores the current
+            year, say, <span class="terms">current_year = 2026</span>.<br>
+            Then <span class="terms">another variable</span> that stores the client's date of birth from which we can extract the day, month and year of birth.
+            The variables are shown below, 
+            <pre><code>
+            <span style="font-style:italic; color:#8e8989;"># dob stands for date of birth</span>
+            <span style="color: orange">dob</span>='23-04-1924'  
+            <span style="color: blueviolet">dob_split</span>=dob.split('-')
+            <span style="color: yellow">>></span>
+            <span style="color: green">['23', '04', '1924']</span>
+            <span style="font-style:italic; color:#8e8989;"> # the results returned would be a list of three strings
+            # <span style="color: green">int</span> converts the response to an integer so it can be used in mathematical operations like
+            # subtraction and greater than or less than comparisons.
+            </span>
+            <span style="color: yellow">year_of_birth</span>=<span style="color: green">int</span>(dob_split[2])
+            <span style="color: rgba(154, 56, 3, 0.836)">month_of_birth</span>=<span style="color: green">int</span>(dob_split[1])
+            <span style="color: rgb(223, 94, 94)">day_of_birth</span>=<span style="color: green">int</span>(dob_split[0])
+
+            </code></pre>
+            
+            Then the <span style="color: blueviolet">approximate age</span> would be calculated as so
+            <pre><code>
+            <span style="color: blueviolet">approximate_age</span> = <span style="color: green">current_year</span> - <span style="color: yellow">year_of_birth</span>
+            </code></pre>
+
+            To get the <span style="color: purple">actual age</span>, we would check if the <span class="terms">day</span> and <span class="terms">month</span> of
+            birth are due or not. If the <span class="terms">day and month</span> are due, then the <span class="terms">approximate age</span> is same as the <span class="terms">actual age</span> else the client is yet to 
+            celebrate the birthday, maybe <span class="terms">some few days or months more to reach the approximate age.</span><br>
+            <span style="color: rgb(166, 255, 0);">During practice you could calculate how many days and months are left to the client's birthday or how many days and months have passed 
+            since the client celebrated the birthday with code.</span>
+            <pre><code>
+            <span style="font-style:italic; color:#8e8989;"># we split the current date to day and month for comparison with the client's birth month and day.</span>
+            <span style="color: orange">current_date</span> = '26-08-2026'
+            <span style="color: blueviolet">current_day</span> = <span style="color: orange">current_date</span>.split('-')[0]
+            <span style="color: rgba(154, 56, 3, 0.836)">current_month</span> = <span style="color: orange">current_date</span>.split('-')[1]
+
+            <span style="color: rgb(166, 255, 0)">if</span> <span style="color: orange">month_of_birth</span> <= <span style="color: rgba(154, 56, 3, 0.836)">current_month</span> <span style="color: rgb(166, 255, 0)">and</span> <span style="color: rgb(223, 94, 94)">day_of_birth</span> <= <span style="color: blueviolet">current_day</span>:
+               <span style="color: purple">actual_age</span> = <span style="color: blueviolet">approximate_age</span>
+            <span style="color: rgb(166, 255, 0)">else</span>:
+               <span style="color: purple">actual_age</span> = <span style="color: blueviolet">approximate_age</span> - 1
+            </code></pre>
+        </p>
+        <p>
+            Executing the full logic above would require running the lines of code one 
+            after the other. It can be very tiresome.<br> 
+            <span style="color: green">Functions</span> remove this burden by 
+            providing a single container that stores the whole logic under <span style="color: green">a unique name.</span>
+        </p>
+        
+        <p>   
+            Functions act as <span class="terms">containers for multiple lines of code that do multiple things.</span><br>
+            When a function is executed, all <span style="color: green">the code statements</span> in it get executed and <span style="color: green">the final result</span> is 
+            returned.<br>
+
+        </p>
+        <p>
+            As such, if you want to execute the full logic for age extraction anytime, you just reference
+            the name of the container it was stored under, then provide any necessary
+            variables like the <span style="color: green">current year</span>, <span style="color: blueviolet">date of birth</span> etc.
+            The variables here are termed <span class="terms">arguments or parameters.</span>
+        </p>
+        <p>
+            <h3>General Syntax of Functions</h3>
+        <pre><code>
+            <span style="color: rgb(166, 255, 0)">def</span> <span style="color: blueviolet">function_name</span>(<span style="color: orange">arguments/parameters</span>):
+                  <span style="color: rgb(130, 125, 125)">[code statements]</span>
+                  <span style="color: rgb(166, 255, 0)">return</span> <span style="font-style: italic;color: green;">[final result]</span>
+        </code></pre>
+        </p>
+        <p>
+            <span style="color: green">def</span> always begins a function, followed by <span style="color: green">the name of the function, arguments/parameters and a colon.</span><br>
+            <span style="color: green">Arguments/Parameters</span> are any variables that the code statements within
+            the function depend on.<br>
+            <span style="color: green">Code statements</span> are the lines of code executed within the function.<br>
+            The <span style="color: green">code statements</span> are always <span style="color: rgb(166, 255, 0);">indented or start inline with the</span> <span style="color: rgb(166, 255, 0);">beginning of the function name.</span>
+            <span>After running the code statements in a function, the result is made available for subsequent tasks through
+                the <span style="color: green">return</span> keyword.
+            </span><br>
+            <span style="color: green">return</span> is very necessary as it makes the result of a function available to other functions and code statements outside that function.<br>
+            Without <span style="color: green">return</span>, no result can be accessed outside its function.
+        </p>
+        </div>
+
+        <div id="argsandparams">
+            <h3>Arguments and Parameters</h3>
+        </div>
+        <div class="content-body">
+            <p><span class="terms">Arguments and Parameters</span> are two sides of the same coin serving similar purposes.
+            Both are variables passed to a function, however <span class="terms">the mode in which each is passed</span> to function differs.</p>
+        </div>
+        <div class="content-body">
+            <h3>Parameters</h3> 
+        <p><span class="terms">Parameters</span> are used when <span class="terms">defining the function</span> whereas <span class="terms">arguments</span> are used when <span class="terms">calling the function.</span></p>
+            <p>
+                Using our <span style="color: green">date of birth instance above</span>, say we create a <span style="color: purple">function</span> called,
+                <span style="color: purple">extract_age_from_dob.</span><br>
+                This function would require certain data: <br>
+                <span style="color: green">date of birth(dob) of the person,<br></span>
+                <span style="color: green">current date.</span>
+                <p>These two would be passed as parameters to the function when defining it as so:<br>
+                The first line of a function requires: <span style="color: purple">def, function name, parameters</span> and <span style="color: purple">colon(:).</span></p>
+                <pre><code>
+            <span style="color: rgb(0, 255, 38)">def</span> <span style="color: rgb(23, 192, 164)">extract_age_from_dob</span><span style="color: orange">(dob, current_date)</span><span style="color: rgb(166, 255, 0)">:</span>
+                <span style="font-style:italic; color:#8e8989;"># the code statements then follow inline with the function name.</span> 
+            </code></pre>
+                
+        </div>
+        <div class="title-container">
+            <h3>Arguments</h3>
+        </div>
+        <div class="content-body">
+            <p><span class="terms">Arguments</span> are used when <span class="terms">calling the function.</span> They specify the <span class="terms">actual values</span> of the <span class="terms">parameters.</span><br>
+            You may have noticed these terms, <span class="terms">defining a function and calling a function</span> have been used often here.<br>
+            <span class="terms">Defining a function</span> means stating what the function does.<br>
+            <span class="terms">Calling a function</span> implies actually putting the function to work.<br>
+            So <span class="terms">defining a function</span> is similar to building the prototype whereas <span class="terms">calling the function</span> brings the prototype to reality.<br>
+            <span class="terms">Parameters</span> are <span class="terms">the placeholders used in defining</span> a <span class="terms">function</span> whereas <span class="terms">arguments</span> are the <span class="terms">actual values</span> used in calling a <span class="terms">function.</span></p>
+            <p>So to call function, <span style="color: rgb(23, 192, 164)">extract_age_from_dob(<span style="color: orange">dob, current_date</span>)</span>,<br>
+                we would replace the parameters with arguments, thus, the actual dob and current_date as so:<br>
+                <span style="color: rgb(23, 192, 164)">extract_age_from_dob(<span style="color: orange">'23-07-2010', '09-09-2026'</span>)</span><br>
+                or a different style can be used,<br>
+                <span style="color: rgb(23, 192, 164)">extract_age_from_dob(<span style="color: orange">dob='23-07-2010', current_date='09-09-2026'</span>).</span>
+            </p>
+            <p>Arguments can be of two types: <span class="terms">keyword</span> or <span class="terms">positional.</span></p>
+        </div>
+        <div class="title-container"><h3>Positional Arguments</h3></div>
+        <div class="content-body">
+            This format, <span style="color: rgb(23, 192, 164)">extract_age_from_dob(<span style="color: orange">'23-07-2010', '09-09-2026'</span>)</span>, follows the positional arguments criteria.
+            <span class="terms">Arguments</span> are considered based on <span class="terms">the position of the parameters.</span> In the <span class="terms">function definition, the parameters</span> were
+            passed as so, <span style="color: rgb(23, 192, 164)">extract_age_from_dob(<span style="color: orange">dob, current_date</span>).</span> Likewise, positional arguments automatically consider <span class="terms">the 
+            first argument</span> passed to this <span class="terms">function</span> to be the <span style="color: orange">value for dob</span> and <span class="terms">the second argument</span> to be that of <span style="color: orange;">the current_date.</span>
+        </div><br>
+        <div class="title-container">
+            <h3>Keyword Arguments</h3>
+        </div>
+        <div class="content-body">
+            This format, <span style="color: rgb(23, 192, 164)">extract_age_from_dob(<span style="color: orange">current_date='09-09-2026', dob='23-07-2010'</span>)</span>, follows <span class="terms">the keyword arguments</span> criteria.
+            <span class="terms">Arguments</span> are considered based on <span class="terms">the parameter key</span> they are attached to. <span class="terms">Keyword arguments</span> do not consider <span class="terms">the position or order</span> in which 
+            <span class="terms">parameters</span> were passed. Once <span class="terms">the correct parameter</span> is specified and <span class="terms">a value is attached to it</span>, the <span class="terms">function</span> would run successfully.
+        </div><br>
+        <div class="content-body">
+            There are also cases where <span class="terms">a function</span> may require both <span class="terms">positional and keyword arguments.</span>
+            In such instances, the <span class="terms">positional arguments</span> are inserted <span class="terms">first</span> followed by <span class="terms">the keyword arguments.</span>
+        </div><br>
+        <div class="title-container">
+            <h3>Example Function Definition</h3>
+        </div>
+        <div class="content-body">
+            <p>Now let's define <span class="terms">the age extraction function</span> and <span class="terms">call it.</span></p>
+            <pre><code>
+                <span style="color: rgb(0, 255, 38)">def</span> <span style="color: rgb(23, 192, 164)">extract_age_from_dob</span><span style="color: orange">(dob, current_date)</span><span style="color: rgb(166, 255, 0)">:</span>
+                     <span style="font-style:italic; color:#8e8989;"># from these two parameters, we would extract the year of birth, current year as well
+                     # as the month and day of birth and the current day and month.
+                     </span>
+                            
+                     <span style="font-style:italic; color:#8e8989;"># we split the current date to day and month for comparison with the client's birth month and day.</span>
+                    
+                     <span style="color: blueviolet">current_day</span> = <span style="color: orange">current_date</span>.split('-')[0]
+                     <span style="color: rgba(154, 56, 3, 0.836)">current_month</span> = <span style="color: orange">current_date</span>.split('-')[1]
+                     <span style="color: rgb(0, 255, 38)">current_year</span> = <span style="color: orange">current_date</span>.split('-')    [2]
+    
+                     <span style="font-style:italic; color:#8e8989;"># we split the date of birth to day, month and year.</span>
+                    
+                     <span style="color: blueviolet">day_of_birth</span> = <span style="color: orange">dob</span>.split('-')[0]
+                     <span style="color: rgba(154, 56, 3, 0.836)">month_of_birth</span> = <span style="color: orange">dob</span>.split('-')[1]
+                     <span style="color: rgb(0, 255, 38)">year_of_birth</span> = <span style="color: orange">dob</span>.split('-')[2]        
+    
+                     <span style="color: blueviolet">approximate_age</span> = <span style="color: green">current_year</span> - <span style="color: yellow">year_of_birth</span>
+                
+                     <span style="color: rgb(166, 255, 0);">if</span> <span style="color: orange">month_of_birth</span> < <span style="color: rgba(154, 56, 3, 0.836)">current_month</span><span style="color: rgb(166, 255, 0);">:</span>
+                         <span style="color: rgb(23, 192, 164)">actual_age</span> = <span style="color: blueviolet">approximate_age</span>
+                     <span style="color: rgb(166, 255, 0);">elif</span> <span style="color: orange">month_of_birth</span> == <span style="color: rgba(154, 56, 3, 0.836)">current_month</span> <span style="color: rgb(166, 255, 0);">and</span> <span style="color: rgb(223, 94, 94)">day_of_birth</span> >= <span style="color: blueviolet">current_day</span><span style="color: rgb(166, 255, 0);">:</span>
+                         <span style="color: rgb(23, 192, 164)">actual_age</span> = <span style="color: blueviolet">approximate_age</span>
+                     <span style="color: rgb(166, 255, 0);">else</span>:
+                         <span style="color: rgb(23, 192, 164)">actual_age</span> = <span style="color: blueviolet">approximate_age</span> - 1
+                    
+                     <span style="color: green">return f"You are <span style="color: yellow">{</span>actual_age<span style="color: yellow">}</span> years old"</span>
+                </code></pre>
+                <p>
+                    Calling the function then would be:
+                    <pre><code>
+        <span style="color: rgb(23, 192, 164)">extract_age_from_dob</span><span style="color: orange">('23-07-2010', '09-09-2026')</span>
+        <span style="color: yellow">>></span>
+       <span class="terms">
+          You are 16 years old.
+       </span>
+       <span style="font-style:italic; color:#8e8989;"># The same function can also be called with keyword arguments as so</span>
+        <span style="color: rgb(23, 192, 164)">extract_age_from_dob</span><span style="color: orange">(current_date='09-09-2026', dob='23-07-2010')</span>
+        
+        <span style="color: yellow">>></span>
+        <span class="terms">
+           You are 16 years old.
+        </span> 
+    </code></pre>
+                    
+        </p>
+        </div>
+        <div id="lambdaexprs">
+            <h3>Lambda Expressions</h3>
+        </div>
+        <div class="content-body">
+            <p>Just as <span class="terms">comprehensions</span> are simpler ways of writing <span class="terms">one-liner codes, lambda
+                expressions</span> offer the same simplicity. They enable writing <span class="terms">one-liner functions</span> without
+                having to follow the general function syntax. With <span class="terms">lambda expressions,</span> you only specify
+                the <span class="terms">parameters</span> and <span class="terms">the code expression</span> to be executed.<br>
+                The <span class="terms">lambda</span> keyword is the most important and it begins the function definition.<br> 
+                The result of the code expression is automatically returned without having to use <span class="terms">the return keyword.</span><br>
+                The main limitation of <span class="terms">lambda functions</span> is that <span class="terms">only a single expression</span> can be passed.
+            </p>
+            <p>
+        <pre><code>
+        <span style="font-style:italic; color:#8e8989;"># Typical example calculating the age using lambda expressions</span>
+        <span style="color: rgb(23, 192, 164)">age</span> = <span style="color: rgb(0, 255, 38)">lambda</span> <span style="color: orange">dob, current_date</span>: <span style="color: green">int(</span><span style="color: orange">current_date</span>.split('-')[2]<span style="color: green">)</span> - <span style="color: green">int(</span><span style="color: orange">dob</span>.split('-')[2]<span style="color: green">)</span>
+
+        <span style="font-style:italic; color:#8e8989;"># Then calling the lambda function with arguments</span>
+        <span style="color: rgb(23, 192, 164)">age<span style="color: orange">('23-07-2010', '11-09-2026')</span></span>
+        <span style="color: yellow">>></span>
+        <span class="terms">
+           16
+        </span>   
+        </code></pre>
+            </p>
+            <p><span class="terms">Lambda expressions</span> are also called <span class="terms">anonymous functions</span> because they don't require
+                <span class="terms">function names.</span> You just define them and they can be used anywhere even within
+                another function.
+            </p>
+        </div>
+        </div>
+
+      </div>
+    </div>
+      
+        <!-- Constant barrier divs -->    
     </div>
 
     <button class="practice-button">
@@ -2335,7 +2651,7 @@ So, <strong class="terms">numbers[::2] returns</strong>
        // Scroll To Previous Section On Load
         document.addEventListener('DOMContentLoaded', () => {
             const savedSection = sessionStorage.getItem('lastActiveSection');
-            const defaultSection = 'introduction';
+            const defaultSection = 'functions';
             
 
              if (savedSection && document.getElementById(savedSection)) {
@@ -2345,9 +2661,10 @@ So, <strong class="terms">numbers[::2] returns</strong>
             } else {
                 document.getElementById(defaultSection).scrollIntoView({
                     behavior: 'smooth'
-                })
+                });
             }
         });
+
         
         const sectionMap = {
             'brief-intro': 'introduction',
@@ -2374,7 +2691,11 @@ So, <strong class="terms">numbers[::2] returns</strong>
             'break-con-pass': 'conditional-flow',
             'listcomp': 'comprehensions',
             'dictcomp': 'comprehensions',
-            'setcomp': 'comprehensions'
+            'setcomp': 'comprehensions',
+            'genexprs': 'comprehensions',
+            'funct-example': 'functions',
+            'argsandparams': 'functions',
+            'lambdaexprs': 'functions'
         }
 
         // Collapsible Accordion functionality for sidebar navigation
