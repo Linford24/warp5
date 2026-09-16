@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor.js CDN Example</title>
+  <!-- 1. Load Editor.js Core via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+  
+  <!-- (Optional) Load Tool Plugins via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 24px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    #editorjs {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 16px;
+      min-height: 200px;
+    }
+    button {
+      margin-top: 16px;
+      padding: 10px 16px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Editor.js CDN Demo</h2>
+  
+  <!-- 2. Target Container -->
+  <div id="editorjs"></div>
+
+  <!-- Action button to save data -->
+  <div style="display: flex;">
+  <input type="text" id="author" placeholder="Enter your name" />
+  <button id="save-btn">Save Content</button>
+  </div> 
+  <pre id="output"></pre>
+
+  <script>
+     
+     
+        window.addEventListener('load', () => {
+           const params = new URLSearchParams(window.location.search);
+           const token = params.get('token');
+
+           if (token) {
+             localStorage.setItem("access_token", token);
+             // Clean the token from the URL (optional but good practice)
+             window.history.replaceState({}, document.title, window.location.pathname);
+           }
+        });
+
+    // 3. Initialize Editor.js
+    const editor = new EditorJS({
+      holder: 'editorjs',
+      placeholder: 'Click here to start writing...',
+      
+      // Register installed tools
+      tools: {
+        header: {
+          class: Header,
+          shortcut: 'CMD+SHIFT+H',
+          config: {
+            placeholder: 'Enter a header',
+            levels: [2, 3, 4],
+            defaultLevel: 2
+          }
+        },
+        list: {
+          class: EditorjsList,
+          inlineToolbar: true,
+          config: {
+            defaultStyle: 'unordered'
+          }
+        }
+      },
+
+      // Pre-populate initial block data
+      data: {
+        blocks: [
+          {
+            type: "header",
+            data: {
+              text: "Welcome to Editor.js",
+              level: 2
+            }
+          },
+          {
+            type: "paragraph",
+            data: {
+              text: "This editor generates structured JSON instead of raw HTML markup."
+            }
+          }
+        ]
+      }
+    });
+
+    // 4. Save and export clean JSON output
+    document.getElementById('save-btn').addEventListener('click', async() => {
+        try {
+            const access_token = localStorage.getItem("access_token");
+            console.log(access_token);
+            const finishedBlog = await editor.save();
+            console.log(finishedBlog);
+            const author = document.getElementById('author').value;
+
+            const response = await fetch('http://127.0.0.1:8003/api/innovations/new_inform', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${access_token}`
+                },
+                body: JSON.stringify({
+                    title: finishedBlog.blocks.find(b => b.type === 'header')?.data?.text ?? 'Untitled',
+                    content: finishedBlog,
+                    excerpt: "",
+                    author_name: author
+                })
+            });
+
+            if (!response.ok) throw new Error(`Save failed: ${response.status}`);
+            const savedBlog = await response.json();
+            document.getElementById('output').innerText = JSON.stringify(savedBlog, null, 2);
+        } catch (error) {
+            console.error('Saving failed:', error);
+            document.getElementById('output').innerText = `Error: ${error.message}`;
+        }
+    });
+  </script>
+</body>
+</html>
