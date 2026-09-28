@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Python Module Visualizer & Responsive IDE</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Prism.js for Python syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #090d16;
+            color: #e2e8f0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        code, pre, textarea, .font-mono {
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Custom mobile-friendly scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Active pulse animation for flowchart steps */
+        @keyframes activePulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        .active-node {
+            animation: activePulse 1.6s infinite;
+            border-color: #3b82f6 !important;
+            background-color: rgba(30, 58, 138, 0.35) !important;
+        }
+
+        .editor-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    overflow: hidden;
+}
+
+.line-numbers {
+    user-select: none;
+    padding: 1rem 0.5rem 1rem 0.75rem;
+    text-align: right;
+    color: #475569;
+    background-color: #0b1120;
+    border-right: 1px solid #1e293b;
+    font-size: 0.85rem;
+    line-height: 1.625;
+    font-family: 'Fira Code', monospace;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.code-area-container {
+    position: relative;
+    flex: 1 1 0%;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Force both elements to have exact identical metrics */
+.code-textarea,
+.code-highlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 1rem !important;
+    line-height: 1.625 !important;
+    font-size: 0.85rem !important;
+    font-family: 'Fira Code', monospace, monospace !important;
+    white-space: pre !important;
+    box-sizing: border-box !important;
+    border: none !important;
+    margin: 0 !important;
+}
+
+.code-textarea {
+    background: transparent;
+    color: transparent;
+    caret-color: #38bdf8;
+    resize: none;
+    outline: none;
+    overflow: auto; /* Handles both vertical and horizontal scroll */
+    tab-size: 4;
+    z-index: 10;
+}
+
+.code-highlight {
+    pointer-events: none;
+    background: transparent !important;
+    overflow: hidden; /* Textarea controls scrolling; overlay follows via JS */
+    z-index: 5;
+    display: block;
+}
+
+/* Fix for Prism.js / Highlight.js pre/code reset override */
+.code-highlight code {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+/* Add bottom clearance inside textarea using scroll-padding */
+.code-textarea {
+    scroll-padding-bottom: 3rem;
+}
+
+        /* Code Editor Sync Overlay Styling 
+        .editor-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+        .line-numbers {
+            user-select: none;
+            padding: 1rem 0.5rem 1rem 0.75rem;
+            text-align: right;
+            color: #475569;
+            background-color: #0b1120;
+            border-right: 1px solid #1e293b;
+            font-size: 0.85rem;
+            line-height: 1.625;
+            font-family: 'Fira Code', monospace;
+        }
+
+    .code-area-container {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+}
+    
+    .code-area-container {
+    position: relative;
+    flex: 1 1 0%;  Ensure flex-shrink and flex-basis allow vertical scaling 
+    min-height: 0;  CRITICAL for flexbox scrolling inside standard containers 
+    overflow: hidden;
+}
+
+.code-textarea,
+.code-highlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    line-height: 1.625;
+    font-size: 0.85rem;
+    font-family: inherit;  Ensure identical font rendering 
+    white-space: pre;
+    box-sizing: border-box;  Prevent padding mismatch issues 
+    border: none;
+    margin: 0 !important;
+}
+
+.code-textarea {
+    background: transparent;
+    color: transparent;
+    caret-color: #38bdf8;
+    resize: none;
+    outline: none;
+    overflow: auto;
+    tab-size: 4;
+    z-index: 10;
+}
+
+.code-highlight {
+    pointer-events: none;
+    background: transparent !important;
+    overflow: auto;  Allow scroll matching 
+    z-index: 5;
+}
+
+ Hide scrollbar on highlight overlay to prevent double scrollbars 
+.code-highlight::-webkit-scrollbar {
+    display: none;
+}
+.code-highlight {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+        
+        .code-area-container {
+            position: relative;
+            flex: 1;
+            overflow: hidden;
+        }
+        .code-textarea {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            color: transparent;
+            caret-color: #38bdf8;
+            resize: none;
+            outline: none;
+            border: none;
+            padding: 1rem;
+            line-height: 1.625;
+            font-size: 0.85rem;
+            white-space: pre;
+            overflow: auto;
+            tab-size: 4;
+            z-index: 10;
+        }
+        .code-highlight {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            padding: 1rem;
+            line-height: 1.625;
+            font-size: 0.85rem;
+            white-space: pre;
+            overflow: hidden;
+            margin: 0 !important;
+            background: transparent !important;
+            z-index: 5;
+        }
+            */
+        
+
+         Custom animations for drawer slide-in 
+        .drawer-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .drawer-content {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 75px;
+            height: 40px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col overflow-hidden bg-slate-950 text-slate-200">
+
+    <!-- TOP GLOBAL HEADER BAR -->
+    <header class="bg-slate-900 border-b border-slate-800 px-3 py-2.5 sm:px-4 flex items-center justify-between shrink-0 z-20">
+        <div class="flex items-center space-x-2 sm:space-x-3">
+            <button onclick="toggleMobileFileDrawer()" class="md:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 active:scale-95 transition" title="Open Modules List">
+                <span>&#9776;</span>
+            </button>
+
+            <div class="flex items-center gap-2">
+                <div>
+                    <h1 class="text-xs sm:text-sm font-bold text-slate-100 tracking-wide flex items-center gap-1.5">
+                           TransLenCe
+                    </h1>
+                </div>
+            </div>
+        </div>
+
+        <!-- Global Action Toolbar Buttons -->
+        <div class="flex items-center space-x-1.5 sm:space-x-2">
+
+            <button onclick="copyCurrentCode()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-300 w-10 h-10 sm:w-auto sm:h-auto sm:px-3 sm:py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 border border-slate-700/60 transition" title="Copy Current Code">
+                <i class="fa-regular fa-copy"></i> <span class="hidden md:inline">Copy</span>
+            </button>
+
+            <button onclick="resetToDefaults()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-rose-400 w-10 h-10 sm:w-auto sm:h-auto sm:px-3 sm:py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 border border-slate-700/60 transition" title="Reset modules to default">
+                <i class="fa-solid fa-rotate-left"></i> <span class="hidden md:inline">Reset</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN WORKSPACE CONTAINER -->
+    <div id="mainContainer" class="flex-1 flex flex-col md:flex-row overflow-scroll relative">
+
+        <!-- LEFT/TOP: CODE EDITOR PANEL -->
+        <div id="editorPanel" class="flex-1 flex flex-col bg-slate-900 border-r border-slate-800 min-w-0 w-full md:w-1/2 h-full">
+            
+            <!-- Desktop Dynamic File Tabs Header -->
+            <div class="hidden md:flex bg-slate-950/90 border-b border-slate-800 overflow-x-auto no-scrollbar items-center pr-2 shrink-0" id="tabsBar">
+                <div id="tabsContainer" class="flex items-center">
+                    <!-- File Tabs dynamically rendered here -->
+                </div>
+                <button onclick="openNewFileModal()" class="ml-2 text-slate-500 hover:text-emerald-400 p-2.5 text-xs transition min-w-[36px]" title="Create New Module">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Tab File Info Bar -->
+            <div class="flex md:hidden bg-slate-950 px-3 py-2 border-b border-slate-800/80 justify-between items-center shrink-0">
+                <div class="flex items-center gap-2 min-w-0">
+                    <i class="fa-brands fa-python text-yellow-400 text-sm shrink-0"></i>
+                    <span id="mobileCurrentFile" class="font-mono text-xs font-medium text-slate-200 truncate">circulatory_system.py</span>
+                </div>
+                <div class="flex items-center gap-1 shrink-0">
+                    <button onclick="openRenameFileModal()" class="p-2 text-slate-400 hover:text-blue-400 text-xs min-w-[36px] min-h-[36px] flex items-center justify-center" title="Rename Module">
+                        <span>Rename File  <i class="fa-solid fa-pen-to-square"></i></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Live Editable Code View with Line Numbers -->
+            <div class="flex-1 min-h-0 overflow-hidden relative bg-[#0d1322] flex flex-col">
+                <div class="editor-wrapper">
+                    <!-- Dynamic Line Numbers Column -->
+                    <div id="lineNumbers" class="line-numbers">1</div>
+                    
+                    <!-- Textarea & Highlight Overlay -->
+                    <div class="code-area-container">
+                        <pre class="code-highlight"><code id="codeHighlight" class="language-python"></code></pre>
+                        <textarea id="codeEditor" class="code-textarea font-mono" spellcheck="false" placeholder="# Write Python code here..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div class="bg-slate-950 px-3 py-1.5 border-t border-slate-800/80 text-[11px] text-slate-500 flex justify-between items-center shrink-0">
+                <div class="flex items-center gap-3">
+                    <span id="filePathDisplay" class="text-slate-400 font-mono text-[11px] truncate max-w-[150px] sm:max-w-none">./hand.py</span>
+                    <span class="hidden sm:flex items-center gap-1 text-emerald-400"><i class="fa-solid fa-circle-check text-[9px]"></i> Ready</span>
+                </div>
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <button onclick="openRenameFileModal()" class="hidden md:flex text-slate-400 hover:text-blue-400 transition items-center gap-1">
+                        <i class="fa-solid fa-pen-to-square"></i> Rename
+                    </button>
+                    <button onclick="deleteCurrentFile()" id="deleteFileBtn" class="text-rose-400 hover:text-rose-300 transition flex items-center gap-1">
+                        <i class="fa-solid fa-trash-can"></i> <span class="hidden sm:inline">Delete</span>
+                    </button>
+                    <span class="text-slate-600">|</span>
+                    <span class="text-slate-400 font-mono">Python 3.11</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MOBILE MODULE FILES DRAWER (Slide-over drawer for phones) -->
+    <div id="mobileDrawerOverlay" onclick="toggleMobileFileDrawer()" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-40 hidden opacity-0 drawer-overlay md:hidden"></div>
+    <div id="mobileDrawer" class="fixed top-0 bottom-0 left-0 w-4/5 max-w-xs bg-slate-900 border-r border-slate-800 z-50 transform -translate-x-full drawer-content flex flex-col md:hidden">
+        <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950">
+            <div class="flex items-center gap-2 text-slate-200 font-semibold text-sm">
+                <i class="fa-solid fa-folder-tree text-yellow-400"></i> Module Files
+            </div>
+            <button onclick="toggleMobileFileDrawer()" class="p-2 text-slate-400 hover:text-white min-w-[40px] min-h-[40px] flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <div class="p-3 border-b border-slate-800/80">
+            <button onclick="toggleMobileFileDrawer(); openNewFileModal()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white p-2.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 shadow-md transition min-h-[44px]">
+                <i class="fa-solid fa-plus"></i> Create New Module
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-3 space-y-2" id="mobileDrawerFileList">
+            <!-- Mobile drawer list rendered dynamically -->
+        </div>
+
+        <div class="p-3 border-t border-slate-800 bg-slate-950 text-center">
+            <button onclick="resetToDefaults(); toggleMobileFileDrawer()" class="text-rose-400 text-xs font-medium flex items-center justify-center gap-1.5 w-full py-2">
+                <i class="fa-solid fa-rotate-left"></i> Reset Default Files
+            </button>
+        </div>
+    </div>
+
+    <!-- CREATE NEW FILE MODAL -->
+    <div id="newFileModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-semibold text-slate-100 flex items-center gap-2">
+                    <i class="fa-brands fa-python text-yellow-400"></i> Create Python Module
+                </h3>
+                <button onclick="closeNewFileModal()" class="text-slate-400 hover:text-slate-200 p-2 min-w-[40px] min-h-[40px]">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1 font-medium">Module Name (e.g. brain, lungs)</label>
+                    <input type="text" id="newFileKey" placeholder="e.g. brain" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-blue-500 min-h-[44px]">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1 font-medium">Initial Code</label>
+                    <textarea id="newFileCode" rows="4" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-blue-500" placeholder="def my_func():&#10;    return 'Module initialized!'"></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeNewFileModal()" class="px-4 py-2.5 rounded-xl border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-800 transition min-h-[44px]">Cancel</button>
+                <button onclick="createNewFile()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs text-white font-semibold transition min-h-[44px]">Create File</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RENAME MODULE MODAL -->
+    <div id="renameFileModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-semibold text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-blue-400"></i> Rename Module
+                </h3>
+                <button onclick="closeRenameFileModal()" class="text-slate-400 hover:text-slate-200 p-2 min-w-[40px] min-h-[40px]">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+            
+            <div>
+                <label class="text-xs text-slate-400 block mb-1 font-medium">New Module Name</label>
+                <input type="text" id="renameInputKey" placeholder="new_name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-blue-500 min-h-[44px]">
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeRenameFileModal()" class="px-4 py-2.5 rounded-xl border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-800 transition min-h-[44px]">Cancel</button>
+                <button onclick="renameCurrentFile()" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs text-white font-semibold transition min-h-[44px]">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-16 md:bottom-6 right-4 left-4 md:left-auto md:w-auto bg-slate-800 border border-slate-700 text-slate-100 px-4 py-3 rounded-xl shadow-2xl flex items-center justify-between md:justify-start gap-3 text-xs font-medium opacity-0 pointer-events-none transform translate-y-3 z-50 transition-all duration-300">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+            <span id="toastMessage">Action completed successfully!</span>
+        </div>
+    </div>
+
+    <script>
+        // Default Preloaded Module Code Files
+        const defaultFiles = {
+            hand: `def arm():
+    return "This is the part of the hand that excludes the fingers."
+
+def palm():
+    return "This is the part of the hand between the arm and fingers."
+
+def human_fingers():
+    return "There are 5 fingers on the standard human hand."
+
+def thumb():
+    return "The thickest digit on the human hand, opposing other fingers."
+
+def index_finger():
+    return "The first finger next to the thumb, used for pointing."
+
+def middle_finger():
+    return "The central and usually longest digit on the hand."
+
+def ring_finger():
+    return "The fourth digit, traditionally where rings are worn."
+
+def little_finger():
+    return "The smallest digit located on the outer edge of the hand."`,
+
+            heart: `def heart():
+    return "Muscular organ pumping oxygenated blood through the body."
+
+def left_ventricle():
+    return "Pumps oxygenated blood to the body via the aorta."
+
+def right_ventricle():
+    return "Pumps deoxygenated blood to the lungs."
+
+def left_atrium():
+    return "Receives oxygenated blood returning from lungs."
+
+def right_atrium():
+    return "Receives deoxygenated blood returning from body."
+
+def major_vessels():
+    return "Includes aorta, vena cava, and pulmonary arteries."`,
+
+            blood_flow: `# blood_flow.py
+import heart
+import hand
+
+def trace_blood_flow():
+    """Simulates blood flow from heart down to human fingertips."""
+    print("=== PATHWAY OF BLOOD: HEART TO HAND ===\\n")
+    
+    # Step 1: Start at Heart
+    print(f"1. Left Ventricle:\\n   {heart.left_ventricle()}\\n  Blood flow to the hand begins here. Blood is pumped from here to the aorta.")
+    print(f"2. Major Vessels (Aorta):\\n   {heart.major_vessels()}\\n  Blood is carrried from here to the arm.")
+    
+    # Step 2: Travel down Arm
+    print(f"3. Arm:\\n   {hand.arm()}\\n  The arm is the initial part of the hand that receive sblood from the heart.")
+    print(f"4. Palm:\\n   {hand.palm()}\\n  The palm is the part of the hand between the arm and fingers. Blood flows from the arm to the palm.")
+    
+    # Step 3: Supply Fingers
+    print("5. Finger Destinations:")
+    print("Blood is distributed to the fingers from the palm.")
+    print(f"   {hand.human_fingers()}\\n)")
+    print(f" • Thumb: {hand.thumb()}")
+    print(f" • Index: {hand.index_finger()}")
+    print(f" • Middle: {hand.middle_finger()}")
+    print(f" • Ring: {hand.ring_finger()}")
+    print(f" • Little: {hand.little_finger()}")
+
+if __name__ == "__main__":
+    trace_blood_flow()`,
+
+    result: ` # This is how your results would look after excuting the codes succesfully.
+       === PATHWAY OF BLOOD: HEART TO HAND ===
+
+            1. Left Ventricle:
+            This thick, muscular lower chamber pumps oxygen-rich blood to the entire body through the aorta.
+ 
+            2. Major Vessels (Aorta & Subclavian Artery):
+            These include the aorta, superior/inferior vena cava, pulmonary arteries, and pulmonary veins.
+
+            3. Arm:
+            This is the part of the hand that excludes the fingers and hand.
+
+            4. Palm:
+            This is the part of the hand between the arm and fingers.
+
+            5. Human Fingers Overview:
+            There are generally 5 fingers on the human hand. Abnormal conditions could result
+            in the number of fingers decreasing or increasing. The 5 fingers are: little finger,
+            ring finger, middle finger, index finger and the thumb.
+
+            --- Specific Finger Destinations ---
+            • Thumb: This is the largest finger in size at the other extreme of the hand.
+            • Index Finger: This finger is next to the thumb and usually used for pointing.
+            • Middle Finger: As the name is, this finger lies in the middle and usually the tallest.
+            • Ring Finger: This finger is next to the finger next to the little finger. Rings are out on this finger.
+            • Little Finger: This is the smallest finger at the extreme of the hand.
+    `
+        };
+
+        // Application State
+        let codeFiles = { ...defaultFiles };
+        let currentTab = 'hand';
+        let currentMobileView = 'editor';
+        let isSimulating = false;
+
+        // DOM Element Cache
+        const editor = document.getElementById('codeEditor');
+        const codeHighlight = document.getElementById('codeHighlight');
+        const lineNumbers = document.getElementById('lineNumbers');
+
+        // Initial setup on DOM ready
+        window.addEventListener('DOMContentLoaded', () => {
+            renderTabs();
+            renderMobileDrawerFiles();
+            switchTab('hand');
+            setupEditorSync();
+            handleResize();
+            window.addEventListener('resize', handleResize);
+        });
+
+        editor.addEventListener('scroll', () => {
+    // Sync highlight overlay position
+    codeHighlight.scrollTop = editor.scrollTop;
+    codeHighlight.scrollLeft = editor.scrollLeft;
+
+    // Sync line numbers column vertical position
+    if (lineNumbers) {
+        lineNumbers.scrollTop = editor.scrollTop;
+    }
+});
+
+        // Handle Responsive Layout Shift on Window Resize
+        function handleResize() {
+            if (window.innerWidth >= 768) {
+                // Desktop split view mode - restore panel visibilities
+                document.getElementById('editorPanel').classList.remove('hidden');
+                document.getElementById('outputPanel').classList.remove('hidden');
+            } else {
+                // Mobile single view mode
+                switchMobileTab(currentMobileView);
+            }
+        }
+
+        // Setup synchronized text editing, scrolling, and line numbers
+        function setupEditorSync() {
+            editor.addEventListener('input', () => {
+                codeFiles[currentTab] = editor.value;
+                updateHighlightAndLines();
+            });
+
+            editor.addEventListener('scroll', () => {
+                const highlightPre = codeHighlight.parentElement;
+                highlightPre.scrollTop = editor.scrollTop;
+                highlightPre.scrollLeft = editor.scrollLeft;
+                lineNumbers.scrollTop = editor.scrollTop;
+            });
+
+            // Keyboard Tab Support inside textarea
+            editor.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    const start = editor.selectionStart;
+                    const end = editor.selectionEnd;
+                    editor.value = editor.value.substring(0, start) + "    " + editor.value.substring(end);
+                    editor.selectionStart = editor.selectionEnd = start + 4;
+                    codeFiles[currentTab] = editor.value;
+                    updateHighlightAndLines();
+                }
+            });
+        }
+
+        // Update Syntax Highlight & Line Numbers
+        function updateHighlightAndLines() {
+            const rawCode = editor.value;
+            codeHighlight.textContent = rawCode;
+            Prism.highlightElement(codeHighlight);
+
+            // Compute line numbers
+            const linesCount = rawCode.split('\n').length;
+            let lineStr = '';
+            for (let i = 1; i <= linesCount; i++) {
+                lineStr += `${i}\n`;
+            }
+            lineNumbers.innerText = lineStr;
+        }
+
+        // Render Desktop Tabs
+        function renderTabs() {
+            const container = document.getElementById('tabsContainer');
+            container.innerHTML = '';
+
+            Object.keys(codeFiles).forEach(key => {
+                const isActive = key === currentTab;
+                const tabBtn = document.createElement('button');
+                const fileName = key.endsWith('.py') ? key : `${key}.py`;
+                
+                tabBtn.className = `tab-btn px-3.5 py-2.5 text-xs font-mono flex items-center gap-2 border-r border-slate-800 transition-all min-h-[42px] ${
+                    isActive ? 'bg-slate-900 text-slate-100 border-t-2 border-t-blue-500 font-semibold' : 'text-slate-400 hover:bg-slate-900/60'
+                }`;
+                
+                tabBtn.onclick = () => switchTab(key);
+                tabBtn.innerHTML = `
+                    <i class="fa-brands fa-python ${key.includes('heart') ? 'text-red-400' : key.includes('hand') ? 'text-yellow-400' : 'text-blue-400'}"></i>
+                    <span>${fileName}</span>
+                `;
+                container.appendChild(tabBtn);
+            });
+        }
+
+        // Render Mobile Drawer Module List
+        function renderMobileDrawerFiles() {
+            const list = document.getElementById('mobileDrawerFileList');
+            list.innerHTML = '';
+
+            Object.keys(codeFiles).forEach(key => {
+                const isActive = key === currentTab;
+                const fileName = key.endsWith('.py') ? key : `${key}.py`;
+                
+                const item = document.createElement('div');
+                item.className = `p-3 rounded-xl flex items-center justify-between font-mono text-xs cursor-pointer transition min-h-[48px] ${
+                    isActive ? 'bg-blue-900/40 text-blue-300 border border-blue-700/50 font-semibold' : 'bg-slate-950 text-slate-300 hover:bg-slate-800'
+                }`;
+                
+                item.onclick = () => {
+                    switchTab(key);
+                    toggleMobileFileDrawer();
+                };
+
+                item.innerHTML = `
+                    <div class="flex items-center gap-2.5 truncate">
+                        <i class="fa-brands fa-python text-sm ${key.includes('heart') ? 'text-red-400' : key.includes('hand') ? 'text-yellow-400' : 'text-blue-400'}"></i>
+                        <span class="truncate">${fileName}</span>
+                    </div>
+                    ${isActive ? '<i class="fa-solid fa-check text-blue-400 text-xs"></i>' : ''}
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // Switch Active Python Module
+        function switchTab(tabKey) {
+            currentTab = tabKey;
+            renderTabs();
+            renderMobileDrawerFiles();
+
+            const fileName = tabKey.endsWith('.py') ? tabKey : `${tabKey}.py`;
+            document.getElementById('filePathDisplay').textContent = `./${fileName}`;
+            document.getElementById('mobileCurrentFile').textContent = fileName;
+
+            editor.value = codeFiles[tabKey] || '';
+            updateHighlightAndLines();
+        }
+
+        // Mobile Bottom Tab View Navigation Switcher
+        function switchMobileTab(mode) {
+            currentMobileView = mode;
+            if (window.innerWidth >= 768) return; // Ignore on desktop
+
+            const editorPanel = document.getElementById('editorPanel');
+            const outputPanel = document.getElementById('outputPanel');
+            const navEditor = document.getElementById('mobile-nav-editor');
+
+            // Reset navigation highlight classes
+            [navEditor].forEach(btn => btn.className = 'flex-1 flex flex-col items-center justify-center py-2 text-slate-400 hover:text-slate-200 min-h-[48px] transition');
+
+            if (mode === 'editor') {
+                editorPanel.classList.remove('hidden');
+                outputPanel.classList.add('hidden');
+                navEditor.className = 'flex-1 flex flex-col items-center justify-center py-2 text-blue-400 font-semibold min-h-[48px] transition';
+            } else if (mode === 'terminal') {
+                editorPanel.classList.add('hidden');
+                outputPanel.classList.remove('hidden');
+            }
+        }
+
+        // Desktop Output Mode Switcher
+        function switchOutputMode(mode) {
+
+        }
+
+        // Mobile Drawer Overlay Toggle
+        function toggleMobileFileDrawer() {
+            const drawer = document.getElementById('mobileDrawer');
+            const overlay = document.getElementById('mobileDrawerOverlay');
+            
+            if (drawer.classList.contains('-translate-x-full')) {
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                drawer.classList.remove('-translate-x-full');
+            } else {
+                overlay.classList.add('opacity-0');
+                drawer.classList.add('-translate-x-full');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        // Modal Handlers: Create File
+        function openNewFileModal() {
+            document.getElementById('newFileModal').classList.remove('hidden');
+            document.getElementById('newFileKey').focus();
+        }
+
+        function closeNewFileModal() {
+            document.getElementById('newFileModal').classList.add('hidden');
+            document.getElementById('newFileKey').value = '';
+            document.getElementById('newFileCode').value = '';
+        }
+
+        function createNewFile() {
+            let key = document.getElementById('newFileKey').value.trim().toLowerCase();
+            const code = document.getElementById('newFileCode').value || `# ${key}.py\n\ndef main():\n    return "Module loaded!"`;
+
+            if (!key) {
+                showToast("Please enter a valid module name!", "error");
+                return;
+            }
+
+            key = key.replace(/\.py$/, '');
+
+            if (codeFiles[key]) {
+                showToast("Module already exists!", "error");
+                return;
+            }
+
+            codeFiles[key] = code;
+            closeNewFileModal();
+            switchTab(key);
+            renderNodes();
+            showToast(`Created ${key}.py`);
+        }
+
+        // Modal Handlers: Rename File
+        function openRenameFileModal() {
+            document.getElementById('renameFileModal').classList.remove('hidden');
+            const input = document.getElementById('renameInputKey');
+            input.value = currentTab;
+            input.focus();
+        }
+
+        function closeRenameFileModal() {
+            document.getElementById('renameFileModal').classList.add('hidden');
+        }
+
+        function renameCurrentFile() {
+            let newKey = document.getElementById('renameInputKey').value.trim().toLowerCase();
+            if (!newKey) return;
+            newKey = newKey.replace(/\.py$/, '');
+
+            if (newKey === currentTab) {
+                closeRenameFileModal();
+                return;
+            }
+
+            if (codeFiles[newKey]) {
+                showToast("Module name already exists!", "error");
+                return;
+            }
+
+            const codeContent = codeFiles[currentTab];
+            delete codeFiles[currentTab];
+            codeFiles[newKey] = codeContent;
+
+            closeRenameFileModal();
+            switchTab(newKey);
+            renderNodes();
+            showToast(`Renamed module to ${newKey}.py`);
+        }
+
+        // Delete Module
+        function deleteCurrentFile() {
+            const keys = Object.keys(codeFiles);
+            if (keys.length <= 1) {
+                showToast("Cannot delete the only remaining file!", "error");
+                return;
+            }
+
+            const deletedName = currentTab;
+            delete codeFiles[currentTab];
+            const nextTab = Object.keys(codeFiles)[0];
+            switchTab(nextTab);
+            renderNodes();
+            showToast(`Deleted ${deletedName}.py`);
+        }
+
+        // Reset Files
+        function resetToDefaults() {
+            codeFiles = { ...defaultFiles };
+            switchTab('circulatory_system');
+            renderNodes();
+            showToast("Reset to default modules");
+        }
+
+        // Simulated Execution Engine
+        async function runSimulation() {
+            if (isSimulating) return;
+            isSimulating = true;
+            
+            // Switch view based on layout mode
+            if (window.innerWidth < 768) {
+                switchMobileTab('terminal');
+            } else {
+                switchOutputMode('terminal');
+            }
+
+
+            const appendLog = (text, classNames = "text-slate-200") => {
+                const div = document.createElement('div');
+                div.className = classNames;
+                div.textContent = text;
+                consoleEl.appendChild(div);
+                consoleEl.scrollTop = consoleEl.scrollHeight;
+            };
+
+            const delay = (ms) => new Promise(res => setTimeout(res, ms));
+
+            // Highlight corresponding flow node
+            const keys = Object.keys(codeFiles);
+            const activeIndex = keys.indexOf(currentTab);
+            highlightNode(activeIndex + 1);
+
+            // Parsing execution simulation
+            const lines = codeFiles[currentTab].split('\n');
+            
+            await delay(350);
+
+            let printed = false;
+
+            for (let line of lines) {
+                const trimmed = line.trim();
+                if (trimmed.startsWith('print(')) {
+                    let content = trimmed.slice(6, -1).replace(/^["']|["']$/g, '');
+                    content = content.replace(/\\n/g, '\n');
+                    appendLog(content, "text-emerald-300");
+                    printed = true;
+                    await delay(250);
+                } else if (trimmed.startsWith('def ')) {
+                    appendLog(`[DEF] Function '${trimmed.split('(')[0].replace('def ', '')}' loaded`, "text-slate-500");
+                }
+            }
+
+            if (!printed) {
+                appendLog(`Found ${lines.filter(l => l.trim().startsWith('def ')).length} function definitions.`, "text-slate-400");
+            }
+
+            appendLog(`\nProcess finished with exit code 0`, "text-emerald-400 font-semibold mt-2");
+            isSimulating = false;
+        }
+
+        function highlightNode(stepNum) {
+            document.querySelectorAll('.node-card').forEach(card => {
+                card.classList.remove('active-node');
+            });
+            const activeNode = document.getElementById(`node-${stepNum}`);
+            if (activeNode) {
+                activeNode.classList.add('active-node');
+            }
+        }
+
+        function clearTerminal() {
+            const consoleEl = document.getElementById('terminalConsole');
+            consoleEl.innerHTML = `<div class="text-slate-500">$ python script.py</div>`;
+        }
+
+        // Copy Code Helper
+        function copyCurrentCode() {
+            const codeToCopy = codeFiles[currentTab];
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(codeToCopy);
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = codeToCopy;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+
+            showToast(`Copied ${currentTab}.py to clipboard`);
+        }
+
+        // Toast Helper
+        function showToast(msg, type = "success") {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            toastMsg.textContent = msg;
+            
+            toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
