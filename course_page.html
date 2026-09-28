@@ -294,6 +294,11 @@
         font-size: 1.15rem;
     }
 
+    :not(pre) > code[class*="language-"],
+    pre[class*="language-"] {
+      background: #0b1120 !important;
+    }
+
     pre {
         white-space: pre-wrap;
         word-break: break-word;
@@ -813,24 +818,24 @@
                     </a>
                 </div>
             </div>
-            <!-- Imports -->
+            <!-- Modules, Packages, Libraries -->
             <div class="nav-section">
                 <div class="section-header collapsed" onclick="toggleSection(this)">
                     <span>8. Libraries, Packages and Modules</span>
                     <i class="fa-solid fa-chevron-down"></i>
                 </div>
                 <div class="section-content">
-                    <a href="#" class="nav-item locked">
-                        <i class="fa-solid fa-lock icon-status"></i>
-                        <span>Importing Modules</span>
+                    <a href="#modules" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>Modules</span>
                     </a>
-                    <a href="#" class="nav-item locked">
-                        <i class="fa-solid fa-lock icon-status"></i>
-                        <span>Importing Packages</span>
+                    <a href="#packages" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>Packages</span>
                     </a>
-                    <a href="#" class="nav-item locked">
-                        <i class="fa-solid fa-lock icon-status"></i>
-                        <span>Importing Libraries</span>
+                    <a href="#libraries" class="nav-item">
+                        <i class="fa-solid fa-circle icon-status"></i>
+                        <span>Libraries</span>
                     </a>
                 </div>
             </div>
@@ -2638,6 +2643,171 @@ So, <strong class="terms">numbers[::2] returns</strong>
 
       </div>
     </div>
+
+    <!-- Modules, Packages and Libraries -->
+    <div class="page" id="mod-pack-lib">
+        <div class="title-container">
+          <h2 id="modules">Modules, Packages and Libraries</h2>
+        </div>
+        <div class="content-body">
+          <p>
+            In practice, whichever code you write would be saved into <span class="terms">a file</span>.
+            Without saving your code into the appropriate <span class="terms">type of file,</span> no machine would be able to execute that code.
+            Each file type has <span class="terms">a unique file extension</span> that distinguishes it from any other file type.
+            For instance, <span class="terms">MS Word</span> has the extension, <span class="terms">.docx,</span> <span class="terms">text files</span> have <span class="terms">.txt,</span> <span class="terms">Excel files</span> have <span class="terms">.xlsx,</span> <span class="terms">PDFs</span> have <span class="terms">.pdf</span>.
+            Likewise, <span class="terms">every programming language</span> has its <span class="terms">unique file extension.</span> 
+          </p>
+
+          <p><span class="terms">Python</span> uses the extension <span class="terms">.py</span>. Thus, any <span class="terms">python code file</span> you create would have to be saved with the 
+            <span class="terms">.py</span> extension before it can executed as Python code and also saved as Python file.
+            So a couple of sample <span class="terms">Python files</span> would be <span class="terms">translence.py, build_machines.py, FirstCode.py</span>.
+            The name given to a Python file <span class="terms">(thus, the filename)</span> follows the same naming pattern as <span class="terms">variables</span> with the <span class="terms">.py</span> extension appended.
+          </p>
+        </div>
+        
+          <div class="title-container">
+            <h3>Modules</h3>
+          </div>
+        
+        <div class="content-body">
+        <p><span class="terms">Module</span> is the Python jargon for <span class="terms">a single python file.</span><br>
+            So these sample Python files- <span class="terms">translence.py, build_machines.py, FirstCode.py</span>- are all
+            <span class="terms">modules.</span>
+        </p>
+        <p>
+            What makes <span class="terms">modules</span> interesting is how they allow <span class="terms">code</span> to be <span class="terms">separated into multiple
+            files</span> for <span class="terms">ease of access and readability.</span><br>Consider a textbook <span class="terms">without table of 
+            contents or chapter titles.</span> Such a book would be <span class="terms">too clumsy and disorganised for reading.</span>
+            <span class="terms">Modules</span> prevent such a scenario by enabling the writing of <span class="terms">different aspects of code</span> into <span class="terms">different files.</span>
+            
+            A more interesting feature of <span class="terms">modules</span> is <span class="terms">their ease of sharing.</span> If you want to write code
+            that illustrates how <span class="terms">blood is pumped from the heart to the hand,</span> first you <span class="terms">create a new python file.</span>
+            Let's name this file <span class="terms">blood_flow.py</span>. 
+            
+            The code that describes the <span class="terms">human hand</span> would be written and stored in <span class="terms">hand.py</span> and that for the <span class="terms">heart
+            in heart.py</span>.<br>
+            Instead of writing all these body part descriptions in <span class="terms">a single file</span>, you have <span class="terms">modularized</span> them. Thus, broken
+            them down to distinctive parts.<br>
+            This is the beauty of modules. They allow for <span class="terms">code reusability and sharing.</span>
+
+            
+        </p>
+        <p>The example below shows the <span class="terms">3 modules, hand.py, heart.py and blood_flow.py</span>. Both <span class="terms">hand.py</span> and <span class="terms">heart.py</span> are later imported into <span class="terms">blood_flow.py</span> 
+            so we can have access to <span class="terms">their code</span> whilst in the <span class="terms">blood_flow.py module</span>.<br>
+            Notice the keyword <span class="terms">"import"</span>. That's what we use to make <span class="terms">one module accessible in another</span>.
+            The keyword <span class="terms">import</span> is always followed by <span class="terms">the filename of that module.</span>
+            And <span class="terms">imports</span> should always appear at <span class="terms">the topmost sections</span> of the code so <span class="terms">they would have already been loaded
+            by the time a code downstream requires them.</span>
+            For example, if a section in <span class="terms">blood_flow.py</span> requires <span class="terms">a function</span> from
+            <span class="terms">hand.py</span>. If that code section is placed <span class="terms">before "import hand"</span>, then the code would always <span style="color: red">fail to run</span>
+            since what it needs to <span class="terms">run the function from hand.py is not imported and ready by the time it is needed.</span>
+        </p>
+        <p>Let's have a look at an example. To run the code alongside, please <span class="terms">open this page in a new tab and move to the practice section.</span>
+            Then <span class="terms">create the modules,</span> copy and paste the codes displayed here there and execute them to see the results.
+        </p>
+        </div>
+        <div class="app-embed-container" style="width: 100%; max-width: 1200px; margin: 2rem auto; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); border: 1px solid #334155;">
+           <iframe 
+            src="code_insertion.html" 
+            style="width: 100%; height: 650px; border: none; display: block; margin: auto; padding: 20px;" 
+            title="Python Module Visualizer IDE">
+           </iframe>
+        </div>
+        <div class="content-body">
+            <p>You may have seen this line in <span class="terms">blood_flow.py</span><br>
+               <pre><code class="language-python">if __name__ == "__main__":
+    trace_blood_flow()
+               </code></pre>
+                This line calls the function (as we covered in the previous module) but it is a special line that allows the <span class="terms">function to be called right after defining it</span>.
+                Likewise if you want to run a function in <span class="terms">hand.py or heart.py</span>, you can add the same line in those modules and call the function you want to run.<br>
+                For example, we can run <span class="terms">the function human_fingers()</span> from <span class="terms">hand.py</span> by appending the code below to <span class="terms">hand.py</span>.
+            </p>
+            
+            <pre><code class="language-python">if __name__ == "__main__":
+    human_fingers()
+               </code></pre>
+               <p>But you may have noticed something, running the code above <span class="terms">does not print anything
+                to the terminal.</span> Observing <span class="terms">human_fingers()</span> very well, the code block uses the <span class="terms">"return"</span> keyword.
+                The <span class="terms">"return"</span> keyword stores what is to be returned but <span class="terms">never displays it in the console or terminal</span>.
+                To <span class="terms">display</span> anything in the terminal, you need to <span class="terms">wrap the function in a print statement</span> as shown below:
+               </p>
+               <pre><code class="language-python">if __name__ == "__main__":
+    print(human_fingers())
+               </code></pre>
+        </div>
+
+        <div class="title-container" id="packages">
+            <h3>Packages</h3>
+        </div>
+        <div class="content-body">
+            <p>
+                A <span class="terms">package</span> is a <span class="terms">collection of modules</span>. It is a <span class="terms">folder</span> that contains <span class="terms">multiple modules</span> and a special module called <span class="terms">__init__.py</span>. 
+                The <span class="terms">__init__.py module</span> is used to mark a folder as <span class="terms">a package</span> and can also contain <span class="terms">initialization code for the package</span>.
+                <span class="terms">Packages</span> allow for better organization of <span class="terms">related modules</span> and help avoid naming conflicts between <span class="terms">modules with the same name</span>.
+            </p>
+            <p>
+              As you would see in the example below, both <span class="terms">human_body</span> and <span class="terms">cat_body packages</span> contain
+              <span class="terms">modules</span> named <span class="terms">heart.py</span> and <span class="terms">blood_flow.py</span>, but because they are under <span class="terms">different packages</span>,
+              no error would be raised if <span class="terms">any of the two is imported.</span>
+            </p>
+        </div>
+        <div class="app-embed-container" style="width: 100%; max-width: 1200px; margin: 2rem auto; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); border: 1px solid #334155;">
+           <iframe 
+            src="packages.html" 
+            style="width: 100%; height: 650px; border: none; display: block; margin: auto; padding: 20px;" 
+            title="Python Packages">
+           </iframe>
+        </div>
+        <div class="content-body">
+          <p>
+          <span class="terms">Importing a package</span> differs from a <span class="terms">module</span> slightly.
+          Since a <span class="terms">package</span> contains <span class="terms">multiple modules</span>, you first have to 
+          specify <span class="terms">the name of the package</span> then
+          <span class="terms">the module to be imported</span> from that <span class="terms">package</span> follows.
+          So if we want to <span class="terms">import limb.py</span> from <span class="terms">cat_body package</span> into the <span class="terms">blood_flow.py 
+          module</span> under the <span class="terms">human_body package</span>, its going to be so
+          </p>
+          <pre><code class="language-python">
+    from cat_body import limb
+          </code></pre>
+          <p>If you want to call a <span class="terms">single function</span> from <span class="terms">limb.py module</span>, for example the <span class="terms">paws() function</span>, then it would
+            be <span style="color: red">waste</span> importing the whole module. Instead, you <span class="terms">import</span> just that function as shown below:  
+          </p>
+          <pre><code class="language-python">
+    from cat_body.limb import paws
+          </code></pre>
+        </div>
+        <div class="title-container" id="libraries">
+          <h3>Libraries</h3>
+        </div>
+        <div class="content-body">
+          <p><span class="terms">Libraries</span> contain many <span class="terms">packages</span>. Just as <span class="terms">school libraries</span> contain numerous books on different topics,
+            likewise <span class="terms">Python Libraries</span> contain numerous <span class="terms">packages</span> covering various tasks. As we go on, you would be using
+            most of the <span class="terms">popular Python Libraries</span> such as <span class="terms">numpy, pandas, tensorflow and pytorch.</span>
+          </p>
+          <p>
+            <span class="terms">Libraries</span> can be imported directly using <span class="terms">`import library`</span> syntax which 
+            imports all the packages in that library by using<br>
+            <span class="terms">`from library import package`</span>, which <span class="terms">imports only the specified packages</span>.
+          </p>
+          <p>Usually, <span class="terms">libraries</span> are also given <span class="terms">aliases</span> during import to <span class="terms">avoid retyping them in their full formats</span> all the time.
+          Using the tensorflow library, a typical example is displayed below:
+          </p>
+          <pre><code class="language-python">
+    import tensorflow as tf
+          </code></pre>
+          <p>
+
+            There are well-established procedures for creating and publishing 
+            libraries, which go beyond this course.
+            <a href="https://docs.python.org/3/library/index.html">
+              [You can read more on libraries from the python website]
+            </a>
+          </p>
+        </div>  
+     </div>
+
+    
       
         <!-- Constant barrier divs -->    
     </div>
@@ -2651,7 +2821,7 @@ So, <strong class="terms">numbers[::2] returns</strong>
        // Scroll To Previous Section On Load
         document.addEventListener('DOMContentLoaded', () => {
             const savedSection = sessionStorage.getItem('lastActiveSection');
-            const defaultSection = 'functions';
+            const defaultSection = 'mod-pack-lib';
             
 
              if (savedSection && document.getElementById(savedSection)) {
@@ -2695,7 +2865,10 @@ So, <strong class="terms">numbers[::2] returns</strong>
             'genexprs': 'comprehensions',
             'funct-example': 'functions',
             'argsandparams': 'functions',
-            'lambdaexprs': 'functions'
+            'lambdaexprs': 'functions',
+            'modules': 'mod-pack-lib',
+            'packages': 'mod-pack-lib',
+            'libraries': 'mod-pack-lib'
         }
 
         // Collapsible Accordion functionality for sidebar navigation
